@@ -129,11 +129,22 @@ const Footer = () => {
         <div className="border-t border-border pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-foreground/60 text-sm mb-4 md:mb-0">
-              © 2024 Restaurante Savoria. Todos los derechos reservados.
+              © {new Date().getFullYear()} Restaurante Savoria. Todos los derechos reservados.
             </div>
-            <div className="flex space-x-6 text-sm">
+            <div className="flex flex-col sm:flex-row items-center gap-4 text-sm">
               <span className="text-foreground/60">
                 Hecho con ❤️ en Lima, Perú
+              </span>
+              <span className="text-foreground/60">
+                Website by{' '}
+                <a 
+                  href="https://mirestaurante.online" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-accent hover:text-accent/80 transition-colors"
+                >
+                  mirestaurante.online
+                </a>
               </span>
             </div>
           </div>
