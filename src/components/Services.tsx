@@ -31,17 +31,17 @@ const Services = () => {
   ];
 
   return (
-    <section id="services" className="py-20 lg:py-32" style={{ background: 'linear-gradient(135deg, hsl(0 0% 98% / 0.95) 0%, hsl(0 0% 96% / 0.9) 100%)' }}>
+    <section id="services" className="py-20 lg:py-32" style={{ backgroundColor: '#ffffff' }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 fade-in">
           <span className="text-accent font-medium tracking-wider uppercase text-sm">
             Nuestros Servicios
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6 text-foreground">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6 text-gray-900">
             Experiencias
             <span className="block text-gradient font-normal">Auténticas</span>
           </h2>
-          <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
             Desde una comida íntima hasta celebraciones especiales, te ofrecemos 
             sabores únicos y un servicio cálido.
           </p>
@@ -88,7 +88,7 @@ const Services = () => {
         </div>
 
         {/* Features Row */}
-        <div className="bg-secondary/20 rounded-2xl p-8 fade-in">
+        <div className="bg-card rounded-2xl p-8 fade-in">
           <div className="grid md:grid-cols-3 gap-8">
             {features.map((feature, index) => (
               <div key={index} className="flex items-center justify-center text-center">
