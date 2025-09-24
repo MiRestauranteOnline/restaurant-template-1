@@ -10,48 +10,48 @@ const About = () => {
           <div className="fade-in">
             <div className="mb-6">
               <span className="text-accent font-medium tracking-wider uppercase text-sm">
-                Our Story
+                Nuestra Historia
               </span>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
-                Where Tradition
-                <span className="block text-gradient font-normal">Meets Innovation</span>
+                Donde la Tradición
+                <span className="block text-gradient font-normal">Se Encuentra con la Innovación</span>
               </h2>
             </div>
             
             <div className="space-y-6 text-foreground/80 text-lg leading-relaxed">
               <p>
-                Since 2010, Savoria has been a beacon of culinary excellence, 
-                combining time-honored techniques with contemporary flair. Our 
-                passion for exceptional ingredients and innovative preparation 
-                methods creates an unforgettable dining experience.
+                Desde 2010, Savoria ha sido un faro de excelencia culinaria, 
+                combinando técnicas tradicionales con un toque contemporáneo. Nuestra 
+                pasión por ingredientes excepcionales y métodos de preparación 
+                innovadores crea una experiencia gastronómica inolvidable.
               </p>
               
               <p>
-                Led by Executive Chef Marcus Thompson, our team sources the 
-                finest seasonal ingredients from local farms and artisanal 
-                producers, ensuring every dish tells a story of quality 
-                and craftsmanship.
+                Dirigido por el Chef Ejecutivo Carlos Mendoza, nuestro equipo selecciona 
+                los mejores ingredientes de temporada de granjas locales y productores 
+                artesanales, asegurando que cada plato cuente una historia de calidad 
+                y artesanía.
               </p>
               
               <p>
-                From intimate dinners to grand celebrations, we create moments 
-                that linger in memory long after the last bite. Welcome to 
-                Savoria, where every meal is a masterpiece.
+                Desde cenas íntimas hasta grandes celebraciones, creamos momentos 
+                que perduran en la memoria mucho después del último bocado. Bienvenido a 
+                Savoria, donde cada comida es una obra maestra.
               </p>
             </div>
 
             <div className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-border">
               <div className="text-center">
-                <div className="text-3xl font-heading font-bold text-accent mb-2">13+</div>
-                <div className="text-sm text-foreground/60 uppercase tracking-wider">Years Experience</div>
+                <div className="text-3xl font-heading font-bold text-accent mb-2">15+</div>
+                <div className="text-sm text-foreground/60 uppercase tracking-wider">Años de Experiencia</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-heading font-bold text-accent mb-2">50K+</div>
-                <div className="text-sm text-foreground/60 uppercase tracking-wider">Happy Guests</div>
+                <div className="text-3xl font-heading font-bold text-accent mb-2">5K+</div>
+                <div className="text-sm text-foreground/60 uppercase tracking-wider">Clientes Felices</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-heading font-bold text-accent mb-2">25+</div>
-                <div className="text-sm text-foreground/60 uppercase tracking-wider">Awards Won</div>
+                <div className="text-3xl font-heading font-bold text-accent mb-2">10+</div>
+                <div className="text-sm text-foreground/60 uppercase tracking-wider">Reconocimientos</div>
               </div>
             </div>
           </div>

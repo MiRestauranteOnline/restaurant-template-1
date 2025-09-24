@@ -1,13 +1,13 @@
-import { Instagram, Facebook, Twitter, Mail } from 'lucide-react';
+import { Instagram, Facebook, Twitter, Mail, Phone, MapPin } from 'lucide-react';
 
 const Footer = () => {
   const restaurantInfo = [
     {
       title: "Contacto",
       items: [
-        "📞 +51 987 654 321",
-        "✉️ info@savoria.com",
-        "📍 Av. Larco 123, Miraflores, Lima"
+        { icon: Phone, text: "+51 987 654 321" },
+        { icon: Mail, text: "info@savoria.com" },
+        { icon: MapPin, text: "Av. Larco 123, Miraflores, Lima" }
       ]
     },
     {
@@ -49,8 +49,8 @@ const Footer = () => {
               Savoria
             </h3>
             <p className="text-foreground/70 mb-6 leading-relaxed">
-              Experience culinary excellence in an atmosphere of refined elegance. 
-              Every meal is crafted with passion and the finest ingredients.
+              Experimenta la excelencia culinaria en un ambiente de elegancia refinada. 
+              Cada comida está elaborada con pasión y los mejores ingredientes.
             </p>
             
             {/* Social Links */}
@@ -77,7 +77,12 @@ const Footer = () => {
               <ul className="space-y-2">
                 {section.items.map((item, idx) => (
                   <li key={idx} className="text-foreground/70">
-                    {section.title === "Enlaces" ? (
+                    {section.title === "Contacto" ? (
+                      <div className="flex items-center space-x-2">
+                        <item.icon className="w-4 h-4 text-accent" />
+                        <span>{item.text}</span>
+                      </div>
+                    ) : section.title === "Enlaces" ? (
                       <a
                         href={item.href}
                         className="hover:text-accent transition-colors duration-300"
@@ -124,7 +129,7 @@ const Footer = () => {
         <div className="border-t border-border pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-foreground/60 text-sm mb-4 md:mb-0">
-              © 2024 Savoria Restaurant. All rights reserved.
+              © 2024 Restaurante Savoria. Todos los derechos reservados.
             </div>
             <div className="flex space-x-6 text-sm">
               <span className="text-foreground/60">

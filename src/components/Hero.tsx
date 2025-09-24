@@ -17,21 +17,21 @@ const Hero = () => {
       <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
         <div className="fade-in">
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-light mb-6 leading-tight">
-            Culinary
-            <span className="block text-gradient font-normal">Excellence</span>
+            Excelencia
+            <span className="block text-gradient font-normal">Culinaria</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-foreground/80 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Experience the finest in contemporary dining with our carefully crafted dishes 
-            and impeccable service in an atmosphere of refined elegance.
+          <p className="text-xl md:text-2xl text-white mb-8 max-w-2xl mx-auto leading-relaxed">
+            Experimenta lo mejor de la gastronomía contemporánea con nuestros platos cuidadosamente elaborados 
+            y un servicio impecable en un ambiente de elegancia refinada.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button className="btn-primary px-8 py-3 text-lg rounded-full">
-              Explore Menu
+              Ver Menú
             </Button>
             <Button variant="outline" className="btn-ghost px-8 py-3 text-lg rounded-full">
-              Reserve Table
+              Reservar Mesa
             </Button>
           </div>
         </div>

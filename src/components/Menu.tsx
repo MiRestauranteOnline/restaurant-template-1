@@ -9,35 +9,35 @@ const Menu = () => {
   const menuItems = [
     {
       id: 1,
-      name: "Truffle Pasta Supreme",
-      description: "Hand-made pasta with black truffle shavings, wild mushrooms, and parmesan cream sauce",
-      price: "$48",
+      name: "Pasta Suprema con Trufa",
+      description: "Pasta artesanal con láminas de trufa negra, hongos silvestres y salsa cremosa de parmesano",
+      price: "S/ 65",
       image: heroPasta,
-      category: "Signature"
+      category: "Especialidad"
     },
     {
       id: 2,
-      name: "Wagyu Beef Tenderloin",
-      description: "Premium cut with rosemary, garlic confit, and seasonal vegetables",
-      price: "$85",
+      name: "Lomo de Res Premium",
+      description: "Corte premium con romero, ajo confitado y vegetales de temporada",
+      price: "S/ 85",
       image: grilledSteak,
-      category: "Main Course"
+      category: "Plato Principal"
     },
     {
       id: 3,
-      name: "Ocean's Bounty Platter",
-      description: "Fresh lobster, oysters, and seasonal seafood with citrus mignonette",
-      price: "$95",
+      name: "Plato del Océano",
+      description: "Langosta fresca, ostras y mariscos de temporada con mignonette cítrica",
+      price: "S/ 95",
       image: seafoodPlatter,
-      category: "Seafood"
+      category: "Mariscos"
     },
     {
       id: 4,
-      name: "Chocolate Decadence",
-      description: "Dark chocolate soufflé with gold leaf and vanilla bean ice cream",
-      price: "$24",
+      name: "Decadencia de Chocolate",
+      description: "Soufflé de chocolate negro con hoja de oro y helado de vainilla",
+      price: "S/ 28",
       image: chocolateDessert,
-      category: "Dessert"
+      category: "Postre"
     }
   ];
 
@@ -46,15 +46,15 @@ const Menu = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 fade-in">
           <span className="text-accent font-medium tracking-wider uppercase text-sm">
-            Culinary Masterpieces
+            Obras Maestras Culinarias
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
-            Signature
-            <span className="block text-gradient font-normal">Selections</span>
+            Selecciones
+            <span className="block text-gradient font-normal">Especiales</span>
           </h2>
           <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
-            Discover our chef's carefully curated selection of exceptional dishes, 
-            each crafted with passion and the finest ingredients.
+            Descubre la selección cuidadosamente curada de nuestro chef con platos excepcionales, 
+            cada uno elaborado con pasión y los mejores ingredientes.
           </p>
         </div>
 
@@ -98,7 +98,7 @@ const Menu = () => {
 
         <div className="text-center fade-in">
           <Button className="btn-primary px-8 py-3 text-lg rounded-full">
-            View Full Menu
+            Ver Menú Completo
           </Button>
         </div>
       </div>
