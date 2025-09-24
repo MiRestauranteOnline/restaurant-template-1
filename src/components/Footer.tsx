@@ -23,6 +23,7 @@ const Footer = () => {
       items: [
         { label: "Menú", href: "/menu" },
         { label: "Sobre Nosotros", href: "/about" },
+        { label: "Reviews", href: "/reviews" },
         { label: "Contacto", href: "/contact" }
       ]
     }

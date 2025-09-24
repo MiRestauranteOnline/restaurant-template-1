@@ -44,14 +44,22 @@ const MenuPage = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="pt-20 pb-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mb-6">
+      <section className="relative pt-20 h-[40vh] flex items-center justify-center overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url('/src/assets/hero-pasta.jpg')`,
+          }}
+        />
+        <div className="absolute inset-0 hero-overlay" />
+        
+        <div className="relative z-10 container mx-auto px-4">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mb-6 text-white">
               Nuestro
               <span className="block text-gradient font-normal">Menú</span>
             </h1>
-            <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
               Descubre los auténticos sabores peruanos preparados con ingredientes frescos y recetas tradicionales.
             </p>
           </div>

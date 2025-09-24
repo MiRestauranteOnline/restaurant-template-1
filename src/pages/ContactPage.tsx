@@ -40,13 +40,21 @@ const ContactPage = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="pt-20 pb-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mb-6">
+      <section className="relative pt-20 h-[40vh] flex items-center justify-center overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url('/src/assets/grilled-steak.jpg')`,
+          }}
+        />
+        <div className="absolute inset-0 hero-overlay" />
+        
+        <div className="relative z-10 container mx-auto px-4">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mb-6 text-white">
               Contáctanos
             </h1>
-            <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
               Estamos aquí para ayudarte. Contacta con nosotros para reservas, consultas o cualquier información que necesites.
             </p>
           </div>
@@ -58,7 +66,7 @@ const ContactPage = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             {contactMethods.map((method, index) => (
-              <Card key={index} className="text-center p-8 border-gray-200 card-hover">
+              <Card key={index} className="text-center p-8 bg-white border-gray-200 card-hover">
                 <CardContent className="p-0">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/10 rounded-full mb-6">
                     <method.icon className="w-8 h-8 text-accent" />
@@ -84,7 +92,7 @@ const ContactPage = () => {
           </div>
 
           {/* Hours */}
-          <Card className="max-w-2xl mx-auto border-gray-200">
+          <Card className="max-w-2xl mx-auto bg-white border-gray-200">
             <CardContent className="p-8">
               <div className="text-center mb-6">
                 <Clock className="w-12 h-12 text-accent mx-auto mb-4" />
