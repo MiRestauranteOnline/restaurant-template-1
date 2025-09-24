@@ -136,7 +136,7 @@ const Footer = () => {
                 Hecho con ❤️ en Lima, Perú
               </span>
               <span className="text-foreground/60">
-                Website by{' '}
+                Sitio web por{' '}
                 <a 
                   href="https://mirestaurante.online" 
                   target="_blank" 
