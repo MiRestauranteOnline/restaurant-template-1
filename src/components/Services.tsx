@@ -6,44 +6,44 @@ const Services = () => {
   const services = [
     {
       icon: Utensils,
-      title: "Fine Dining",
-      description: "Immerse yourself in an elegant atmosphere with impeccable service and extraordinary cuisine.",
-      features: ["Seven-course tasting menu", "Wine pairing available", "Private dining rooms"]
+      title: "Comida en el Local",
+      description: "Disfruta de nuestros platos únicos en un ambiente acogedor y familiar.",
+      features: ["Ambiente familiar", "Servicio personalizado", "Platos recién preparados"]
     },
     {
       icon: Truck,
-      title: "Premium Delivery",
-      description: "Enjoy our signature dishes in the comfort of your home with our white-glove delivery service.",
-      features: ["Same-day delivery", "Temperature-controlled transport", "Contactless service"]
+      title: "Delivery",
+      description: "Lleva los sabores de Savoria a tu hogar con nuestro servicio de delivery.",
+      features: ["Entrega rápida", "Empaque ecológico", "Pedidos por WhatsApp"]
     },
     {
       icon: Users,
-      title: "Event Catering",
-      description: "Make your special occasions unforgettable with our bespoke catering and event planning.",
-      features: ["Custom menu design", "Professional service staff", "Full event coordination"]
+      title: "Eventos Pequeños",
+      description: "Celebra tus momentos especiales con nosotros, perfecto para reuniones íntimas.",
+      features: ["Hasta 20 personas", "Menú personalizado", "Ambiente privado"]
     }
   ];
 
   const features = [
-    { icon: Clock, text: "Open 7 Days a Week" },
-    { icon: Star, text: "Michelin Recommended" },
-    { icon: MapPin, text: "Prime Location" }
+    { icon: Clock, text: "Abierto Todos los Días" },
+    { icon: Star, text: "Recomendado en Lima" },
+    { icon: MapPin, text: "En el Corazón de Miraflores" }
   ];
 
   return (
-    <section id="services" className="py-20 lg:py-32">
+    <section id="services" className="py-20 lg:py-32" style={{ background: 'linear-gradient(135deg, hsl(0 0% 98% / 0.95) 0%, hsl(0 0% 96% / 0.9) 100%)' }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 fade-in">
           <span className="text-accent font-medium tracking-wider uppercase text-sm">
-            Our Services
+            Nuestros Servicios
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
-            Exceptional
-            <span className="block text-gradient font-normal">Experiences</span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6 text-foreground">
+            Experiencias
+            <span className="block text-gradient font-normal">Auténticas</span>
           </h2>
           <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
-            From intimate dinners to grand celebrations, we provide unparalleled 
-            service tailored to your every need.
+            Desde una comida íntima hasta celebraciones especiales, te ofrecemos 
+            sabores únicos y un servicio cálido.
           </p>
         </div>
 
@@ -76,8 +76,11 @@ const Services = () => {
                   ))}
                 </ul>
                 
-                <Button variant="outline" className="btn-ghost rounded-full">
-                  Learn More
+                <Button 
+                  className="btn-primary rounded-full"
+                  onClick={() => window.open('https://wa.me/51987654321?text=Hola, me gustaría saber más sobre sus servicios', '_blank')}
+                >
+                  Más Info
                 </Button>
               </CardContent>
             </Card>

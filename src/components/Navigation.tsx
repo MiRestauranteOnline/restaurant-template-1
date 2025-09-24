@@ -18,7 +18,7 @@ const Navigation = () => {
     { label: 'Home', href: '#home' },
     { label: 'About', href: '#about' },
     { label: 'Menu', href: '#menu' },
-    { label: 'Services', href: '#services' },
+    { label: 'Reviews', href: '#reviews' },
     { label: 'Contact', href: '#contact' },
   ];
 
@@ -46,9 +46,20 @@ const Navigation = () => {
                 {item.label}
               </a>
             ))}
-            <Button className="btn-primary px-6 py-2 rounded-full">
-              Reserve Table
-            </Button>
+            <div className="flex items-center space-x-3">
+              <Button 
+                className="btn-ghost px-4 py-2 rounded-full text-sm"
+                onClick={() => window.open('tel:+51987654321', '_self')}
+              >
+                Call Us
+              </Button>
+              <Button 
+                className="btn-primary px-6 py-2 rounded-full"
+                onClick={() => window.open('https://wa.me/51987654321?text=Hola, me gustaría hacer una reserva', '_blank')}
+              >
+                WhatsApp
+              </Button>
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -78,9 +89,18 @@ const Navigation = () => {
                   {item.label}
                 </a>
               ))}
-              <div className="px-3 py-2">
-                <Button className="btn-primary w-full rounded-full">
-                  Reserve Table
+              <div className="px-3 py-2 space-y-2">
+                <Button 
+                  className="btn-ghost w-full rounded-full"
+                  onClick={() => window.open('tel:+51987654321', '_self')}
+                >
+                  Call Us
+                </Button>
+                <Button 
+                  className="btn-primary w-full rounded-full"
+                  onClick={() => window.open('https://wa.me/51987654321?text=Hola, me gustaría hacer una reserva', '_blank')}
+                >
+                  WhatsApp
                 </Button>
               </div>
             </div>

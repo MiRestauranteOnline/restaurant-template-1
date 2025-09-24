@@ -8,23 +8,23 @@ const Contact = () => {
   const contactInfo = [
     {
       icon: Phone,
-      title: "Call Us",
-      details: ["+1 (555) 123-4567", "+1 (555) 123-4568"]
+      title: "Teléfono",
+      details: ["+51 987 654 321"]
     },
     {
       icon: Mail,
-      title: "Email Us",
-      details: ["info@savoria.com", "reservations@savoria.com"]
+      title: "Email",
+      details: ["info@savoria.com"]
     },
     {
       icon: MapPin,
-      title: "Visit Us",
-      details: ["123 Culinary Street", "New York, NY 10001"]
+      title: "Ubicación",
+      details: ["Av. Larco 123", "Miraflores, Lima"]
     },
     {
       icon: Clock,
-      title: "Hours",
-      details: ["Mon-Thu: 5:00 PM - 10:00 PM", "Fri-Sun: 5:00 PM - 11:00 PM"]
+      title: "Horarios",
+      details: ["Lun-Dom: 12:00 PM - 10:00 PM"]
     }
   ];
 
@@ -33,14 +33,14 @@ const Contact = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 fade-in">
           <span className="text-accent font-medium tracking-wider uppercase text-sm">
-            Get In Touch
+            Contáctanos
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
-            Reserve Your
-            <span className="block text-gradient font-normal">Experience</span>
+            Reserva Tu
+            <span className="block text-gradient font-normal">Experiencia</span>
           </h2>
           <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
-            Ready to embark on a culinary journey? We'd love to welcome you to Savoria.
+            ¿Listo para disfrutar de sabores únicos? Te esperamos en Savoria.
           </p>
         </div>
 
@@ -84,96 +84,43 @@ const Contact = () => {
             </div>
           </div>
 
-          {/* Contact Form */}
+          {/* Contact Actions */}
           <div className="fade-in">
             <Card className="bg-card border-border">
               <CardContent className="p-8">
                 <h3 className="text-2xl font-heading font-semibold mb-6 text-foreground">
-                  Make a Reservation
+                  Reserva Tu Mesa
                 </h3>
                 
-                <form className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-foreground/80 mb-2">
-                        First Name
-                      </label>
-                      <Input 
-                        placeholder="John"
-                        className="bg-background border-border focus:border-accent"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-foreground/80 mb-2">
-                        Last Name
-                      </label>
-                      <Input 
-                        placeholder="Doe"
-                        className="bg-background border-border focus:border-accent"
-                      />
-                    </div>
+                <div className="space-y-6">
+                  <p className="text-foreground/80 leading-relaxed">
+                    ¿Listo para disfrutar de una experiencia culinaria excepcional? 
+                    Contáctanos directamente para hacer tu reserva o resolver cualquier consulta.
+                  </p>
+                  
+                  <div className="grid gap-4">
+                    <Button 
+                      className="btn-primary w-full py-4 text-lg rounded-full"
+                      onClick={() => window.open('https://wa.me/51987654321?text=Hola, me gustaría hacer una reserva para [fecha] a las [hora] para [número de personas] personas.', '_blank')}
+                    >
+                      Reservar por WhatsApp
+                    </Button>
+                    
+                    <Button 
+                      variant="outline"
+                      className="w-full py-4 text-lg rounded-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                      onClick={() => window.open('tel:+51987654321', '_self')}
+                    >
+                      Llamar Ahora
+                    </Button>
                   </div>
                   
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-foreground/80 mb-2">
-                        Email
-                      </label>
-                      <Input 
-                        type="email"
-                        placeholder="john@example.com"
-                        className="bg-background border-border focus:border-accent"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-foreground/80 mb-2">
-                        Phone
-                      </label>
-                      <Input 
-                        type="tel"
-                        placeholder="+1 (555) 123-4567"
-                        className="bg-background border-border focus:border-accent"
-                      />
-                    </div>
+                  <div className="text-center pt-4 border-t border-border">
+                    <p className="text-sm text-foreground/60">
+                      Horario de atención: Lunes a Domingo, 11:00 AM - 9:00 PM
+                    </p>
                   </div>
-                  
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-foreground/80 mb-2">
-                        Date
-                      </label>
-                      <Input 
-                        type="date"
-                        className="bg-background border-border focus:border-accent"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-foreground/80 mb-2">
-                        Party Size
-                      </label>
-                      <Input 
-                        type="number"
-                        placeholder="2"
-                        className="bg-background border-border focus:border-accent"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-foreground/80 mb-2">
-                      Special Requests
-                    </label>
-                    <Textarea 
-                      placeholder="Any dietary restrictions or special occasions..."
-                      className="bg-background border-border focus:border-accent resize-none"
-                      rows={4}
-                    />
-                  </div>
-                  
-                  <Button className="btn-primary w-full py-3 text-lg rounded-full">
-                    Confirm Reservation
-                  </Button>
-                </form>
+                </div>
               </CardContent>
             </Card>
           </div>

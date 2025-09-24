@@ -1,18 +1,26 @@
 import { Instagram, Facebook, Twitter, Mail } from 'lucide-react';
 
 const Footer = () => {
-  const footerSections = [
+  const restaurantInfo = [
     {
-      title: "Restaurant",
-      links: ["About Us", "Our Chef", "Menu", "Reservations", "Gift Cards"]
+      title: "Contacto",
+      items: [
+        "📞 +51 987 654 321",
+        "📧 info@savoria.com",
+        "📍 Av. Larco 123, Miraflores, Lima"
+      ]
     },
     {
-      title: "Services",
-      links: ["Fine Dining", "Private Events", "Catering", "Wine Selection", "Delivery"]
+      title: "Horarios",
+      items: [
+        "Lunes - Jueves: 12:00 PM - 10:00 PM",
+        "Viernes - Sábado: 12:00 PM - 11:00 PM", 
+        "Domingo: 12:00 PM - 9:00 PM"
+      ]
     },
     {
-      title: "Information",
-      links: ["Contact", "Location", "Hours", "Careers", "Press"]
+      title: "Enlaces",
+      items: ["Menu", "Sobre Nosotros", "Reseñas"]
     }
   ];
 
@@ -55,21 +63,25 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Footer Links */}
-          {footerSections.map((section, index) => (
+          {/* Restaurant Information */}
+          {restaurantInfo.map((section, index) => (
             <div key={index}>
               <h4 className="font-heading font-semibold text-lg mb-4 text-foreground">
                 {section.title}
               </h4>
               <ul className="space-y-2">
-                {section.links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-foreground/70 hover:text-accent transition-colors duration-300"
-                    >
-                      {link}
-                    </a>
+                {section.items.map((item, idx) => (
+                  <li key={idx} className="text-foreground/70">
+                    {section.title === "Enlaces" ? (
+                      <a
+                        href="#"
+                        className="hover:text-accent transition-colors duration-300"
+                      >
+                        {item}
+                      </a>
+                    ) : (
+                      item
+                    )}
                   </li>
                 ))}
               </ul>
@@ -77,23 +89,27 @@ const Footer = () => {
           ))}
         </div>
 
-        {/* Newsletter Section */}
+        {/* Contact Actions */}
         <div className="bg-secondary/20 rounded-2xl p-8 mb-8">
-          <div className="text-center max-w-2xl mx-auto">
+          <div className="text-center">
             <h4 className="text-2xl font-heading font-semibold mb-3 text-foreground">
-              Stay Connected
+              ¿Listo para una experiencia culinaria única?
             </h4>
             <p className="text-foreground/70 mb-6">
-              Subscribe to our newsletter for exclusive updates, special events, and culinary insights.
+              Contáctanos ahora para hacer tu reserva o conocer más sobre nuestro menú.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-background border border-border rounded-full focus:outline-none focus:border-accent transition-colors"
-              />
-              <button className="btn-primary px-6 py-3 rounded-full whitespace-nowrap">
-                Subscribe
+            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+              <button 
+                className="btn-primary px-6 py-3 rounded-full"
+                onClick={() => window.open('https://wa.me/51987654321?text=Hola, me gustaría hacer una reserva', '_blank')}
+              >
+                WhatsApp
+              </button>
+              <button 
+                className="btn-ghost px-6 py-3 rounded-full"
+                onClick={() => window.open('tel:+51987654321', '_self')}
+              >
+                Llamar
               </button>
             </div>
           </div>
@@ -106,15 +122,9 @@ const Footer = () => {
               © 2024 Savoria Restaurant. All rights reserved.
             </div>
             <div className="flex space-x-6 text-sm">
-              <a href="#" className="text-foreground/60 hover:text-accent transition-colors">
-                Privacy Policy
-              </a>
-              <a href="#" className="text-foreground/60 hover:text-accent transition-colors">
-                Terms of Service
-              </a>
-              <a href="#" className="text-foreground/60 hover:text-accent transition-colors">
-                Cookie Policy
-              </a>
+              <span className="text-foreground/60">
+                Hecho con ❤️ en Lima, Perú
+              </span>
             </div>
           </div>
         </div>
