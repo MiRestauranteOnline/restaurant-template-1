@@ -66,17 +66,17 @@ const ContactPage = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             {contactMethods.map((method, index) => (
-              <Card key={index} className="text-center p-8 bg-white border-gray-200 card-hover">
+              <Card key={index} className="text-center p-8 bg-card border-border card-hover">
                 <CardContent className="p-0">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/10 rounded-full mb-6">
                     <method.icon className="w-8 h-8 text-accent" />
                   </div>
                   
-                  <h3 className="text-xl font-heading font-semibold mb-3 text-gray-900">
+                  <h3 className="text-xl font-heading font-semibold mb-3 text-foreground">
                     {method.title}
                   </h3>
                   
-                  <p className="text-gray-600 mb-6">
+                  <p className="text-foreground/70 mb-6">
                     {method.content}
                   </p>
                   
@@ -92,11 +92,11 @@ const ContactPage = () => {
           </div>
 
           {/* Hours */}
-          <Card className="max-w-2xl mx-auto bg-white border-gray-200">
+          <Card className="max-w-2xl mx-auto bg-card border-border">
             <CardContent className="p-8">
               <div className="text-center mb-6">
                 <Clock className="w-12 h-12 text-accent mx-auto mb-4" />
-                <h3 className="text-2xl font-heading font-semibold text-gray-900">
+                <h3 className="text-2xl font-heading font-semibold text-foreground">
                   Horarios de Atención
                 </h3>
               </div>
@@ -104,10 +104,10 @@ const ContactPage = () => {
               <div className="space-y-4">
                 {hours.map((schedule, index) => (
                   <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium text-foreground">
                       {schedule.day}
                     </span>
-                    <span className="text-gray-600">
+                    <span className="text-foreground/70">
                       {schedule.time}
                     </span>
                   </div>
