@@ -17,10 +17,10 @@ const Navigation = () => {
   }, []);
 
   const navItems = [
-    { label: 'Home', href: '/' },
+    { label: 'Inicio', href: '/' },
     { label: 'Sobre Nosotros', href: '/about' },
     { label: 'Menú', href: '/menu' },
-    { label: 'Reviews', href: '/reviews' },
+    { label: 'Reseñas', href: '/reviews' },
     { label: 'Contacto', href: '/contact' },
   ];
 
@@ -67,7 +67,7 @@ const Navigation = () => {
                 className="btn-ghost px-4 py-2 rounded-full text-sm"
                 onClick={() => window.open('tel:+51987654321', '_self')}
               >
-                Call Us
+                Llamar
               </Button>
               <Button 
                 className="btn-primary px-6 py-2 rounded-full"
@@ -120,7 +120,7 @@ const Navigation = () => {
                   className="btn-ghost w-full rounded-full"
                   onClick={() => window.open('tel:+51987654321', '_self')}
                 >
-                  Call Us
+                  Llamar
                 </Button>
                 <Button 
                   className="btn-primary w-full rounded-full"
