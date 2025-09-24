@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLocation } from 'react-router-dom';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +23,10 @@ const Navigation = () => {
     { label: 'Reviews', href: '/reviews' },
     { label: 'Contacto', href: '/contact' },
   ];
+
+  const isActivePage = (href: string) => {
+    return location.pathname === href;
+  };
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${
@@ -41,7 +47,11 @@ const Navigation = () => {
               <a
                 key={item.label}
                 href={item.href}
-                className="text-foreground/80 hover:text-accent transition-colors duration-300 font-medium"
+                className={`transition-colors duration-300 font-medium ${
+                  isActivePage(item.href) 
+                    ? 'text-accent font-bold' 
+                    : 'text-foreground/80 hover:text-accent'
+                }`}
                 onClick={(e) => {
                   if (item.href.startsWith('#')) {
                     e.preventDefault();
@@ -89,7 +99,11 @@ const Navigation = () => {
                 <a
                   key={item.label}
                   href={item.href}
-                  className="block px-3 py-2 text-foreground/80 hover:text-accent transition-colors duration-300"
+                  className={`block px-3 py-2 transition-colors duration-300 ${
+                    isActivePage(item.href) 
+                      ? 'text-accent font-bold' 
+                      : 'text-foreground/80 hover:text-accent'
+                  }`}
                   onClick={(e) => {
                     setIsMobileMenuOpen(false);
                     if (item.href.startsWith('#')) {
