@@ -62,14 +62,14 @@ const ContactPage = () => {
       </section>
 
       {/* Contact Methods */}
-      <section className="py-16" style={{ backgroundColor: '#ffffff' }}>
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             {contactMethods.map((method, index) => (
               <Card key={index} className="text-center p-8 bg-card border-border card-hover">
                 <CardContent className="p-0">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/10 rounded-full mb-6">
-                    <method.icon className="w-8 h-8 text-accent" />
+                  <div className="mb-6">
+                    <method.icon className="w-12 h-12 text-accent mx-auto" />
                   </div>
                   
                   <h3 className="text-xl font-heading font-semibold mb-3 text-foreground">
@@ -103,7 +103,7 @@ const ContactPage = () => {
               
               <div className="space-y-4">
                 {hours.map((schedule, index) => (
-                  <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                  <div key={index} className="flex justify-between items-center py-2 border-b border-border last:border-b-0">
                     <span className="font-medium text-foreground">
                       {schedule.day}
                     </span>
