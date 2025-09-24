@@ -65,7 +65,7 @@ const AboutPage = () => {
           <div className="grid md:grid-cols-3 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/10 rounded-full mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-card border border-border rounded-full mb-4">
                   <stat.icon className="w-8 h-8 text-accent" />
                 </div>
                 <div className="text-4xl font-heading font-bold text-gray-900 mb-2">
