@@ -6,7 +6,7 @@ const Footer = () => {
       title: "Contacto",
       items: [
         "📞 +51 987 654 321",
-        "📧 info@savoria.com",
+        "✉️ info@savoria.com",
         "📍 Av. Larco 123, Miraflores, Lima"
       ]
     },
@@ -20,7 +20,11 @@ const Footer = () => {
     },
     {
       title: "Enlaces",
-      items: ["Menu", "Sobre Nosotros", "Reseñas"]
+      items: [
+        { label: "Menú", href: "/menu" },
+        { label: "Sobre Nosotros", href: "/about" },
+        { label: "Contacto", href: "/contact" }
+      ]
     }
   ];
 
@@ -74,10 +78,10 @@ const Footer = () => {
                   <li key={idx} className="text-foreground/70">
                     {section.title === "Enlaces" ? (
                       <a
-                        href="#"
+                        href={item.href}
                         className="hover:text-accent transition-colors duration-300"
                       >
-                        {item}
+                        {item.label}
                       </a>
                     ) : (
                       item

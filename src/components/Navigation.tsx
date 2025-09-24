@@ -15,11 +15,11 @@ const Navigation = () => {
   }, []);
 
   const navItems = [
-    { label: 'Home', href: '#home' },
-    { label: 'About', href: '#about' },
-    { label: 'Menu', href: '#menu' },
+    { label: 'Home', href: '/' },
+    { label: 'Sobre Nosotros', href: '/about' },
+    { label: 'Menú', href: '/menu' },
     { label: 'Reviews', href: '#reviews' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'Contacto', href: '/contact' },
   ];
 
   return (
@@ -42,6 +42,12 @@ const Navigation = () => {
                 key={item.label}
                 href={item.href}
                 className="text-foreground/80 hover:text-accent transition-colors duration-300 font-medium"
+                onClick={(e) => {
+                  if (item.href.startsWith('#')) {
+                    e.preventDefault();
+                    document.querySelector(item.href)?.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
               >
                 {item.label}
               </a>
@@ -84,7 +90,13 @@ const Navigation = () => {
                   key={item.label}
                   href={item.href}
                   className="block px-3 py-2 text-foreground/80 hover:text-accent transition-colors duration-300"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    setIsMobileMenuOpen(false);
+                    if (item.href.startsWith('#')) {
+                      e.preventDefault();
+                      document.querySelector(item.href)?.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
                 >
                   {item.label}
                 </a>

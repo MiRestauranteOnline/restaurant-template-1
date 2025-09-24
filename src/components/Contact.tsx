@@ -74,13 +74,18 @@ const Contact = () => {
               ))}
             </div>
 
-            {/* Map Placeholder */}
-            <div className="bg-muted rounded-2xl h-64 flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="w-12 h-12 text-accent mx-auto mb-4" />
-                <p className="text-foreground/60">Interactive Map</p>
-                <p className="text-sm text-foreground/40">Location integration available</p>
-              </div>
+            {/* Interactive Map */}
+            <div className="bg-muted rounded-2xl h-64 relative overflow-hidden">
+              <iframe
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-77.0365,-12.1267,-77.0365,-12.1267&amp;layer=mapnik&amp;marker=-12.1267,-77.0365"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                loading="lazy"
+                title="Savoria Restaurant Location"
+                className="rounded-2xl"
+              />
+              <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-background/10 rounded-2xl" />
             </div>
           </div>
 

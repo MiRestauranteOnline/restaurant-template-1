@@ -34,9 +34,6 @@ const Services = () => {
     <section id="services" className="py-20 lg:py-32" style={{ backgroundColor: '#ffffff' }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 fade-in">
-          <span className="text-accent font-medium tracking-wider uppercase text-sm">
-            Nuestros Servicios
-          </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6 text-gray-900">
             Experiencias
             <span className="block text-gradient font-normal">Auténticas</span>
@@ -63,18 +60,9 @@ const Services = () => {
                   {service.title}
                 </h3>
                 
-                <p className="text-foreground/70 mb-6 leading-relaxed">
+                <p className="text-foreground/70 mb-8 leading-relaxed">
                   {service.description}
                 </p>
-                
-                <ul className="space-y-2 mb-8">
-                  {service.features.map((feature, idx) => (
-                    <li key={idx} className="text-sm text-foreground/60 flex items-center justify-center">
-                      <div className="w-1.5 h-1.5 bg-accent rounded-full mr-2" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
                 
                 <Button 
                   className="btn-primary rounded-full"
