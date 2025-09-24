@@ -42,19 +42,19 @@ const About = () => {
 
             <div className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-border">
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-card rounded-full mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary rounded-full mb-4">
                   <div className="text-2xl font-heading font-bold text-accent">15+</div>
                 </div>
                 <div className="text-sm text-foreground/60 uppercase tracking-wider">Años de Experiencia</div>
               </div>
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-card rounded-full mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary rounded-full mb-4">
                   <div className="text-2xl font-heading font-bold text-accent">5K+</div>
                 </div>
                 <div className="text-sm text-foreground/60 uppercase tracking-wider">Clientes Felices</div>
               </div>
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-card rounded-full mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary rounded-full mb-4">
                   <div className="text-2xl font-heading font-bold text-accent">10+</div>
                 </div>
                 <div className="text-sm text-foreground/60 uppercase tracking-wider">Reconocimientos</div>
