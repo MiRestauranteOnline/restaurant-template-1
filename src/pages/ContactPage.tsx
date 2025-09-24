@@ -30,9 +30,9 @@ const ContactPage = () => {
   ];
 
   const hours = [
-    { day: "Lunes - Viernes", time: "12:00 PM - 10:00 PM" },
-    { day: "Sábados", time: "12:00 PM - 11:00 PM" },
-    { day: "Domingos", time: "12:00 PM - 9:00 PM" }
+    { day: "Lunes - Jueves", time: "12:00 PM - 10:00 PM" },
+    { day: "Viernes - Sábado", time: "12:00 PM - 11:00 PM" },
+    { day: "Domingo", time: "12:00 PM - 9:00 PM" }
   ];
 
   return (

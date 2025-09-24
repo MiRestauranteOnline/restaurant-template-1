@@ -24,7 +24,7 @@ const Contact = () => {
     {
       icon: Clock,
       title: "Horarios",
-      details: ["Lun-Dom: 12:00 PM - 10:00 PM"]
+      details: ["Lun-Jue: 12:00 PM - 10:00 PM", "Vie-Sáb: 12:00 PM - 11:00 PM", "Dom: 12:00 PM - 9:00 PM"]
     }
   ];
 
@@ -122,7 +122,7 @@ const Contact = () => {
                   
                   <div className="text-center pt-4 border-t border-border">
                     <p className="text-sm text-foreground/60">
-                      Horario de atención: Lunes a Domingo, 11:00 AM - 9:00 PM
+                      Horarios: Lun-Jue 12:00 PM - 10:00 PM | Vie-Sáb 12:00 PM - 11:00 PM | Dom 12:00 PM - 9:00 PM
                     </p>
                   </div>
                 </div>
