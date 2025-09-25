@@ -15,36 +15,34 @@ interface DeliveryService {
 }
 
 const DeliveryServices = () => {
-  const { clientSettings } = useClient();
+  const { client, clientSettings } = useClient();
 
-  if (!clientSettings?.delivery_info) {
-    return null;
-  }
+  const clientDelivery = (client as any)?.delivery;
+  const settingsDelivery = (clientSettings as any)?.delivery_info;
 
-  const deliveryInfo = clientSettings.delivery_info as any;
+  // Prefer clients.delivery; fallback to client_settings.delivery_info
+  const source = clientDelivery || settingsDelivery;
+  if (!source) return null;
 
   const services: DeliveryService[] = [
     {
       id: 'rappi',
       name: 'Rappi',
       logo: rappiLogo,
-      url: deliveryInfo.rappi?.url,
-      show_in_nav: deliveryInfo.rappi?.show_in_nav
+      url: clientDelivery ? clientDelivery?.rappi : settingsDelivery?.rappi?.url,
     },
     {
       id: 'pedidosya',
       name: 'PedidosYa',
       logo: pedidosyaLogo,
-      url: deliveryInfo.pedidosya?.url,
-      show_in_nav: deliveryInfo.pedidosya?.show_in_nav
+      url: clientDelivery ? clientDelivery?.pedidos_ya : settingsDelivery?.pedidosya?.url,
     },
     {
       id: 'didi',
       name: 'DiDi Food',
       logo: didiLogo,
-      url: deliveryInfo.didi?.url,
-      show_in_nav: deliveryInfo.didi?.show_in_nav
-    }
+      url: clientDelivery ? clientDelivery?.didi_food : settingsDelivery?.didi?.url,
+    },
   ];
 
   // Filter services that have URLs configured

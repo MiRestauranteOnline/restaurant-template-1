@@ -38,16 +38,32 @@ const Navigation = () => {
 
   // Get delivery services for navigation
   const getDeliveryServices = () => {
-    if (!clientSettings?.delivery_info) return [];
-    
-    const deliveryInfo = clientSettings.delivery_info as any;
+    const clientDelivery = (client as any)?.delivery;
+    const settingsDelivery = (clientSettings as any)?.delivery_info;
+
+    if (!clientDelivery && !settingsDelivery) return [];
+
+    const fromClient = !!clientDelivery;
+
     const services = [
-      { name: 'Rappi', url: deliveryInfo.rappi?.url, show: deliveryInfo.rappi?.show_in_nav !== false },
-      { name: 'PedidosYa', url: deliveryInfo.pedidosya?.url, show: deliveryInfo.pedidosya?.show_in_nav !== false },
-      { name: 'DiDi Food', url: deliveryInfo.didi?.url, show: deliveryInfo.didi?.show_in_nav !== false }
+      {
+        name: 'Rappi',
+        url: fromClient ? clientDelivery?.rappi : settingsDelivery?.rappi?.url,
+        show: fromClient ? true : settingsDelivery?.rappi?.show_in_nav !== false,
+      },
+      {
+        name: 'PedidosYa',
+        url: fromClient ? clientDelivery?.pedidos_ya : settingsDelivery?.pedidosya?.url,
+        show: fromClient ? true : settingsDelivery?.pedidosya?.show_in_nav !== false,
+      },
+      {
+        name: 'DiDi Food',
+        url: fromClient ? clientDelivery?.didi_food : settingsDelivery?.didi?.url,
+        show: fromClient ? true : settingsDelivery?.didi?.show_in_nav !== false,
+      },
     ];
-    
-    return services.filter(service => service.url && service.show);
+
+    return services.filter((service) => service.url && service.show);
   };
 
   const deliveryServices = getDeliveryServices();
