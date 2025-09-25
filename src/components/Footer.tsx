@@ -1,4 +1,4 @@
-import { Instagram, Facebook, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Linkedin } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
 
 const Footer = () => {
@@ -49,12 +49,43 @@ const Footer = () => {
     }
   ];
 
-  const socialLinks = [
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Mail, href: "#", label: "Email" }
-  ];
+  // Generate social links from database
+  const getSocialLinks = () => {
+    const links = [];
+    const socialData = client?.social_media_links || {};
+    
+    const socialPlatforms = [
+      { key: 'instagram', icon: Instagram, label: 'Instagram' },
+      { key: 'facebook', icon: Facebook, label: 'Facebook' },
+      { key: 'tiktok', icon: (props: any) => (
+        <svg {...props} viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.321 5.562a5.124 5.124 0 0 1-.443-.258 6.228 6.228 0 0 1-1.137-.966c-.849-.849-1.33-1.884-1.373-3.011h-.001C16.343 1.1 16.263 1 16.16 1h-3.107c-.103 0-.183.1-.207.227-.024.127-.024.26-.024.39v11.036c0 .024 0 .048-.005.072-.005.024-.005.048-.01.072a2.618 2.618 0 0 1-.528 1.479c-.413.413-.966.641-1.55.641-.584 0-1.137-.228-1.55-.641a2.207 2.207 0 0 1-.641-1.55c0-.584.228-1.137.641-1.55.413-.413.966-.641 1.55-.641.127 0 .258.024.385.048.122.024.226-.073.226-.202V6.29c0-.122-.098-.221-.221-.202a5.987 5.987 0 0 0-.624-.024c-1.674 0-3.226.652-4.392 1.818S4.24 10.462 4.24 12.136s.652 3.226 1.818 4.392 2.718 1.818 4.392 1.818 3.226-.652 4.392-1.818 1.818-2.718 1.818-4.392V8.474a8.1 8.1 0 0 0 2.661 1.818z"/>
+        </svg>
+      ), label: 'TikTok' },
+      { key: 'youtube', icon: Youtube, label: 'YouTube' },
+      { key: 'x', icon: (props: any) => (
+        <svg {...props} viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+      ), label: 'X' },
+      { key: 'linkedin', icon: Linkedin, label: 'LinkedIn' },
+      { key: 'email', icon: Mail, label: 'Email' }
+    ];
+
+    socialPlatforms.forEach(platform => {
+      if (socialData[platform.key]) {
+        links.push({
+          icon: platform.icon,
+          href: platform.key === 'email' ? `mailto:${socialData[platform.key]}` : socialData[platform.key],
+          label: platform.label
+        });
+      }
+    });
+
+    return links;
+  };
+
+  const socialLinks = getSocialLinks();
 
   return (
     <footer className="bg-card border-t border-border">
@@ -74,18 +105,22 @@ const Footer = () => {
             </p>
             
             {/* Social Links */}
-            <div className="flex space-x-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  className="inline-flex items-center justify-center w-10 h-10 bg-accent/10 hover:bg-accent hover:text-accent-foreground rounded-full transition-colors duration-300"
-                  aria-label={social.label}
-                >
-                  <social.icon className="w-5 h-5 text-accent hover:text-accent-foreground" />
-                </a>
-              ))}
-            </div>
+            {socialLinks.length > 0 && (
+              <div className="flex space-x-4">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center w-10 h-10 bg-accent/10 hover:bg-accent hover:text-accent-foreground rounded-full transition-colors duration-300"
+                    aria-label={social.label}
+                  >
+                    <social.icon className="w-5 h-5 text-accent hover:text-accent-foreground" />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Restaurant Information */}

@@ -145,11 +145,6 @@ const Contact = () => {
                     </Button>
                   </div>
                   
-                  <div className="text-center pt-4 border-t border-border">
-                    <p className="text-sm text-foreground/60">
-                      Horarios: {formatOpeningHours(client?.opening_hours).join(' | ')}
-                    </p>
-                  </div>
                 </div>
               </CardContent>
             </Card>
