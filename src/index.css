@@ -2,13 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Premium Restaurant Design System - Dark Elegant Theme */
+/* Premium Restaurant Design System */
 
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 @layer base {
   :root {
-    /* Primary Color Palette - Dark Elegant */
+    /* Dark Theme - Premium Elegant */
     --background: 220 13% 8%;
     --foreground: 0 0% 98%;
     
@@ -59,32 +59,63 @@
     --font-body: 'Inter', sans-serif;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-  /* Light mode variant (optional) */
-  .light {
+  /* Bright Theme - Clean and Modern */
+  .bright {
     --background: 0 0% 98%;
     --foreground: 220 13% 15%;
+    
     --card: 0 0% 100%;
     --card-foreground: 220 13% 15%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 13% 15%;
+    
+    /* Warm Gold Accents for bright theme */
     --primary: 45 100% 50%;
     --primary-foreground: 0 0% 98%;
+    
+    --secondary: 220 13% 95%;
+    --secondary-foreground: 220 13% 15%;
+    
+    --muted: 220 13% 92%;
+    --muted-foreground: 220 9% 40%;
+    
+    --accent: 45 100% 50%;
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    
     --border: 220 13% 85%;
+    --input: 220 13% 92%;
+    --ring: 45 100% 50%;
+    
+    /* Bright Theme Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(45 100% 50%) 0%, hsl(40 95% 45%) 100%);
+    --gradient-dark: linear-gradient(135deg, hsl(0 0% 98%) 0%, hsl(220 13% 95%) 100%);
+    --gradient-overlay: linear-gradient(135deg, hsl(0 0% 98% / 0.9) 0%, hsl(0 0% 98% / 0.6) 100%);
+    
+    /* Refined Shadows for bright theme */
     --shadow-elegant: 0 25px 50px -12px hsl(220 13% 15% / 0.15);
+    --shadow-glow: 0 0 30px hsl(45 100% 50% / 0.15);
+    
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 

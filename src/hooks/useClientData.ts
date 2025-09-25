@@ -14,6 +14,7 @@ export interface ClientData {
   opening_hours_ordered?: any[];
   social_media_links?: any;
   brand_colors?: any;
+  theme?: 'dark' | 'bright';
   other_customizations?: any;
   created_at: string;
   updated_at: string;
@@ -102,7 +103,7 @@ export const useClientData = (subdomain?: string) => {
           throw clientError;
         }
 
-        setClient(clientData);
+        setClient(clientData as ClientData);
 
         if (clientData?.id) {
           // Fetch menu items

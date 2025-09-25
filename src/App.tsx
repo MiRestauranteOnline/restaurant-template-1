@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ClientProvider } from "@/contexts/ClientContext";
+import { useTheme } from '@/hooks/useTheme';
 import Index from "./pages/Index";
 import MenuPage from "./pages/MenuPage";
 import AboutPage from "./pages/AboutPage";
@@ -13,6 +14,24 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Theme wrapper component
+const ThemedApp = () => {
+  // PROTECTED: Initialize theme from database
+  useTheme();
+
+  return (
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/menu" element={<MenuPage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/contact" element={<ContactPage />} />
+      <Route path="/reviews" element={<ReviewsPage />} />
+      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -20,15 +39,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ClientProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/menu" element={<MenuPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/reviews" element={<ReviewsPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <ThemedApp />
         </ClientProvider>
       </BrowserRouter>
     </TooltipProvider>

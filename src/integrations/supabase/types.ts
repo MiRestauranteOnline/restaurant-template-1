@@ -58,14 +58,17 @@ export type Database = {
           brand_colors: Json | null
           coordinates: Json | null
           created_at: string
+          delivery: Json | null
           email: string | null
           id: string
           opening_hours: Json | null
+          opening_hours_ordered: Json | null
           other_customizations: Json | null
           phone: string | null
           restaurant_name: string
           social_media_links: Json | null
           subdomain: string
+          theme: string | null
           updated_at: string
           whatsapp: string | null
         }
@@ -74,14 +77,17 @@ export type Database = {
           brand_colors?: Json | null
           coordinates?: Json | null
           created_at?: string
+          delivery?: Json | null
           email?: string | null
           id?: string
           opening_hours?: Json | null
+          opening_hours_ordered?: Json | null
           other_customizations?: Json | null
           phone?: string | null
           restaurant_name: string
           social_media_links?: Json | null
           subdomain: string
+          theme?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
@@ -90,14 +96,17 @@ export type Database = {
           brand_colors?: Json | null
           coordinates?: Json | null
           created_at?: string
+          delivery?: Json | null
           email?: string | null
           id?: string
           opening_hours?: Json | null
+          opening_hours_ordered?: Json | null
           other_customizations?: Json | null
           phone?: string | null
           restaurant_name?: string
           social_media_links?: Json | null
           subdomain?: string
+          theme?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
@@ -429,18 +438,54 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      generate_opening_hours_ordered: {
+        Args: { opening_hours_obj: Json }
+        Returns: Json
+      }
+      get_user_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       link_user_to_client: {
         Args: { client_uuid: string; user_email: string; user_role?: string }
         Returns: string
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "client_owner" | "client_user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -567,6 +612,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "client_owner", "client_user"],
+    },
   },
 } as const
