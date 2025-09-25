@@ -7,13 +7,10 @@ import chocolateDessert from '@/assets/chocolate-dessert.jpg';
 import heroPasta from '@/assets/hero-pasta.jpg';
 
 const Menu = () => {
-  const { menuItems, client } = useClient();
+  const { menuItems, client, adminContent } = useClient();
 
-  const adminContent = client?.other_customizations?.admin_content;
-  const menuSectionContent = adminContent?.menu_section;
-
-  const sectionTitle = menuSectionContent?.title || "Nuestro Menú";
-  const sectionDescription = menuSectionContent?.description || "Descubre nuestra selección de platos cuidadosamente elaborados";
+  const sectionTitle = adminContent?.homepage_menu_section_title || "Nuestro Menú";
+  const sectionDescription = adminContent?.homepage_menu_section_description || "Descubre nuestra selección de platos cuidadosamente elaborados";
 
   // Get items marked for homepage display (limit 8)
   const homepageItems = menuItems.filter(item => item.show_on_homepage).slice(0, 8);

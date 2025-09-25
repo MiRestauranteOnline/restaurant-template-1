@@ -196,6 +196,55 @@ export interface MenuCategory {
   updated_at: string;
 }
 
+export interface AdminContent {
+  id: string;
+  client_id: string;
+  
+  // Homepage content
+  homepage_hero_title?: string;
+  homepage_hero_description?: string;
+  homepage_hero_background_url?: string;
+  homepage_hero_right_button_text?: string;
+  homepage_hero_right_button_link?: string;
+  
+  homepage_menu_section_title?: string;
+  homepage_menu_section_description?: string;
+  
+  homepage_delivery_section_title?: string;
+  homepage_delivery_section_description?: string;
+  
+  homepage_contact_section_title?: string;
+  homepage_contact_section_description?: string;
+  homepage_contact_hide_reservation_box?: boolean;
+  
+  homepage_about_section_title?: string;
+  homepage_about_section_description?: string;
+  
+  homepage_services_section_title?: string;
+  homepage_services_section_description?: string;
+  
+  // Page content
+  about_page_hero_title?: string;
+  about_page_hero_description?: string;
+  about_page_hero_background_url?: string;
+  about_page_content?: any;
+  
+  contact_page_hero_title?: string;
+  contact_page_hero_description?: string;
+  contact_page_hero_background_url?: string;
+  
+  menu_page_hero_title?: string;
+  menu_page_hero_description?: string;
+  menu_page_hero_background_url?: string;
+  
+  reviews_page_hero_title?: string;
+  reviews_page_hero_description?: string;
+  reviews_page_hero_background_url?: string;
+  
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ClientSettings {
   id: string;
   client_id: string;
@@ -212,6 +261,7 @@ export interface ClientSettings {
 
 export const useClientData = (subdomain?: string) => {
   const [client, setClient] = useState<ClientData | null>(null);
+  const [adminContent, setAdminContent] = useState<AdminContent | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [menuCategories, setMenuCategories] = useState<MenuCategory[]>([]);
   const [clientSettings, setClientSettings] = useState<ClientSettings | null>(null);
@@ -267,53 +317,69 @@ export const useClientData = (subdomain?: string) => {
         setClient(clientData as ClientData);
 
         if (clientData?.id) {
-          // Fetch menu items
-          const { data: menuData, error: menuError } = await supabase
-            .from('menu_items')
-            .select('*')
-            .eq('client_id', clientData.id)
-            .eq('is_active', true)
-            .order('category', { ascending: true });
+          // Fetch all data in parallel
+          const [menuResponse, categoriesResponse, settingsResponse, adminContentResponse] = await Promise.all([
+            supabase
+              .from('menu_items')
+              .select('*')
+              .eq('client_id', clientData.id)
+              .eq('is_active', true)
+              .order('category', { ascending: true }),
+            
+            supabase
+              .from('menu_categories')
+              .select('*')
+              .eq('client_id', clientData.id)
+              .eq('is_active', true)
+              .order('display_order', { ascending: true }),
+            
+            supabase
+              .from('client_settings')
+              .select('*')
+              .eq('client_id', clientData.id)
+              .single(),
+            
+            supabase
+              .from('admin_content')
+              .select('*')
+              .eq('client_id', clientData.id)
+              .single()
+          ]);
 
-          // Fetch menu categories
-          const { data: categoriesData, error: categoriesError } = await supabase
-            .from('menu_categories')
-            .select('*')
-            .eq('client_id', clientData.id)
-            .eq('is_active', true)
-            .order('display_order', { ascending: true });
-
-          if (menuError) {
-            console.error('Error fetching menu items:', menuError);
+          // Set menu data
+          if (menuResponse.error) {
+            console.error('Error fetching menu items:', menuResponse.error);
           } else {
-            setMenuItems(menuData || []);
+            setMenuItems(menuResponse.data || []);
           }
 
-          if (categoriesError) {
-            console.error('Error fetching menu categories:', categoriesError);
+          // Set categories data
+          if (categoriesResponse.error) {
+            console.error('Error fetching menu categories:', categoriesResponse.error);
           } else {
-            setMenuCategories(categoriesData || []);
+            setMenuCategories(categoriesResponse.data || []);
           }
 
-          // Fetch client settings
-          const { data: settingsData, error: settingsError } = await supabase
-            .from('client_settings')
-            .select('*')
-            .eq('client_id', clientData.id)
-            .single();
-
-          if (settingsError) {
-            console.error('Error fetching client settings:', settingsError);
+          // Set admin content
+          if (adminContentResponse.error) {
+            console.error('Error fetching admin content:', adminContentResponse.error);
           } else {
-            setClientSettings(settingsData as ClientSettings);
+            setAdminContent(adminContentResponse.data || null);
+          }
+
+          // Set settings data and apply styles
+          if (settingsResponse.error) {
+            console.error('Error fetching client settings:', settingsResponse.error);
+          } else {
+            setClientSettings(settingsResponse.data as ClientSettings);
             
             // Apply dynamic colors immediately when settings are loaded
-            const primaryColor = (settingsData as ClientSettings)?.primary_color || '#FFD700';
-            const textStyle = (settingsData as ClientSettings)?.primary_button_text_style || 'bright';
+            const primaryColor = (settingsResponse.data as ClientSettings)?.primary_color || '#FFD700';
+            const textStyle = (settingsResponse.data as ClientSettings)?.primary_button_text_style || 'bright';
             applyDynamicColors(primaryColor, textStyle);
             
             // Cache the styles for future visits
-            saveCachedStyles(detectedSubdomain, settingsData as ClientSettings, clientData as ClientData);
+            saveCachedStyles(detectedSubdomain, settingsResponse.data as ClientSettings, clientData as ClientData);
           }
         }
       } catch (err: any) {
@@ -329,6 +395,7 @@ export const useClientData = (subdomain?: string) => {
 
   return {
     client,
+    adminContent,
     menuItems,
     menuCategories,
     clientSettings,

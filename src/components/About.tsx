@@ -2,13 +2,10 @@ import restaurantInterior from '@/assets/restaurant-interior.jpg';
 import { useClient } from '@/contexts/ClientContext';
 
 const About = () => {
-  const { client } = useClient();
+  const { client, adminContent } = useClient();
   
-  const adminContent = client?.other_customizations?.admin_content;
-  const aboutSectionContent = adminContent?.about_section;
-
-  const sectionTitle = aboutSectionContent?.title || "Nuestra Historia";
-  const sectionDescription = aboutSectionContent?.description;
+  const sectionTitle = adminContent?.homepage_about_section_title || "Nuestra Historia";
+  const sectionDescription = adminContent?.homepage_about_section_description;
   
   const aboutContent = client?.other_customizations?.about_content || {
     title: `Donde la Tradición\nSe Encuentra con la Innovación`,

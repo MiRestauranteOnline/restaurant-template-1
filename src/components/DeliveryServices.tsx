@@ -15,13 +15,10 @@ interface DeliveryService {
 }
 
 const DeliveryServices = () => {
-  const { client, clientSettings } = useClient();
+  const { client, clientSettings, adminContent } = useClient();
 
-  const adminContent = client?.other_customizations?.admin_content;
-  const deliverySectionContent = adminContent?.delivery_section;
-
-  const sectionTitle = deliverySectionContent?.title || "Delivery";
-  const sectionDescription = deliverySectionContent?.description || "Ordena desde la comodidad de tu hogar a través de nuestros partners de delivery";
+  const sectionTitle = adminContent?.homepage_delivery_section_title || "Delivery Partners";
+  const sectionDescription = adminContent?.homepage_delivery_section_description || "Ordena desde la comodidad de tu hogar a través de nuestros partners de delivery";
 
   // ====================================
   // 🔒 PROTECTED DYNAMIC FUNCTIONALITY 

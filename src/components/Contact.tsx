@@ -7,14 +7,11 @@ import { useClient } from '@/contexts/ClientContext';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
 
 const Contact = () => {
-  const { client, clientSettings } = useClient();
+  const { client, clientSettings, adminContent } = useClient();
   
-  const adminContent = client?.other_customizations?.admin_content;
-  const contactSectionContent = adminContent?.contact_section;
-
-  const sectionTitle = contactSectionContent?.title || "Reserva Tu Experiencia";
-  const sectionDescription = contactSectionContent?.description || "¿Listo para disfrutar de sabores únicos? Te esperamos en Savoria.";
-  const hideReservationBox = contactSectionContent?.hide_reservation_box || false;
+  const sectionTitle = adminContent?.homepage_contact_section_title || "Reserva Tu Experiencia";
+  const sectionDescription = adminContent?.homepage_contact_section_description || "¿Listo para disfrutar de sabores únicos? Te esperamos en Savoria.";
+  const hideReservationBox = adminContent?.homepage_contact_hide_reservation_box || false;
   
 
   const contactInfo = [

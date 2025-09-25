@@ -4,20 +4,19 @@ import { useClient } from '@/contexts/ClientContext';
 import heroPasta from '@/assets/hero-pasta.jpg';
 
 const Hero = () => {
-  const { client } = useClient();
+  const { client, adminContent } = useClient();
   
-  const adminContent = client?.other_customizations?.admin_content;
-  const heroContent = adminContent?.hero;
-  
-  const heroTitle = heroContent?.title || client?.other_customizations?.hero_title || 
+  const heroTitle = adminContent?.homepage_hero_title || 
+    client?.other_customizations?.hero_title || 
     `${client?.restaurant_name || 'Excelencia'}\nCulinaria`;
   
-  const heroDescription = heroContent?.description || client?.other_customizations?.hero_description || 
+  const heroDescription = adminContent?.homepage_hero_description || 
+    client?.other_customizations?.hero_description || 
     'Experimenta lo mejor de la gastronomía contemporánea con nuestros platos cuidadosamente elaborados y un servicio impecable en un ambiente de elegancia refinada.';
   
-  const rightButtonText = heroContent?.right_button_text || 'Reservar Mesa';
-  const rightButtonLink = heroContent?.right_button_link || '#contact';
-  const backgroundImageUrl = heroContent?.background_image_url;
+  const rightButtonText = adminContent?.homepage_hero_right_button_text || 'Reservar Mesa';
+  const rightButtonLink = adminContent?.homepage_hero_right_button_link || '#contact';
+  const backgroundImageUrl = adminContent?.homepage_hero_background_url;
 
   return (
     <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">

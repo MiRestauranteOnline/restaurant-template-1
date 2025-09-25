@@ -1,8 +1,9 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import { useClientData, ClientData, MenuItem, MenuCategory, ClientSettings } from '@/hooks/useClientData';
+import { useClientData, ClientData, MenuItem, MenuCategory, ClientSettings, AdminContent } from '@/hooks/useClientData';
 
 interface ClientContextType {
   client: ClientData | null;
+  adminContent: AdminContent | null;
   menuItems: MenuItem[];
   menuCategories: MenuCategory[];
   clientSettings: ClientSettings | null;
@@ -36,6 +37,7 @@ export const ClientProvider: React.FC<ClientProviderProps> = ({ children, subdom
   
   console.log('🔍 ClientProvider: Client data loaded:', {
     client: clientData.client?.restaurant_name,
+    adminContent: clientData.adminContent ? 'LOADED' : 'NULL',
     loading: clientData.loading,
     error: clientData.error
   });
