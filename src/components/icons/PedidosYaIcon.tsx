@@ -11,8 +11,8 @@ export const PedidosYaIcon: React.FC<PedidosYaIconProps> = ({ className = "", si
   const theme = useTheme();
   const primaryColor = useDynamicColors();
   
-  // Use primary color in bright mode, original branding in dark mode
-  const fillColor = theme === 'bright' ? `hsl(var(--primary))` : '#FFD700';
+  // Use primary color in bright mode, white in dark mode
+  const fillColor = theme === 'bright' ? `hsl(var(--primary))` : 'white';
   
   return (
     <svg 
