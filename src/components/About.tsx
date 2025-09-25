@@ -11,6 +11,9 @@ const About = () => {
   const aboutTitleFirstLine = (adminContent as any)?.homepage_about_section_title_first_line || "Donde la Tradición";
   const aboutTitleSecondLine = (adminContent as any)?.homepage_about_section_title_second_line || "Se Encuentra con la Innovación";
   
+  // Get image URL from database
+  const aboutImageUrl = (adminContent as any)?.homepage_about_section_image_url || restaurantInterior;
+  
   // Use separate content fields from database
   const aboutStory = (adminContent as any)?.about_story;
   const aboutChefInfo = (adminContent as any)?.about_chef_info;
@@ -41,7 +44,7 @@ const About = () => {
           <div className="fade-in">
             <div className="relative">
               <img
-                src={restaurantInterior}
+                src={aboutImageUrl}
                 alt="Elegant restaurant interior with warm ambient lighting"
                 className="w-full h-[600px] object-cover rounded-2xl shadow-elegant"
               />
