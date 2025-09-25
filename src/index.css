@@ -208,4 +208,133 @@
     transform: translateZ(0);
     will-change: transform;
   }
-}
+
+  /* Layout 2: Modern Minimal Theme */
+  .layout-2 {
+    /* Override typography */
+    --font-heading: 'Inter', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    
+    /* Layout 2 specific spacing */
+    --section-padding: 4rem 0;
+    --card-padding: 2.5rem;
+    --border-width: 4px;
+    
+    /* Minimal aesthetic adjustments */
+    --layout2-card: hsl(var(--card) / 0.9);
+    --layout2-border: hsl(var(--primary) / 0.4);
+    --layout2-accent: hsl(var(--accent) / 0.3);
+  }
+
+  .layout-2 h1,
+  .layout-2 h2,
+  .layout-2 h3,
+  .layout-2 h4,
+  .layout-2 h5,
+  .layout-2 h6 {
+    font-family: var(--font-heading) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.025em !important;
+    line-height: 1.1 !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .layout-2 p,
+  .layout-2 li,
+  .layout-2 span {
+    font-family: var(--font-body) !important;
+    line-height: 1.7 !important;
+    font-weight: 400 !important;
+  }
+
+  /* Layout 2 Section Styling */
+  .layout-2 section {
+    padding: var(--section-padding);
+    margin-bottom: 0;
+  }
+
+  /* Layout 2 Container */
+  .layout-2 .container {
+    max-width: 1200px !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+
+  /* Layout 2 removes ALL rounded corners */
+  .layout-2 *,
+  .layout-2 *::before,
+  .layout-2 *::after {
+    border-radius: 0 !important;
+  }
+
+  /* Layout 2 Card Styling - Sharp & Clean */
+  .layout-2 .bg-card {
+    background: var(--layout2-card) !important;
+    border: none !important;
+    box-shadow: 0 1px 3px hsl(var(--foreground) / 0.1) !important;
+    padding: var(--card-padding) !important;
+    backdrop-filter: none !important;
+    margin-bottom: 2rem !important;
+  }
+
+  /* Layout 2 Progressive Border System */
+  .layout-2 section:nth-child(2) .bg-card,
+  .layout-2 section:nth-child(2) > div:first-child {
+    border-left: var(--border-width) solid var(--layout2-border) !important;
+  }
+
+  .layout-2 section:nth-child(3) .bg-card,
+  .layout-2 section:nth-child(3) > div:first-child {
+    border-right: var(--border-width) solid var(--layout2-accent) !important;
+  }
+
+  .layout-2 section:nth-child(4) .bg-card,
+  .layout-2 section:nth-child(4) > div:first-child {
+    border-top: var(--border-width) solid var(--layout2-border) !important;
+  }
+
+  .layout-2 section:nth-child(5) .bg-card,
+  .layout-2 section:nth-child(5) > div:first-child {
+    border-bottom: var(--border-width) solid var(--layout2-accent) !important;
+  }
+
+  .layout-2 section:nth-child(6) .bg-card,
+  .layout-2 section:nth-child(6) > div:first-child {
+    border: var(--border-width) solid var(--layout2-border) !important;
+  }
+
+  /* Layout 2 Button Styling */
+  .layout-2 button,
+  .layout-2 .btn-primary {
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    padding: 1rem 2.5rem !important;
+    border: 2px solid hsl(var(--primary)) !important;
+    background: transparent !important;
+    color: hsl(var(--primary)) !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .layout-2 button:hover,
+  .layout-2 .btn-primary:hover {
+    background: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  /* Layout 2 responsive adjustments */
+  @media (max-width: 768px) {
+    .layout-2 .container {
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+    
+    .layout-2 .bg-card {
+      padding: 1.5rem !important;
+    }
+    
+    .layout-2 section {
+      padding: 2rem 0 !important;
+    }
+    }
+  }
