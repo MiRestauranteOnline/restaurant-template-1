@@ -14,6 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
+      client_settings: {
+        Row: {
+          client_id: string
+          created_at: string
+          delivery_info: Json | null
+          id: string
+          other_customizations: Json | null
+          updated_at: string
+          whatsapp_messages: Json | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          delivery_info?: Json | null
+          id?: string
+          other_customizations?: Json | null
+          updated_at?: string
+          whatsapp_messages?: Json | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          delivery_info?: Json | null
+          id?: string
+          other_customizations?: Json | null
+          updated_at?: string
+          whatsapp_messages?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_settings_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          address: string | null
+          brand_colors: Json | null
+          coordinates: Json | null
+          created_at: string
+          email: string | null
+          id: string
+          opening_hours: Json | null
+          phone: string | null
+          restaurant_name: string
+          social_media_links: Json | null
+          subdomain: string
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          address?: string | null
+          brand_colors?: Json | null
+          coordinates?: Json | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          opening_hours?: Json | null
+          phone?: string | null
+          restaurant_name: string
+          social_media_links?: Json | null
+          subdomain: string
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          address?: string | null
+          brand_colors?: Json | null
+          coordinates?: Json | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          opening_hours?: Json | null
+          phone?: string | null
+          restaurant_name?: string
+          social_media_links?: Json | null
+          subdomain?: string
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
       content_gaps: {
         Row: {
           analysis_date: string
@@ -175,6 +261,53 @@ export type Database = {
           },
         ]
       }
+      menu_items: {
+        Row: {
+          category: string
+          client_id: string
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          client_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          price: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          client_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_items_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       target_keywords: {
         Row: {
           category: string
@@ -218,6 +351,38 @@ export type Database = {
             columns: ["covered_by_article_id"]
             isOneToOne: false
             referencedRelation: "generated_articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_clients: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_clients_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
             referencedColumns: ["id"]
           },
         ]
