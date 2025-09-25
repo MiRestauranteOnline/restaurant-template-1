@@ -24,6 +24,7 @@ export type Database = {
           id: string
           layout_type: string | null
           other_customizations: Json | null
+          primary_button_text_style: string | null
           primary_color: string | null
           updated_at: string
           whatsapp_messages: Json | null
@@ -37,6 +38,7 @@ export type Database = {
           id?: string
           layout_type?: string | null
           other_customizations?: Json | null
+          primary_button_text_style?: string | null
           primary_color?: string | null
           updated_at?: string
           whatsapp_messages?: Json | null
@@ -50,6 +52,7 @@ export type Database = {
           id?: string
           layout_type?: string | null
           other_customizations?: Json | null
+          primary_button_text_style?: string | null
           primary_color?: string | null
           updated_at?: string
           whatsapp_messages?: Json | null

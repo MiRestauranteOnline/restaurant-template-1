@@ -37,13 +37,17 @@ const hexToHsl = (hex: string) => {
 };
 
 // Apply dynamic colors immediately when settings are available
-const applyDynamicColors = (primaryColor: string) => {
+const applyDynamicColors = (primaryColor: string, textStyle?: 'bright' | 'dark') => {
   // Convert hex to HSL
   const hslColor = hexToHsl(primaryColor);
   
   // Update CSS custom properties
   document.documentElement.style.setProperty('--primary', hslColor);
   document.documentElement.style.setProperty('--accent', hslColor);
+  
+  // Set primary button text color based on text style
+  const primaryButtonText = textStyle === 'dark' ? '0 0% 9%' : '0 0% 98%'; // dark or bright text
+  document.documentElement.style.setProperty('--primary-foreground', primaryButtonText);
   
   // Update gradients to use the new primary color
   const [h, s, l] = hslColor.split(' ');
@@ -86,6 +90,7 @@ const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, cli
     const cacheData = {
       // Color and theme settings
       primary_color: clientSettings.primary_color || '#FFD700',
+      primary_button_text_style: clientSettings.primary_button_text_style || 'bright',
       theme: client.theme || 'dark',
       
       // Navigation settings
@@ -119,8 +124,8 @@ const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, cli
 const applyEarlyStyles = (subdomain: string) => {
   const cachedData = loadCachedStyles(subdomain);
   if (cachedData) {
-    // Apply cached primary color immediately
-    applyDynamicColors(cachedData.primary_color);
+    // Apply cached primary color immediately with text style
+    applyDynamicColors(cachedData.primary_color, cachedData.primary_button_text_style);
     
     // Apply cached theme
     document.documentElement.classList.remove('dark', 'bright', 'light');
@@ -200,6 +205,7 @@ export interface ClientSettings {
   header_background_enabled?: boolean;
   header_background_style?: 'dark' | 'bright';
   primary_color?: string;
+  primary_button_text_style?: 'bright' | 'dark';
   created_at: string;
   updated_at: string;
 }
@@ -303,7 +309,8 @@ export const useClientData = (subdomain?: string) => {
             
             // Apply dynamic colors immediately when settings are loaded
             const primaryColor = (settingsData as ClientSettings)?.primary_color || '#FFD700';
-            applyDynamicColors(primaryColor);
+            const textStyle = (settingsData as ClientSettings)?.primary_button_text_style || 'bright';
+            applyDynamicColors(primaryColor, textStyle);
             
             // Cache the styles for future visits
             saveCachedStyles(detectedSubdomain, settingsData as ClientSettings, clientData as ClientData);
