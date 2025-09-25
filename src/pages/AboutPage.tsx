@@ -2,13 +2,38 @@ import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import About from '@/components/About';
 import { Card, CardContent } from '@/components/ui/card';
-import { Clock, Users, Award } from 'lucide-react';
+import { getIcon } from '@/utils/iconMapper';
+import { useClient } from '@/contexts/ClientContext';
+import { Users } from 'lucide-react';
 
 const AboutPage = () => {
+  const { adminContent } = useClient();
+  
+  // Get dynamic content from database
+  const aboutHeroTitleFirst = (adminContent as any)?.about_page_hero_title_first_line || 'Sobre';
+  const aboutHeroTitleSecond = (adminContent as any)?.about_page_hero_title_second_line || 'Nosotros';
+  const aboutHeroDescription = (adminContent as any)?.about_page_hero_description || 'Conoce la historia detrás de nuestro restaurante y nuestro compromiso con la excelencia culinaria.';
+  
+  const teamTitleFirst = (adminContent as any)?.about_team_section_title_first_line || 'Nuestro';
+  const teamTitleSecond = (adminContent as any)?.about_team_section_title_second_line || 'Equipo';
+  const teamDescription = (adminContent as any)?.about_team_section_description || 'Conoce a las personas apasionadas que hacen posible cada experiencia en nuestro restaurante.';
+
   const stats = [
-    { icon: Clock, number: "15+", label: "Años de Experiencia" },
-    { icon: Users, number: "5000+", label: "Clientes Satisfechos" },
-    { icon: Award, number: "10+", label: "Reconocimientos" }
+    { 
+      icon: getIcon((adminContent as any)?.stats_item1_icon || 'Clock'), 
+      number: (adminContent as any)?.stats_item1_number || "15+", 
+      label: (adminContent as any)?.stats_item1_label || "Años de Experiencia" 
+    },
+    { 
+      icon: getIcon((adminContent as any)?.stats_item2_icon || 'Users'), 
+      number: (adminContent as any)?.stats_item2_number || "5000+", 
+      label: (adminContent as any)?.stats_item2_label || "Clientes Satisfechos" 
+    },
+    { 
+      icon: getIcon((adminContent as any)?.stats_item3_icon || 'Award'), 
+      number: (adminContent as any)?.stats_item3_number || "10+", 
+      label: (adminContent as any)?.stats_item3_label || "Reconocimientos" 
+    }
   ];
 
   const team = [
@@ -46,11 +71,11 @@ const AboutPage = () => {
         <div className="relative z-10 container mx-auto px-4">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mb-6 text-foreground">
-              Sobre
-              <span className="block text-gradient font-normal">Nosotros</span>
+              {aboutHeroTitleFirst}
+              <span className="block text-gradient font-normal">{aboutHeroTitleSecond}</span>
             </h1>
             <p className="text-xl text-foreground/90 max-w-2xl mx-auto leading-relaxed">
-              Conoce la historia detrás de Savoria y nuestro compromiso con la excelencia culinaria peruana.
+              {aboutHeroDescription}
             </p>
           </div>
         </div>
@@ -85,11 +110,11 @@ const AboutPage = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-heading font-light mb-6">
-              Nuestro
-              <span className="block text-gradient font-normal">Equipo</span>
+              {teamTitleFirst}
+              <span className="block text-gradient font-normal">{teamTitleSecond}</span>
             </h2>
             <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
-              Conoce a las personas apasionadas que hacen posible cada experiencia en Savoria.
+              {teamDescription}
             </p>
           </div>
 

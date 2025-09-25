@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Utensils, Truck, Users, Clock, Star, MapPin } from 'lucide-react';
+import { getIcon } from '@/utils/iconMapper';
 import { useClient } from '@/contexts/ClientContext';
 
 const Services = () => {
@@ -13,29 +13,41 @@ const Services = () => {
   
   const services = [
     {
-      icon: Utensils,
-      title: "Comida en el Local",
-      description: "Disfruta de nuestros platos únicos en un ambiente acogedor y familiar.",
-      features: ["Ambiente familiar", "Servicio personalizado", "Platos recién preparados"]
+      icon: getIcon((adminContent as any)?.services_card1_icon || 'Utensils'),
+      title: (adminContent as any)?.services_card1_title || "Comida en el Local",
+      description: (adminContent as any)?.services_card1_description || "Disfruta de nuestros platos únicos en un ambiente acogedor y familiar.",
+      buttonText: (adminContent as any)?.services_card1_button_text || "Más Info",
+      buttonLink: (adminContent as any)?.services_card1_button_link || 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre comida en el local'
     },
     {
-      icon: Truck,
-      title: "Delivery",
-      description: "Lleva los sabores de Savoria a tu hogar con nuestro servicio de delivery.",
-      features: ["Entrega rápida", "Empaque ecológico", "Pedidos por WhatsApp"]
+      icon: getIcon((adminContent as any)?.services_card2_icon || 'Truck'),
+      title: (adminContent as any)?.services_card2_title || "Delivery",
+      description: (adminContent as any)?.services_card2_description || "Lleva los sabores de nuestro restaurante a tu hogar con nuestro servicio de delivery.",
+      buttonText: (adminContent as any)?.services_card2_button_text || "Más Info",
+      buttonLink: (adminContent as any)?.services_card2_button_link || 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre delivery'
     },
     {
-      icon: Users,
-      title: "Eventos Pequeños",
-      description: "Celebra tus momentos especiales con nosotros, perfecto para reuniones íntimas.",
-      features: ["Hasta 20 personas", "Menú personalizado", "Ambiente privado"]
+      icon: getIcon((adminContent as any)?.services_card3_icon || 'Users'),
+      title: (adminContent as any)?.services_card3_title || "Eventos Pequeños",
+      description: (adminContent as any)?.services_card3_description || "Celebra tus momentos especiales con nosotros, perfecto para reuniones íntimas.",
+      buttonText: (adminContent as any)?.services_card3_button_text || "Más Info",
+      buttonLink: (adminContent as any)?.services_card3_button_link || 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre eventos'
     }
   ];
 
   const features = [
-    { icon: Clock, text: "Abierto Todos los Días" },
-    { icon: Star, text: "Recomendado en Lima" },
-    { icon: MapPin, text: "En el Corazón de Miraflores" }
+    { 
+      icon: getIcon((adminContent as any)?.services_feature1_icon || 'Clock'), 
+      text: (adminContent as any)?.services_feature1_text || "Abierto Todos los Días" 
+    },
+    { 
+      icon: getIcon((adminContent as any)?.services_feature2_icon || 'Star'), 
+      text: (adminContent as any)?.services_feature2_text || "Recomendado en Lima" 
+    },
+    { 
+      icon: getIcon((adminContent as any)?.services_feature3_icon || 'MapPin'), 
+      text: (adminContent as any)?.services_feature3_text || "En el Corazón de Miraflores" 
+    }
   ];
 
   return (
@@ -75,9 +87,9 @@ const Services = () => {
                 
                 <Button 
                   className="btn-primary rounded-full"
-                  onClick={() => window.open('https://wa.me/51987654321?text=Hola, me gustaría saber más sobre sus servicios', '_blank')}
+                  onClick={() => window.open(service.buttonLink, '_blank')}
                 >
-                  Más Info
+                  {service.buttonText}
                 </Button>
               </CardContent>
             </Card>

@@ -25,6 +25,9 @@ export type Database = {
           about_page_hero_title_first_line: string | null
           about_page_hero_title_second_line: string | null
           about_story: string | null
+          about_team_section_description: string | null
+          about_team_section_title_first_line: string | null
+          about_team_section_title_second_line: string | null
           client_id: string
           contact_page_hero_background_url: string | null
           contact_page_hero_description: string | null
@@ -71,12 +74,36 @@ export type Database = {
           reviews_page_hero_title_second_line: string | null
           reviews_section_title_first_line: string | null
           reviews_section_title_second_line: string | null
+          services_card1_button_link: string | null
+          services_card1_button_text: string | null
+          services_card1_description: string | null
+          services_card1_icon: string | null
+          services_card1_title: string | null
+          services_card2_button_link: string | null
+          services_card2_button_text: string | null
+          services_card2_description: string | null
+          services_card2_icon: string | null
+          services_card2_title: string | null
+          services_card3_button_link: string | null
+          services_card3_button_text: string | null
+          services_card3_description: string | null
+          services_card3_icon: string | null
+          services_card3_title: string | null
+          services_feature1_icon: string | null
+          services_feature1_text: string | null
+          services_feature2_icon: string | null
+          services_feature2_text: string | null
+          services_feature3_icon: string | null
+          services_feature3_text: string | null
           stats_awards_label: string | null
           stats_awards_number: string | null
           stats_clients_label: string | null
           stats_clients_number: string | null
           stats_experience_label: string | null
           stats_experience_number: string | null
+          stats_item1_icon: string | null
+          stats_item2_icon: string | null
+          stats_item3_icon: string | null
           updated_at: string
         }
         Insert: {
@@ -89,6 +116,9 @@ export type Database = {
           about_page_hero_title_first_line?: string | null
           about_page_hero_title_second_line?: string | null
           about_story?: string | null
+          about_team_section_description?: string | null
+          about_team_section_title_first_line?: string | null
+          about_team_section_title_second_line?: string | null
           client_id: string
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
@@ -135,12 +165,36 @@ export type Database = {
           reviews_page_hero_title_second_line?: string | null
           reviews_section_title_first_line?: string | null
           reviews_section_title_second_line?: string | null
+          services_card1_button_link?: string | null
+          services_card1_button_text?: string | null
+          services_card1_description?: string | null
+          services_card1_icon?: string | null
+          services_card1_title?: string | null
+          services_card2_button_link?: string | null
+          services_card2_button_text?: string | null
+          services_card2_description?: string | null
+          services_card2_icon?: string | null
+          services_card2_title?: string | null
+          services_card3_button_link?: string | null
+          services_card3_button_text?: string | null
+          services_card3_description?: string | null
+          services_card3_icon?: string | null
+          services_card3_title?: string | null
+          services_feature1_icon?: string | null
+          services_feature1_text?: string | null
+          services_feature2_icon?: string | null
+          services_feature2_text?: string | null
+          services_feature3_icon?: string | null
+          services_feature3_text?: string | null
           stats_awards_label?: string | null
           stats_awards_number?: string | null
           stats_clients_label?: string | null
           stats_clients_number?: string | null
           stats_experience_label?: string | null
           stats_experience_number?: string | null
+          stats_item1_icon?: string | null
+          stats_item2_icon?: string | null
+          stats_item3_icon?: string | null
           updated_at?: string
         }
         Update: {
@@ -153,6 +207,9 @@ export type Database = {
           about_page_hero_title_first_line?: string | null
           about_page_hero_title_second_line?: string | null
           about_story?: string | null
+          about_team_section_description?: string | null
+          about_team_section_title_first_line?: string | null
+          about_team_section_title_second_line?: string | null
           client_id?: string
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
@@ -199,12 +256,36 @@ export type Database = {
           reviews_page_hero_title_second_line?: string | null
           reviews_section_title_first_line?: string | null
           reviews_section_title_second_line?: string | null
+          services_card1_button_link?: string | null
+          services_card1_button_text?: string | null
+          services_card1_description?: string | null
+          services_card1_icon?: string | null
+          services_card1_title?: string | null
+          services_card2_button_link?: string | null
+          services_card2_button_text?: string | null
+          services_card2_description?: string | null
+          services_card2_icon?: string | null
+          services_card2_title?: string | null
+          services_card3_button_link?: string | null
+          services_card3_button_text?: string | null
+          services_card3_description?: string | null
+          services_card3_icon?: string | null
+          services_card3_title?: string | null
+          services_feature1_icon?: string | null
+          services_feature1_text?: string | null
+          services_feature2_icon?: string | null
+          services_feature2_text?: string | null
+          services_feature3_icon?: string | null
+          services_feature3_text?: string | null
           stats_awards_label?: string | null
           stats_awards_number?: string | null
           stats_clients_label?: string | null
           stats_clients_number?: string | null
           stats_experience_label?: string | null
           stats_experience_number?: string | null
+          stats_item1_icon?: string | null
+          stats_item2_icon?: string | null
+          stats_item3_icon?: string | null
           updated_at?: string
         }
         Relationships: [
