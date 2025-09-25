@@ -5,6 +5,7 @@ import heroPasta from '@/assets/hero-pasta.jpg';
 
 const Hero = () => {
   const { client, adminContent } = useClient();
+  // Fixed: Updated to use separate title fields
   
   const heroTitleFirstLine = (adminContent as any)?.homepage_hero_title_first_line || 
     client?.other_customizations?.hero_title?.split('\n')[0] || 
