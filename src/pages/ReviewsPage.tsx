@@ -19,11 +19,11 @@ const ReviewsPage = () => {
         
         <div className="relative z-10 container mx-auto px-4">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mb-6 text-white">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mb-6 text-foreground">
               Nuestras
               <span className="block text-gradient font-normal">Reseñas</span>
             </h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-foreground/90 max-w-2xl mx-auto leading-relaxed">
               Descubre lo que nuestros clientes dicen sobre su experiencia en Savoria.
             </p>
           </div>
