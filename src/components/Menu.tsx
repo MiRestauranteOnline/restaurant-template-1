@@ -105,12 +105,12 @@ const Menu = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               </div>
               
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start mb-3">
-                  <h3 className="text-xl font-heading font-semibold text-foreground group-hover:text-accent transition-colors">
+              <CardContent className="p-4">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-lg font-heading font-semibold text-foreground group-hover:text-accent transition-colors">
                     {item.name}
                   </h3>
-                  <span className="text-2xl font-heading font-bold text-accent">
+                  <span className="text-xl font-heading font-bold text-accent">
                     {currency} {typeof item.price === 'number' ? item.price : item.price}
                   </span>
                 </div>

@@ -16,9 +16,21 @@ const About = () => {
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           
+          {/* Image - Layout 2 will show this first and wider */}
+          <div className="fade-in">
+            <div className="relative">
+              <img
+                src={restaurantInterior}
+                alt="Elegant restaurant interior with warm ambient lighting"
+                className="w-full h-[600px] object-cover rounded-2xl shadow-elegant"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent rounded-2xl"></div>
+            </div>
+          </div>
+
           {/* Content */}
           <div className="fade-in">
-            <div className="mb-6">
+            <div className="mb-6 text-center lg:text-left">
               <span className="text-accent font-medium tracking-wider uppercase text-sm">
                 Nuestra Historia
               </span>
@@ -31,7 +43,7 @@ const About = () => {
               </h2>
             </div>
             
-            <div className="space-y-6 text-foreground/80 text-lg leading-relaxed">
+            <div className="space-y-6 text-foreground/80 text-lg leading-relaxed text-center lg:text-left">
               <p>{aboutContent.story}</p>
               <p>{aboutContent.chef_info}</p>
               <p>{aboutContent.mission}</p>
@@ -56,18 +68,6 @@ const About = () => {
                 </div>
                 <div className="text-sm text-foreground/60 uppercase tracking-wider">Reconocimientos</div>
               </div>
-            </div>
-          </div>
-
-          {/* Image */}
-          <div className="lg:order-first fade-in">
-            <div className="relative">
-              <img
-                src={restaurantInterior}
-                alt="Elegant restaurant interior with warm ambient lighting"
-                className="w-full h-[600px] object-cover rounded-2xl shadow-elegant"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent rounded-2xl"></div>
             </div>
           </div>
         </div>

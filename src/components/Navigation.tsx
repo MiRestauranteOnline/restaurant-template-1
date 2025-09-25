@@ -132,10 +132,8 @@ const Navigation = () => {
             {/* Delivery Dropdown */}
             {showDeliveryMenu && (
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="font-medium text-foreground/80 hover:text-accent p-0 h-auto">
-                    Delivery <ChevronDown className="ml-1 h-4 w-4" />
-                  </Button>
+                <DropdownMenuTrigger className="font-medium text-foreground/80 hover:text-accent transition-colors duration-300 flex items-center cursor-pointer">
+                  Delivery <ChevronDown className="ml-1 h-4 w-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="bg-background border border-border">
                   {deliveryServices.map((service) => (

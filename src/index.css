@@ -209,94 +209,72 @@
     will-change: transform;
   }
 
-  /* Layout 2: Modern Minimal Theme */
-  .layout-2 {
-    /* Layout 2 specific spacing - consistent and clean */
-    --section-padding-y: 5rem;
-    --section-padding-x: 2rem;
-    --card-padding: 3rem;
-    --section-gap: 3rem;
-    
-    /* Clean aesthetic adjustments */
-    --layout2-card: hsl(var(--card));
-    --layout2-border: hsl(var(--primary) / 0.2);
-    --layout2-shadow: 0 2px 20px hsl(var(--foreground) / 0.08);
-  }
-
-  /* Layout 2 removes ALL rounded corners for sharp, modern look */
-  .layout-2 *,
-  .layout-2 *::before,
-  .layout-2 *::after {
-    border-radius: 0 !important;
-  }
-
-  /* Layout 2 Section Styling - Consistent spacing */
-  .layout-2 section {
-    padding: var(--section-padding-y) var(--section-padding-x);
-    margin-bottom: var(--section-gap);
-  }
-
-  /* Layout 2 Container - Wider, more breathing room */
-  .layout-2 .container {
-    max-width: 1300px !important;
-    padding-left: var(--section-padding-x) !important;
-    padding-right: var(--section-padding-x) !important;
-  }
-
-  /* Layout 2 Card Styling - Clean and minimal */
-  .layout-2 .bg-card {
-    background: var(--layout2-card) !important;
-    border: 1px solid var(--layout2-border) !important;
-    box-shadow: var(--layout2-shadow) !important;
-    padding: var(--card-padding) !important;
-    backdrop-filter: none !important;
-    margin-bottom: 2rem !important;
-  }
-
-  /* Layout 2 Clean hover effects */
-  .layout-2 .bg-card:hover {
-    border-color: hsl(var(--primary) / 0.4) !important;
-    box-shadow: 0 4px 30px hsl(var(--foreground) / 0.12) !important;
-    transform: translateY(-2px) !important;
-    transition: all 0.3s ease !important;
-  }
-
-  /* Layout 2 Button Styling - Minimal and clean */
-  .layout-2 button,
+  /* Layout 2 - Modern Minimal */
   .layout-2 .btn-primary {
-    padding: 1rem 2rem !important;
-    border: 2px solid hsl(var(--primary)) !important;
-    background: transparent !important;
-    color: hsl(var(--primary)) !important;
-    font-weight: 500 !important;
-    transition: all 0.2s ease !important;
-    text-transform: none !important;
-    letter-spacing: normal !important;
+    @apply bg-primary text-primary-foreground border-2 border-primary hover:bg-transparent hover:text-primary transition-all duration-300;
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
   }
-
-  .layout-2 button:hover,
+  
   .layout-2 .btn-primary:hover {
-    background: hsl(var(--primary)) !important;
-    color: hsl(var(--primary-foreground)) !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+  }
+  
+  .layout-2 .btn-ghost {
+    @apply bg-transparent text-foreground border-2 border-foreground/20 hover:border-foreground hover:bg-foreground/5 transition-all duration-300;
   }
 
-  /* Layout 2 Typography spacing adjustments - keep fonts as they are */
-  .layout-2 h1 { margin-bottom: 1.5rem !important; }
-  .layout-2 h2 { margin-bottom: 1.25rem !important; }
-  .layout-2 h3 { margin-bottom: 1rem !important; }
-  .layout-2 p { margin-bottom: 1rem !important; }
+  .layout-2 [variant="contrast"] {
+    background: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+  } 
 
-  /* Layout 2 Grid improvements for better spacing */
-  .layout-2 .grid {
-    gap: 2rem !important;
+  .layout-2 [variant="contrast"]:hover {
+    background: rgba(0, 0, 0, 0.7) !important;
   }
 
-  /* Layout 2 responsive adjustments */
-  @media (max-width: 768px) {
-    .layout-2 {
-      --section-padding-y: 3rem;
-      --section-padding-x: 1.5rem;
-      --card-padding: 2rem;
-    }
+  .layout-2 .card-hover {
+    @apply border-2 border-border hover:border-accent transition-all duration-300 hover:shadow-lg;
+    border-radius: 0;
   }
+
+  .layout-2 .card-hover img {
+    border-radius: 0;
   }
+
+  .layout-2 .shadow-elegant,
+  .layout-2 .rounded-2xl {
+    border-radius: 0;
+  }
+
+  .layout-2 h1, .layout-2 h2, .layout-2 h3 {
+    font-weight: 600;
+  }
+
+  /* Layout 2 About Section - Creative centered layout */
+  .layout-2 #about .container {
+    max-width: 800px;
+  }
+  
+  .layout-2 #about .grid {
+    display: block;
+  }
+  
+  .layout-2 #about .fade-in:nth-child(2) {
+    order: 2;
+  }
+  
+  .layout-2 #about .fade-in:first-child {
+    order: 1;
+    margin-bottom: 3rem;
+  }
+
+  /* Layout 2 Menu Cards - Reduced padding */
+  .layout-2 .card-hover .p-6 {
+    padding: 1rem !important;
+  }
+}
