@@ -5,9 +5,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
+import { useDynamicColors } from '@/hooks/useDynamicColors';
 
 const ContactPage = () => {
   const { client } = useClient();
+  // Initialize dynamic colors
+  useDynamicColors();
 
   const formatHoursForContactPage = (hours: any) => {
     const formattedHours = formatOpeningHours(hours);

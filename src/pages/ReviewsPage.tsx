@@ -1,8 +1,11 @@
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import Reviews from '@/components/Reviews';
+import { useDynamicColors } from '@/hooks/useDynamicColors';
 
 const ReviewsPage = () => {
+  // Initialize dynamic colors
+  useDynamicColors();
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
