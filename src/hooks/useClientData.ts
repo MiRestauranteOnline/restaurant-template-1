@@ -27,6 +27,19 @@ export interface MenuItem {
   category: string;
   image_url?: string;
   is_active: boolean;
+  show_image_home: boolean;
+  show_image_menu: boolean;
+  show_on_homepage: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MenuCategory {
+  id: string;
+  client_id: string;
+  name: string;
+  display_order: number;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -44,6 +57,7 @@ export interface ClientSettings {
 export const useClientData = (subdomain?: string) => {
   const [client, setClient] = useState<ClientData | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [menuCategories, setMenuCategories] = useState<MenuCategory[]>([]);
   const [clientSettings, setClientSettings] = useState<ClientSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -98,10 +112,24 @@ export const useClientData = (subdomain?: string) => {
             .eq('is_active', true)
             .order('category', { ascending: true });
 
+          // Fetch menu categories
+          const { data: categoriesData, error: categoriesError } = await supabase
+            .from('menu_categories')
+            .select('*')
+            .eq('client_id', clientData.id)
+            .eq('is_active', true)
+            .order('display_order', { ascending: true });
+
           if (menuError) {
             console.error('Error fetching menu items:', menuError);
           } else {
             setMenuItems(menuData || []);
+          }
+
+          if (categoriesError) {
+            console.error('Error fetching menu categories:', categoriesError);
+          } else {
+            setMenuCategories(categoriesData || []);
           }
 
           // Fetch client settings
@@ -131,6 +159,7 @@ export const useClientData = (subdomain?: string) => {
   return {
     client,
     menuItems,
+    menuCategories,
     clientSettings,
     loading,
     error,

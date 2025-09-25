@@ -1,9 +1,10 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import { useClientData, ClientData, MenuItem, ClientSettings } from '@/hooks/useClientData';
+import { useClientData, ClientData, MenuItem, MenuCategory, ClientSettings } from '@/hooks/useClientData';
 
 interface ClientContextType {
   client: ClientData | null;
   menuItems: MenuItem[];
+  menuCategories: MenuCategory[];
   clientSettings: ClientSettings | null;
   loading: boolean;
   error: string | null;

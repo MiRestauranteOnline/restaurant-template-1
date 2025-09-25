@@ -9,6 +9,9 @@ import heroPasta from '@/assets/hero-pasta.jpg';
 const Menu = () => {
   const { menuItems, client } = useClient();
 
+  // Get items marked for homepage display (limit 8)
+  const homepageItems = menuItems.filter(item => item.show_on_homepage).slice(0, 8);
+
   // Fallback menu items if no database items exist
   const fallbackMenuItems = [
     {
@@ -17,7 +20,8 @@ const Menu = () => {
       description: "Pasta artesanal con láminas de trufa negra, hongos silvestres y salsa cremosa de parmesano",
       price: 65,
       image: heroPasta,
-      category: "Especialidad"
+      category: "Especialidad",
+      show_on_homepage: true
     },
     {
       id: '2',
@@ -25,7 +29,8 @@ const Menu = () => {
       description: "Corte premium con romero, ajo confitado y vegetales de temporada",
       price: 85,
       image: grilledSteak,
-      category: "Plato Principal"
+      category: "Plato Principal",
+      show_on_homepage: true
     },
     {
       id: '3',
@@ -33,7 +38,8 @@ const Menu = () => {
       description: "Langosta fresca, ostras y mariscos de temporada con mignonette cítrica",
       price: 95,
       image: seafoodPlatter,
-      category: "Mariscos"
+      category: "Mariscos",
+      show_on_homepage: true
     },
     {
       id: '4',
@@ -41,11 +47,12 @@ const Menu = () => {
       description: "Soufflé de chocolate negro con hoja de oro y helado de vainilla",
       price: 28,
       image: chocolateDessert,
-      category: "Postre"
+      category: "Postre",
+      show_on_homepage: true
     }
   ];
 
-  const displayMenuItems = menuItems.length > 0 ? menuItems : fallbackMenuItems;
+  const displayMenuItems = homepageItems.length > 0 ? homepageItems : fallbackMenuItems;
   const currency = client?.other_customizations?.currency || 'S/';
 
   return (
@@ -77,6 +84,9 @@ const Menu = () => {
                   src={item.image_url || (typeof item.image === 'string' ? item.image : heroPasta)}
                   alt={item.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  style={{ 
+                    display: (item.show_image_home !== false) ? 'block' : 'none' 
+                  }}
                 />
                 <div className="absolute top-4 left-4">
                   <span className="bg-accent text-accent-foreground px-3 py-1 rounded-full text-xs font-medium">

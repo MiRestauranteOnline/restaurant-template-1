@@ -264,6 +264,36 @@ export type Database = {
           },
         ]
       }
+      menu_categories: {
+        Row: {
+          client_id: string
+          created_at: string
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       menu_items: {
         Row: {
           category: string
@@ -275,6 +305,9 @@ export type Database = {
           is_active: boolean
           name: string
           price: number
+          show_image_home: boolean | null
+          show_image_menu: boolean | null
+          show_on_homepage: boolean | null
           updated_at: string
         }
         Insert: {
@@ -287,6 +320,9 @@ export type Database = {
           is_active?: boolean
           name: string
           price: number
+          show_image_home?: boolean | null
+          show_image_menu?: boolean | null
+          show_on_homepage?: boolean | null
           updated_at?: string
         }
         Update: {
@@ -299,6 +335,9 @@ export type Database = {
           is_active?: boolean
           name?: string
           price?: number
+          show_image_home?: boolean | null
+          show_image_menu?: boolean | null
+          show_on_homepage?: boolean | null
           updated_at?: string
         }
         Relationships: [
