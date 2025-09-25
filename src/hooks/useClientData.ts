@@ -66,11 +66,11 @@ export const useClientData = (subdomain?: string) => {
   const detectedSubdomain = subdomain || getSubdomainFromUrl();
 
   function getSubdomainFromUrl(): string {
-    // For development and Lovable platform, use demo subdomain
+    // For development and Lovable platform, use demos subdomain
     if (window.location.hostname === 'localhost' || 
         window.location.hostname.includes('lovable') ||
         window.location.hostname.includes('lovableproject.com')) {
-      return 'demo'; // Default subdomain for template
+      return 'demos'; // Default subdomain for template
     }
     
     const hostname = window.location.hostname;
