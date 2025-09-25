@@ -88,12 +88,11 @@ const Navigation = () => {
       return isScrolled ? 'bg-background/95 backdrop-blur-md shadow-lg' : 'bg-transparent';
     }
     
-    // When header background is enabled
-    const baseClasses = 'backdrop-blur-md shadow-lg';
+    // When header background is enabled, use explicit dark/bright classes
     if (headerBackgroundStyle === 'bright') {
-      return `bg-card/95 ${baseClasses}`;
+      return 'header-bg-bright';
     } else {
-      return `bg-background/95 ${baseClasses}`;
+      return 'header-bg-dark';
     }
   };
 
