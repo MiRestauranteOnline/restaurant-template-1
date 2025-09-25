@@ -20,10 +20,14 @@ export type Database = {
           about_page_hero_background_url: string | null
           about_page_hero_description: string | null
           about_page_hero_title: string | null
+          about_page_hero_title_first_line: string | null
+          about_page_hero_title_second_line: string | null
           client_id: string
           contact_page_hero_background_url: string | null
           contact_page_hero_description: string | null
           contact_page_hero_title: string | null
+          contact_page_hero_title_first_line: string | null
+          contact_page_hero_title_second_line: string | null
           created_at: string
           homepage_about_section_description: string | null
           homepage_about_section_title: string | null
@@ -37,6 +41,8 @@ export type Database = {
           homepage_hero_right_button_link: string | null
           homepage_hero_right_button_text: string | null
           homepage_hero_title: string | null
+          homepage_hero_title_first_line: string | null
+          homepage_hero_title_second_line: string | null
           homepage_menu_section_description: string | null
           homepage_menu_section_title: string | null
           homepage_services_section_description: string | null
@@ -45,9 +51,13 @@ export type Database = {
           menu_page_hero_background_url: string | null
           menu_page_hero_description: string | null
           menu_page_hero_title: string | null
+          menu_page_hero_title_first_line: string | null
+          menu_page_hero_title_second_line: string | null
           reviews_page_hero_background_url: string | null
           reviews_page_hero_description: string | null
           reviews_page_hero_title: string | null
+          reviews_page_hero_title_first_line: string | null
+          reviews_page_hero_title_second_line: string | null
           updated_at: string
         }
         Insert: {
@@ -55,10 +65,14 @@ export type Database = {
           about_page_hero_background_url?: string | null
           about_page_hero_description?: string | null
           about_page_hero_title?: string | null
+          about_page_hero_title_first_line?: string | null
+          about_page_hero_title_second_line?: string | null
           client_id: string
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
+          contact_page_hero_title_first_line?: string | null
+          contact_page_hero_title_second_line?: string | null
           created_at?: string
           homepage_about_section_description?: string | null
           homepage_about_section_title?: string | null
@@ -72,6 +86,8 @@ export type Database = {
           homepage_hero_right_button_link?: string | null
           homepage_hero_right_button_text?: string | null
           homepage_hero_title?: string | null
+          homepage_hero_title_first_line?: string | null
+          homepage_hero_title_second_line?: string | null
           homepage_menu_section_description?: string | null
           homepage_menu_section_title?: string | null
           homepage_services_section_description?: string | null
@@ -80,9 +96,13 @@ export type Database = {
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
           menu_page_hero_title?: string | null
+          menu_page_hero_title_first_line?: string | null
+          menu_page_hero_title_second_line?: string | null
           reviews_page_hero_background_url?: string | null
           reviews_page_hero_description?: string | null
           reviews_page_hero_title?: string | null
+          reviews_page_hero_title_first_line?: string | null
+          reviews_page_hero_title_second_line?: string | null
           updated_at?: string
         }
         Update: {
@@ -90,10 +110,14 @@ export type Database = {
           about_page_hero_background_url?: string | null
           about_page_hero_description?: string | null
           about_page_hero_title?: string | null
+          about_page_hero_title_first_line?: string | null
+          about_page_hero_title_second_line?: string | null
           client_id?: string
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
+          contact_page_hero_title_first_line?: string | null
+          contact_page_hero_title_second_line?: string | null
           created_at?: string
           homepage_about_section_description?: string | null
           homepage_about_section_title?: string | null
@@ -107,6 +131,8 @@ export type Database = {
           homepage_hero_right_button_link?: string | null
           homepage_hero_right_button_text?: string | null
           homepage_hero_title?: string | null
+          homepage_hero_title_first_line?: string | null
+          homepage_hero_title_second_line?: string | null
           homepage_menu_section_description?: string | null
           homepage_menu_section_title?: string | null
           homepage_services_section_description?: string | null
@@ -115,16 +141,20 @@ export type Database = {
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
           menu_page_hero_title?: string | null
+          menu_page_hero_title_first_line?: string | null
+          menu_page_hero_title_second_line?: string | null
           reviews_page_hero_background_url?: string | null
           reviews_page_hero_description?: string | null
           reviews_page_hero_title?: string | null
+          reviews_page_hero_title_first_line?: string | null
+          reviews_page_hero_title_second_line?: string | null
           updated_at?: string
         }
         Relationships: [
           {
             foreignKeyName: "admin_content_client_id_fkey"
             columns: ["client_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "clients"
             referencedColumns: ["id"]
           },

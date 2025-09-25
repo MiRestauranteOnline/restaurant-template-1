@@ -6,9 +6,13 @@ import heroPasta from '@/assets/hero-pasta.jpg';
 const Hero = () => {
   const { client, adminContent } = useClient();
   
-  const heroTitle = adminContent?.homepage_hero_title || 
-    client?.other_customizations?.hero_title || 
-    `Excelencia\nCulinaria`;
+  const heroTitleFirstLine = (adminContent as any)?.homepage_hero_title_first_line || 
+    client?.other_customizations?.hero_title?.split('\n')[0] || 
+    'Excelencia';
+  
+  const heroTitleSecondLine = (adminContent as any)?.homepage_hero_title_second_line || 
+    client?.other_customizations?.hero_title?.split('\n')[1] || 
+    'Culinaria';
   
   const heroDescription = adminContent?.homepage_hero_description || 
     client?.other_customizations?.hero_description || 
@@ -32,11 +36,10 @@ const Hero = () => {
       <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
         <div className="fade-in">
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-light mb-6 leading-tight hero-text">
-            {heroTitle.split('\n').map((line, index) => (
-              <span key={index} className={index > 0 ? 'block text-gradient font-normal' : ''}>
-                {line}
-              </span>
-            ))}
+            <span>{heroTitleFirstLine}</span>
+            {heroTitleSecondLine && (
+              <span className="block text-gradient font-normal">{heroTitleSecondLine}</span>
+            )}
           </h1>
           
           <p className="text-xl md:text-2xl hero-text mb-8 max-w-2xl mx-auto leading-relaxed">
