@@ -1,14 +1,20 @@
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Phone, ChevronDown, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'react-router-dom';
 import { useClient } from '@/contexts/ClientContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { client, clientSettings } = useClient();
   const location = useLocation();
-  const { client } = useClient();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,6 +35,23 @@ const Navigation = () => {
   const isActivePage = (href: string) => {
     return location.pathname === href;
   };
+
+  // Get delivery services for navigation
+  const getDeliveryServices = () => {
+    if (!clientSettings?.delivery_info) return [];
+    
+    const deliveryInfo = clientSettings.delivery_info as any;
+    const services = [
+      { name: 'Rappi', url: deliveryInfo.rappi?.url, show: deliveryInfo.rappi?.show_in_nav !== false },
+      { name: 'PedidosYa', url: deliveryInfo.pedidosya?.url, show: deliveryInfo.pedidosya?.show_in_nav !== false },
+      { name: 'DiDi Food', url: deliveryInfo.didi?.url, show: deliveryInfo.didi?.show_in_nav !== false }
+    ];
+    
+    return services.filter(service => service.url && service.show);
+  };
+
+  const deliveryServices = getDeliveryServices();
+  const showDeliveryMenu = deliveryServices.length > 0;
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${
@@ -64,6 +87,33 @@ const Navigation = () => {
                 {item.label}
               </a>
             ))}
+            
+            {/* Delivery Dropdown */}
+            {showDeliveryMenu && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="font-medium text-foreground/80 hover:text-accent p-0 h-auto">
+                    Delivery <ChevronDown className="ml-1 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-background border border-border">
+                  {deliveryServices.map((service) => (
+                    <DropdownMenuItem key={service.name} asChild>
+                      <a 
+                        href={service.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        {service.name}
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            
             <div className="flex items-center space-x-3">
               <Button 
                 className="btn-ghost px-4 py-2 rounded-full text-sm"
@@ -120,6 +170,27 @@ const Navigation = () => {
                   {item.label}
                 </a>
               ))}
+              
+              {/* Mobile Delivery Services */}
+              {showDeliveryMenu && (
+                <div className="px-3 py-2">
+                  <div className="font-medium text-foreground/80 mb-2">Delivery</div>
+                  {deliveryServices.map((service) => (
+                    <a
+                      key={service.name}
+                      href={service.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block py-2 pl-4 text-foreground/70 hover:text-accent transition-colors flex items-center gap-2"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {service.name}
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  ))}
+                </div>
+              )}
+              
               <div className="px-3 py-2 space-y-2">
                 <Button 
                   className="btn-ghost w-full rounded-full"
