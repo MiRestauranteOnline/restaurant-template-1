@@ -168,7 +168,7 @@
   }
   
   .btn-ghost {
-    @apply border border-accent/30 text-accent hover:bg-accent hover:text-accent-foreground;
+    @apply border border-foreground/30 text-foreground hover:bg-foreground hover:text-background;
     transition: var(--transition-smooth);
   }
   
