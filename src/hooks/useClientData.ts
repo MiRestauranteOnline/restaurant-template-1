@@ -88,8 +88,7 @@ const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, cli
       primary_color: clientSettings.primary_color || '#FFD700',
       theme: client.theme || 'dark',
       
-      // Layout and navigation settings
-      layout_type: clientSettings.layout_type || 'layout1',
+      // Navigation settings
       header_background_enabled: clientSettings.header_background_enabled || false,
       header_background_style: clientSettings.header_background_style || 'dark',
       
@@ -142,11 +141,6 @@ const applyEarlyStyles = (subdomain: string) => {
         '--header-background-style', 
         cachedData.header_background_style
       );
-    }
-    
-    // Set layout type for any layout-specific styling
-    if (cachedData.layout_type) {
-      document.documentElement.setAttribute('data-layout', cachedData.layout_type);
     }
   }
 };
@@ -206,7 +200,6 @@ export interface ClientSettings {
   header_background_enabled?: boolean;
   header_background_style?: 'dark' | 'bright';
   primary_color?: string;
-  layout_type?: 'layout1' | 'layout2' | 'layout3' | 'layout4';
   created_at: string;
   updated_at: string;
 }

@@ -16,7 +16,7 @@ const About = () => {
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           
-          {/* Image - Layout 2 will show this first and wider */}
+          {/* Restaurant interior image */}
           <div className="fade-in">
             <div className="relative">
               <img

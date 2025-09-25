@@ -7,14 +7,10 @@ import Services from '@/components/Services';
 import Reviews from '@/components/Reviews';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
-import { useLayoutType } from '@/hooks/useLayoutType';
 
 const RestaurantContent = () => {
-  // Get layout type for conditional styling
-  const layoutType = useLayoutType();
-  
   return (
-    <div className={`min-h-screen bg-background ${layoutType === 'layout2' ? 'layout-2' : ''}`}>
+    <div className="min-h-screen bg-background">
       <Navigation />
       <Hero />
       <About />
