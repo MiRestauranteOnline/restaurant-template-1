@@ -25,7 +25,7 @@ const Hero = () => {
       {/* Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
         <div className="fade-in">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-light mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-light mb-6 leading-tight hero-text">
             {heroTitle.split('\n').map((line, index) => (
               <span key={index} className={index > 0 ? 'block text-gradient font-normal' : ''}>
                 {line}
@@ -33,7 +33,7 @@ const Hero = () => {
             ))}
           </h1>
           
-          <p className="text-xl md:text-2xl text-white mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl hero-text mb-8 max-w-2xl mx-auto leading-relaxed">
             {heroDescription}
           </p>
           

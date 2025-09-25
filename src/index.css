@@ -150,6 +150,11 @@
     background: var(--gradient-overlay);
   }
   
+  /* Theme-aware hero text colors */
+  .hero-text {
+    color: hsl(var(--foreground));
+  }
+  
   /* Card hover effects */
   .card-hover {
     @apply transition-all duration-300 hover:shadow-lg hover:shadow-accent/10 hover:-translate-y-1;
