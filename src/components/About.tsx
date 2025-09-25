@@ -1,8 +1,10 @@
 import restaurantInterior from '@/assets/restaurant-interior.jpg';
 import { useClient } from '@/contexts/ClientContext';
+import { useLocation } from 'react-router-dom';
 
 const About = () => {
   const { client, adminContent } = useClient();
+  const location = useLocation();
   
   const sectionTitle = adminContent?.homepage_about_section_title || "Nuestra Historia";
   const sectionDescription = adminContent?.homepage_about_section_description;
@@ -11,8 +13,11 @@ const About = () => {
   const aboutTitleFirstLine = (adminContent as any)?.homepage_about_section_title_first_line || "Donde la Tradición";
   const aboutTitleSecondLine = (adminContent as any)?.homepage_about_section_title_second_line || "Se Encuentra con la Innovación";
   
-  // Get image URL from database
-  const aboutImageUrl = (adminContent as any)?.homepage_about_section_image_url || restaurantInterior;
+  // Get image URL from database - different field for homepage vs about page
+  const isAboutPage = location.pathname === '/about';
+  const aboutImageUrl = isAboutPage 
+    ? (adminContent as any)?.about_page_about_section_image_url || restaurantInterior
+    : (adminContent as any)?.homepage_about_section_image_url || restaurantInterior;
   
   // Use separate content fields from database
   const aboutStory = (adminContent as any)?.about_story;

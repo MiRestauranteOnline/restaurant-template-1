@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           about_chef_info: string | null
           about_mission: string | null
+          about_page_about_section_image_url: string | null
           about_page_content: Json | null
           about_page_hero_background_url: string | null
           about_page_hero_description: string | null
@@ -116,6 +117,7 @@ export type Database = {
         Insert: {
           about_chef_info?: string | null
           about_mission?: string | null
+          about_page_about_section_image_url?: string | null
           about_page_content?: Json | null
           about_page_hero_background_url?: string | null
           about_page_hero_description?: string | null
@@ -214,6 +216,7 @@ export type Database = {
         Update: {
           about_chef_info?: string | null
           about_mission?: string | null
+          about_page_about_section_image_url?: string | null
           about_page_content?: Json | null
           about_page_hero_background_url?: string | null
           about_page_hero_description?: string | null
