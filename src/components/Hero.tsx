@@ -41,7 +41,7 @@ const Hero = () => {
             <Button className="btn-primary px-8 py-3 text-lg rounded-full">
               Ver Menú
             </Button>
-            <Button variant="outline" className="btn-ghost px-8 py-3 text-lg rounded-full">
+            <Button variant="contrast" className="px-8 py-3 text-lg rounded-full">
               Reservar Mesa
             </Button>
           </div>
