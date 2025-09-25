@@ -36,6 +36,7 @@ export type Database = {
           contact_page_hero_title_second_line: string | null
           created_at: string
           homepage_about_section_description: string | null
+          homepage_about_section_image_url: string | null
           homepage_about_section_title: string | null
           homepage_about_section_title_first_line: string | null
           homepage_about_section_title_second_line: string | null
@@ -133,6 +134,7 @@ export type Database = {
           contact_page_hero_title_second_line?: string | null
           created_at?: string
           homepage_about_section_description?: string | null
+          homepage_about_section_image_url?: string | null
           homepage_about_section_title?: string | null
           homepage_about_section_title_first_line?: string | null
           homepage_about_section_title_second_line?: string | null
@@ -230,6 +232,7 @@ export type Database = {
           contact_page_hero_title_second_line?: string | null
           created_at?: string
           homepage_about_section_description?: string | null
+          homepage_about_section_image_url?: string | null
           homepage_about_section_title?: string | null
           homepage_about_section_title_first_line?: string | null
           homepage_about_section_title_second_line?: string | null
