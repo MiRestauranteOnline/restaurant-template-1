@@ -61,6 +61,7 @@ export type Database = {
           email: string | null
           id: string
           opening_hours: Json | null
+          other_customizations: Json | null
           phone: string | null
           restaurant_name: string
           social_media_links: Json | null
@@ -76,6 +77,7 @@ export type Database = {
           email?: string | null
           id?: string
           opening_hours?: Json | null
+          other_customizations?: Json | null
           phone?: string | null
           restaurant_name: string
           social_media_links?: Json | null
@@ -91,6 +93,7 @@ export type Database = {
           email?: string | null
           id?: string
           opening_hours?: Json | null
+          other_customizations?: Json | null
           phone?: string | null
           restaurant_name?: string
           social_media_links?: Json | null
