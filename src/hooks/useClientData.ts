@@ -11,6 +11,7 @@ export interface ClientData {
   address?: string;
   coordinates?: any;
   opening_hours?: any;
+  opening_hours_ordered?: any[];
   social_media_links?: any;
   brand_colors?: any;
   other_customizations?: any;

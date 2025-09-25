@@ -4,37 +4,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
+import { formatOpeningHours } from '@/utils/formatOpeningHours';
 
 const Contact = () => {
   const { client, clientSettings } = useClient();
   
-  const formatOpeningHours = (hours: any) => {
-    if (!hours || typeof hours !== 'object') {
-      return ["Lun-Jue: 12:00 PM - 10:00 PM", "Vie-Sáb: 12:00 PM - 11:00 PM", "Dom: 12:00 PM - 9:00 PM"];
-    }
-    
-    const formatDay = (day: string, schedule: any) => {
-      if (!schedule || schedule.closed || !schedule.open || !schedule.close) return null;
-      return `${day}: ${schedule.open} - ${schedule.close}`;
-    };
-
-    const dayNames = {
-      monday: "Lun",
-      tuesday: "Mar", 
-      wednesday: "Mié",
-      thursday: "Jue",
-      friday: "Vie",
-      saturday: "Sáb",
-      sunday: "Dom"
-    };
-    
-    return Object.entries(hours)
-      .map(([key, schedule]: [string, any]) => {
-        const dayName = dayNames[key as keyof typeof dayNames];
-        return dayName ? formatDay(dayName, schedule) : null;
-      })
-      .filter(Boolean);
-  };
 
   const contactInfo = [
     {
@@ -55,7 +29,7 @@ const Contact = () => {
     {
       icon: Clock,
       title: "Horarios",
-      details: formatOpeningHours(client?.opening_hours)
+      details: formatOpeningHours(client?.opening_hours_ordered || client?.opening_hours)
     }
   ];
 

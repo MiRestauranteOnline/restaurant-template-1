@@ -4,40 +4,17 @@ import Contact from '@/components/Contact';
 import { Card, CardContent } from '@/components/ui/card';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
+import { formatOpeningHours } from '@/utils/formatOpeningHours';
 
 const ContactPage = () => {
   const { client } = useClient();
 
-  const formatOpeningHours = (hours: any) => {
-    if (!hours || typeof hours !== 'object') {
-      return [
-        { day: "Lunes - Jueves", time: "12:00 PM - 10:00 PM" },
-        { day: "Viernes - Sábado", time: "12:00 PM - 11:00 PM" },
-        { day: "Domingo", time: "12:00 PM - 9:00 PM" }
-      ];
-    }
-    
-    const formatDay = (day: string, schedule: any) => {
-      if (!schedule || schedule.closed || !schedule.open || !schedule.close) return null;
-      return { day, time: `${schedule.open} - ${schedule.close}` };
-    };
-
-    const dayNames = {
-      monday: "Lunes",
-      tuesday: "Martes", 
-      wednesday: "Miércoles",
-      thursday: "Jueves",
-      friday: "Viernes",
-      saturday: "Sábado",
-      sunday: "Domingo"
-    };
-    
-    return Object.entries(hours)
-      .map(([key, schedule]: [string, any]) => {
-        const dayName = dayNames[key as keyof typeof dayNames];
-        return dayName ? formatDay(dayName, schedule) : null;
-      })
-      .filter(Boolean);
+  const formatHoursForContactPage = (hours: any) => {
+    const formattedHours = formatOpeningHours(hours);
+    return formattedHours.map(hourString => {
+      const [day, time] = hourString.split(': ');
+      return { day, time };
+    });
   };
 
   const contactMethods = [
@@ -74,7 +51,7 @@ const ContactPage = () => {
     }
   ];
 
-  const hours = formatOpeningHours(client?.opening_hours);
+  const hours = formatHoursForContactPage(client?.opening_hours_ordered || client?.opening_hours);
 
   return (
     <div className="min-h-screen bg-background">

@@ -1,40 +1,9 @@
 import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Linkedin } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
+import { formatOpeningHours } from '@/utils/formatOpeningHours';
 
 const Footer = () => {
   const { client } = useClient();
-  
-  const formatOpeningHours = (hours: any) => {
-    if (!hours || typeof hours !== 'object') {
-      return [
-        "Lunes - Jueves: 12:00 PM - 10:00 PM",
-        "Viernes - Sábado: 12:00 PM - 11:00 PM", 
-        "Domingo: 12:00 PM - 9:00 PM"
-      ];
-    }
-    
-    const formatDay = (day: string, schedule: any) => {
-      if (!schedule || schedule.closed || !schedule.open || !schedule.close) return null;
-      return `${day}: ${schedule.open} - ${schedule.close}`;
-    };
-
-    const dayNames = {
-      monday: "Lunes",
-      tuesday: "Martes", 
-      wednesday: "Miércoles",
-      thursday: "Jueves",
-      friday: "Viernes",
-      saturday: "Sábado",
-      sunday: "Domingo"
-    };
-    
-    return Object.entries(hours)
-      .map(([key, schedule]: [string, any]) => {
-        const dayName = dayNames[key as keyof typeof dayNames];
-        return dayName ? formatDay(dayName, schedule) : null;
-      })
-      .filter(Boolean);
-  };
 
   const restaurantInfo = [
     {
@@ -47,7 +16,7 @@ const Footer = () => {
     },
     {
       title: "Horarios",
-      items: formatOpeningHours(client?.opening_hours)
+      items: formatOpeningHours(client?.opening_hours_ordered || client?.opening_hours)
     },
     {
       title: "Enlaces",
