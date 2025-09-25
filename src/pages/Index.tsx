@@ -6,9 +6,6 @@ import Services from '@/components/Services';
 import Reviews from '@/components/Reviews';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
-import { ClientProvider } from '@/contexts/ClientContext';
-import LoadingSpinner from '@/components/LoadingSpinner';
-import ErrorPage from '@/components/ErrorPage';
 
 const RestaurantContent = () => {
   return (
@@ -26,11 +23,7 @@ const RestaurantContent = () => {
 };
 
 const Index = () => {
-  return (
-    <ClientProvider>
-      <RestaurantContent />
-    </ClientProvider>
-  );
+  return <RestaurantContent />;
 };
 
 export default Index;
