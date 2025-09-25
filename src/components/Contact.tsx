@@ -14,15 +14,26 @@ const Contact = () => {
     }
     
     const formatDay = (day: string, schedule: any) => {
-      if (!schedule || !schedule.open || !schedule.close) return null;
+      if (!schedule || schedule.closed || !schedule.open || !schedule.close) return null;
       return `${day}: ${schedule.open} - ${schedule.close}`;
     };
+
+    const dayNames = {
+      monday: "Lun",
+      tuesday: "Mar", 
+      wednesday: "Mié",
+      thursday: "Jue",
+      friday: "Vie",
+      saturday: "Sáb",
+      sunday: "Dom"
+    };
     
-    return [
-      formatDay("Lun-Jue", hours.weekdays),
-      formatDay("Vie-Sáb", hours.weekend),
-      formatDay("Dom", hours.sunday)
-    ].filter(Boolean);
+    return Object.entries(hours)
+      .map(([key, schedule]: [string, any]) => {
+        const dayName = dayNames[key as keyof typeof dayNames];
+        return dayName ? formatDay(dayName, schedule) : null;
+      })
+      .filter(Boolean);
   };
 
   const contactInfo = [

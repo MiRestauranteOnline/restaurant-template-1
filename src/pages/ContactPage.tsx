@@ -18,15 +18,26 @@ const ContactPage = () => {
     }
     
     const formatDay = (day: string, schedule: any) => {
-      if (!schedule || !schedule.open || !schedule.close) return null;
+      if (!schedule || schedule.closed || !schedule.open || !schedule.close) return null;
       return { day, time: `${schedule.open} - ${schedule.close}` };
     };
+
+    const dayNames = {
+      monday: "Lunes",
+      tuesday: "Martes", 
+      wednesday: "Miércoles",
+      thursday: "Jueves",
+      friday: "Viernes",
+      saturday: "Sábado",
+      sunday: "Domingo"
+    };
     
-    return [
-      formatDay("Lunes - Jueves", hours.weekdays),
-      formatDay("Viernes - Sábado", hours.weekend),
-      formatDay("Domingo", hours.sunday)
-    ].filter(Boolean);
+    return Object.entries(hours)
+      .map(([key, schedule]: [string, any]) => {
+        const dayName = dayNames[key as keyof typeof dayNames];
+        return dayName ? formatDay(dayName, schedule) : null;
+      })
+      .filter(Boolean);
   };
 
   const contactMethods = [
