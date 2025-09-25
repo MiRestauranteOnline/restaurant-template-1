@@ -30,7 +30,7 @@ const About = () => {
 
           {/* Content */}
           <div className="fade-in">
-            <div className="mb-6 text-center lg:text-left">
+            <div className="mb-6 text-center">
               <span className="text-accent font-medium tracking-wider uppercase text-sm">
                 Nuestra Historia
               </span>
@@ -43,7 +43,7 @@ const About = () => {
               </h2>
             </div>
             
-            <div className="space-y-6 text-foreground/80 text-lg leading-relaxed text-center lg:text-left">
+            <div className="space-y-6 text-foreground/80 text-lg leading-relaxed text-center">
               <p>{aboutContent.story}</p>
               <p>{aboutContent.chef_info}</p>
               <p>{aboutContent.mission}</p>

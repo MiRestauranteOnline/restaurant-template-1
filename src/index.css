@@ -255,6 +255,12 @@
     font-weight: 600;
   }
 
+  /* Layout 2 Hero - Not full screen */
+  .layout-2 #home {
+    height: 70vh !important;
+    min-height: 600px !important;
+  }
+
   /* Layout 2 About Section - Creative centered layout */
   .layout-2 #about .container {
     max-width: 800px;
@@ -271,6 +277,37 @@
   .layout-2 #about .fade-in:first-child {
     order: 1;
     margin-bottom: 3rem;
+  }
+
+  /* Layout 2 About Text - Centered */
+  .layout-2 #about .text-center {
+    text-align: center !important;
+  }
+
+  /* Layout 2 Experience Stats - Proper spacing */
+  .layout-2 #about .grid-cols-3 {
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 2rem !important;
+    flex-wrap: wrap !important;
+  }
+
+  .layout-2 #about .grid-cols-3 > div {
+    flex: 1 !important;
+    min-width: 150px !important;
+  }
+
+  @media (max-width: 768px) {
+    .layout-2 #about .grid-cols-3 {
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 2rem !important;
+    }
+
+    .layout-2 #about .grid-cols-3 > div {
+      flex: none !important;
+      width: 200px !important;
+    }
   }
 
   /* Layout 2 Menu Cards - Reduced padding */
