@@ -102,8 +102,14 @@ export type Database = {
           stats_experience_label: string | null
           stats_experience_number: string | null
           stats_item1_icon: string | null
+          stats_item1_label: string | null
+          stats_item1_number: string | null
           stats_item2_icon: string | null
+          stats_item2_label: string | null
+          stats_item2_number: string | null
           stats_item3_icon: string | null
+          stats_item3_label: string | null
+          stats_item3_number: string | null
           updated_at: string
         }
         Insert: {
@@ -193,8 +199,14 @@ export type Database = {
           stats_experience_label?: string | null
           stats_experience_number?: string | null
           stats_item1_icon?: string | null
+          stats_item1_label?: string | null
+          stats_item1_number?: string | null
           stats_item2_icon?: string | null
+          stats_item2_label?: string | null
+          stats_item2_number?: string | null
           stats_item3_icon?: string | null
+          stats_item3_label?: string | null
+          stats_item3_number?: string | null
           updated_at?: string
         }
         Update: {
@@ -284,8 +296,14 @@ export type Database = {
           stats_experience_label?: string | null
           stats_experience_number?: string | null
           stats_item1_icon?: string | null
+          stats_item1_label?: string | null
+          stats_item1_number?: string | null
           stats_item2_icon?: string | null
+          stats_item2_label?: string | null
+          stats_item2_number?: string | null
           stats_item3_icon?: string | null
+          stats_item3_label?: string | null
+          stats_item3_number?: string | null
           updated_at?: string
         }
         Relationships: [
