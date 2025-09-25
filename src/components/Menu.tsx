@@ -12,7 +12,7 @@ const Menu = () => {
   // Get items marked for homepage display (limit 8)
   const homepageItems = menuItems.filter(item => item.show_on_homepage).slice(0, 8);
 
-  // Fallback menu items if no database items exist
+  // Fallback menu items ONLY if no database items exist at all
   const fallbackMenuItems = [
     {
       id: '1',
@@ -21,7 +21,8 @@ const Menu = () => {
       price: 65,
       image: heroPasta,
       category: "Especialidad",
-      show_on_homepage: true
+      show_on_homepage: true,
+      show_image_home: true
     },
     {
       id: '2',
@@ -30,7 +31,8 @@ const Menu = () => {
       price: 85,
       image: grilledSteak,
       category: "Plato Principal",
-      show_on_homepage: true
+      show_on_homepage: true,
+      show_image_home: true
     },
     {
       id: '3',
@@ -39,7 +41,8 @@ const Menu = () => {
       price: 95,
       image: seafoodPlatter,
       category: "Mariscos",
-      show_on_homepage: true
+      show_on_homepage: true,
+      show_image_home: true
     },
     {
       id: '4',
@@ -48,11 +51,13 @@ const Menu = () => {
       price: 28,
       image: chocolateDessert,
       category: "Postre",
-      show_on_homepage: true
+      show_on_homepage: true,
+      show_image_home: true
     }
   ];
 
-  const displayMenuItems = homepageItems.length > 0 ? homepageItems : fallbackMenuItems;
+  // Use database items if they exist, otherwise fallback
+  const displayMenuItems = menuItems.length > 0 ? homepageItems : fallbackMenuItems;
   const currency = client?.other_customizations?.currency || 'S/';
 
   return (
@@ -80,14 +85,18 @@ const Menu = () => {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="relative h-64 overflow-hidden">
-                <img
-                  src={item.image_url || (typeof item.image === 'string' ? item.image : heroPasta)}
-                  alt={item.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  style={{ 
-                    display: (item.show_image_home !== false) ? 'block' : 'none' 
-                  }}
-                />
+                {(item.image_url || (typeof item.image === 'string' && item.show_image_home !== false)) && (
+                  <img
+                    src={item.image_url || (typeof item.image === 'string' ? item.image : heroPasta)}
+                    alt={item.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                )}
+                {!item.image_url && !item.image && (
+                  <div className="w-full h-full bg-gradient-to-br from-accent/10 to-accent/30 flex items-center justify-center">
+                    <span className="text-accent text-lg font-heading">{item.category}</span>
+                  </div>
+                )}
                 <div className="absolute top-4 left-4">
                   <span className="bg-accent text-accent-foreground px-3 py-1 rounded-full text-xs font-medium">
                     {item.category}
