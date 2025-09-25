@@ -13,6 +13,10 @@ const Contact = () => {
   const sectionDescription = adminContent?.homepage_contact_section_description || "¿Listo para disfrutar de sabores únicos? Te esperamos en Savoria.";
   const hideReservationBox = adminContent?.homepage_contact_hide_reservation_box || false;
   
+  // Use separate title fields from database
+  const contactTitleFirstLine = (adminContent as any)?.homepage_contact_section_title_first_line || "Reserva Tu";
+  const contactTitleSecondLine = (adminContent as any)?.homepage_contact_section_title_second_line || "Experiencia";
+  
 
   const contactInfo = [
     {
@@ -45,13 +49,9 @@ const Contact = () => {
             Contáctanos
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
-            {sectionTitle.includes(' ') ? (
-              <>
-                {sectionTitle.split(' ').slice(0, -1).join(' ')}
-                <span className="block text-gradient font-normal">{sectionTitle.split(' ').slice(-1)[0]}</span>
-              </>
-            ) : (
-              <span className="text-gradient font-normal">{sectionTitle}</span>
+            <span>{contactTitleFirstLine}</span>
+            {contactTitleSecondLine && (
+              <span className="block text-gradient font-normal">{contactTitleSecondLine}</span>
             )}
           </h2>
           <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">

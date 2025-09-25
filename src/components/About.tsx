@@ -7,14 +7,29 @@ const About = () => {
   const sectionTitle = adminContent?.homepage_about_section_title || "Nuestra Historia";
   const sectionDescription = adminContent?.homepage_about_section_description;
   
-  // Use admin content for about page content, with fallbacks
-  const aboutPageContent = adminContent?.about_page_content || {};
+  // Use admin content with separate title fields
+  const aboutTitleFirstLine = (adminContent as any)?.homepage_about_section_title_first_line || "Donde la Tradición";
+  const aboutTitleSecondLine = (adminContent as any)?.homepage_about_section_title_second_line || "Se Encuentra con la Innovación";
   
-  const aboutContent = {
-    title: aboutPageContent.title || `Donde la Tradición\nSe Encuentra con la Innovación`,
-    story: aboutPageContent.story || `Desde 2010, ${client?.restaurant_name || 'Savoria'} ha sido un faro de excelencia culinaria, combinando técnicas tradicionales con un toque contemporáneo. Nuestra pasión por ingredientes excepcionales y métodos de preparación innovadores crea una experiencia gastronómica inolvidable.`,
-    chef_info: aboutPageContent.chef_info || 'Dirigido por el Chef Ejecutivo Carlos Mendoza, nuestro equipo selecciona los mejores ingredientes de temporada de granjas locales y productores artesanales, asegurando que cada plato cuente una historia de calidad y artesanía.',
-    mission: aboutPageContent.mission || `Desde cenas íntimas hasta grandes celebraciones, creamos momentos que perduran en la memoria mucho después del último bocado. Bienvenido a ${client?.restaurant_name || 'Savoria'}, donde cada comida es una obra maestra.`
+  // Use separate content fields from database
+  const aboutStory = (adminContent as any)?.about_story || `Desde 2010, ${client?.restaurant_name || 'Savoria'} ha sido un faro de excelencia culinaria, combinando técnicas tradicionales con un toque contemporáneo. Nuestra pasión por ingredientes excepcionales y métodos de preparación innovadores crea una experiencia gastronómica inolvidable.`;
+  const aboutChefInfo = (adminContent as any)?.about_chef_info || 'Dirigido por el Chef Ejecutivo Carlos Mendoza, nuestro equipo selecciona los mejores ingredientes de temporada de granjas locales y productores artesanales, asegurando que cada plato cuente una historia de calidad y artesanía.';
+  const aboutMission = (adminContent as any)?.about_mission || `Desde cenas íntimas hasta grandes celebraciones, creamos momentos que perduran en la memoria mucho después del último bocado. Bienvenido a ${client?.restaurant_name || 'Savoria'}, donde cada comida es una obra maestra.`;
+  
+  // Stats from database
+  const stats = {
+    experience: {
+      number: (adminContent as any)?.stats_experience_number || '15+',
+      label: (adminContent as any)?.stats_experience_label || 'Años de Experiencia'
+    },
+    clients: {
+      number: (adminContent as any)?.stats_clients_number || '5K+',
+      label: (adminContent as any)?.stats_clients_label || 'Clientes Felices'
+    },
+    awards: {
+      number: (adminContent as any)?.stats_awards_number || '10+',
+      label: (adminContent as any)?.stats_awards_label || 'Reconocimientos'
+    }
   };
 
   return (
@@ -41,11 +56,10 @@ const About = () => {
                 {sectionTitle}
               </span>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
-                {aboutContent.title.split('\n').map((line, index) => (
-                  <span key={index} className={index > 0 ? 'block text-gradient font-normal' : ''}>
-                    {line}
-                  </span>
-                ))}
+                <span>{aboutTitleFirstLine}</span>
+                {aboutTitleSecondLine && (
+                  <span className="block text-gradient font-normal">{aboutTitleSecondLine}</span>
+                )}
               </h2>
               {sectionDescription && (
                 <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
@@ -55,29 +69,29 @@ const About = () => {
             </div>
             
             <div className="space-y-6 text-foreground/80 text-lg leading-relaxed text-center">
-              <p>{aboutContent.story}</p>
-              <p>{aboutContent.chef_info}</p>
-              <p>{aboutContent.mission}</p>
+              <p>{aboutStory}</p>
+              <p>{aboutChefInfo}</p>
+              <p>{aboutMission}</p>
             </div>
 
             <div className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-border">
               <div className="text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary rounded-full mb-4">
-                  <div className="text-2xl font-heading font-bold text-accent">15+</div>
+                  <div className="text-2xl font-heading font-bold text-accent">{stats.experience.number}</div>
                 </div>
-                <div className="text-sm text-foreground/60 uppercase tracking-wider">Años de Experiencia</div>
+                <div className="text-sm text-foreground/60 uppercase tracking-wider">{stats.experience.label}</div>
               </div>
               <div className="text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary rounded-full mb-4">
-                  <div className="text-2xl font-heading font-bold text-accent">5K+</div>
+                  <div className="text-2xl font-heading font-bold text-accent">{stats.clients.number}</div>
                 </div>
-                <div className="text-sm text-foreground/60 uppercase tracking-wider">Clientes Felices</div>
+                <div className="text-sm text-foreground/60 uppercase tracking-wider">{stats.clients.label}</div>
               </div>
               <div className="text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary rounded-full mb-4">
-                  <div className="text-2xl font-heading font-bold text-accent">10+</div>
+                  <div className="text-2xl font-heading font-bold text-accent">{stats.awards.number}</div>
                 </div>
-                <div className="text-sm text-foreground/60 uppercase tracking-wider">Reconocimientos</div>
+                <div className="text-sm text-foreground/60 uppercase tracking-wider">{stats.awards.label}</div>
               </div>
             </div>
           </div>

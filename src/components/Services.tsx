@@ -1,8 +1,16 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Utensils, Truck, Users, Clock, Star, MapPin } from 'lucide-react';
+import { useClient } from '@/contexts/ClientContext';
 
 const Services = () => {
+  const { adminContent } = useClient();
+  
+  // Use separate title fields from database
+  const servicesTitleFirstLine = (adminContent as any)?.homepage_services_section_title_first_line || "Experiencias";
+  const servicesTitleSecondLine = (adminContent as any)?.homepage_services_section_title_second_line || "Auténticas";
+  const servicesDescription = adminContent?.homepage_services_section_description || "Desde una comida íntima hasta celebraciones especiales, te ofrecemos sabores únicos y un servicio cálido.";
+  
   const services = [
     {
       icon: Utensils,
@@ -35,12 +43,13 @@ const Services = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 fade-in">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6 text-gray-900">
-            Experiencias
-            <span className="block text-gradient font-normal">Auténticas</span>
+            <span>{servicesTitleFirstLine}</span>
+            {servicesTitleSecondLine && (
+              <span className="block text-gradient font-normal">{servicesTitleSecondLine}</span>
+            )}
           </h2>
           <p className="text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
-            Desde una comida íntima hasta celebraciones especiales, te ofrecemos 
-            sabores únicos y un servicio cálido.
+            {servicesDescription}
           </p>
         </div>
 

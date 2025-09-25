@@ -11,6 +11,10 @@ const Menu = () => {
 
   const sectionTitle = adminContent?.homepage_menu_section_title || "Nuestro Menú";
   const sectionDescription = adminContent?.homepage_menu_section_description || "Descubre nuestra selección de platos cuidadosamente elaborados";
+  
+  // Use separate title fields from database
+  const menuTitleFirstLine = (adminContent as any)?.homepage_menu_section_title_first_line || "Selecciones";
+  const menuTitleSecondLine = (adminContent as any)?.homepage_menu_section_title_second_line || "Especiales";
 
   // Get items marked for homepage display (limit 8)
   const homepageItems = menuItems.filter(item => item.show_on_homepage).slice(0, 8);
@@ -71,13 +75,9 @@ const Menu = () => {
             Obras Maestras Culinarias
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
-            {sectionTitle.includes(' ') ? (
-              <>
-                {sectionTitle.split(' ').slice(0, -1).join(' ')}
-                <span className="block text-gradient font-normal">{sectionTitle.split(' ').slice(-1)[0]}</span>
-              </>
-            ) : (
-              <span className="text-gradient font-normal">{sectionTitle}</span>
+            <span>{menuTitleFirstLine}</span>
+            {menuTitleSecondLine && (
+              <span className="block text-gradient font-normal">{menuTitleSecondLine}</span>
             )}
           </h2>
           <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">

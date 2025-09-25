@@ -16,12 +16,15 @@ export type Database = {
     Tables: {
       admin_content: {
         Row: {
+          about_chef_info: string | null
+          about_mission: string | null
           about_page_content: Json | null
           about_page_hero_background_url: string | null
           about_page_hero_description: string | null
           about_page_hero_title: string | null
           about_page_hero_title_first_line: string | null
           about_page_hero_title_second_line: string | null
+          about_story: string | null
           client_id: string
           contact_page_hero_background_url: string | null
           contact_page_hero_description: string | null
@@ -31,9 +34,13 @@ export type Database = {
           created_at: string
           homepage_about_section_description: string | null
           homepage_about_section_title: string | null
+          homepage_about_section_title_first_line: string | null
+          homepage_about_section_title_second_line: string | null
           homepage_contact_hide_reservation_box: boolean | null
           homepage_contact_section_description: string | null
           homepage_contact_section_title: string | null
+          homepage_contact_section_title_first_line: string | null
+          homepage_contact_section_title_second_line: string | null
           homepage_delivery_section_description: string | null
           homepage_delivery_section_title: string | null
           homepage_hero_background_url: string | null
@@ -45,8 +52,12 @@ export type Database = {
           homepage_hero_title_second_line: string | null
           homepage_menu_section_description: string | null
           homepage_menu_section_title: string | null
+          homepage_menu_section_title_first_line: string | null
+          homepage_menu_section_title_second_line: string | null
           homepage_services_section_description: string | null
           homepage_services_section_title: string | null
+          homepage_services_section_title_first_line: string | null
+          homepage_services_section_title_second_line: string | null
           id: string
           menu_page_hero_background_url: string | null
           menu_page_hero_description: string | null
@@ -58,15 +69,26 @@ export type Database = {
           reviews_page_hero_title: string | null
           reviews_page_hero_title_first_line: string | null
           reviews_page_hero_title_second_line: string | null
+          reviews_section_title_first_line: string | null
+          reviews_section_title_second_line: string | null
+          stats_awards_label: string | null
+          stats_awards_number: string | null
+          stats_clients_label: string | null
+          stats_clients_number: string | null
+          stats_experience_label: string | null
+          stats_experience_number: string | null
           updated_at: string
         }
         Insert: {
+          about_chef_info?: string | null
+          about_mission?: string | null
           about_page_content?: Json | null
           about_page_hero_background_url?: string | null
           about_page_hero_description?: string | null
           about_page_hero_title?: string | null
           about_page_hero_title_first_line?: string | null
           about_page_hero_title_second_line?: string | null
+          about_story?: string | null
           client_id: string
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
@@ -76,9 +98,13 @@ export type Database = {
           created_at?: string
           homepage_about_section_description?: string | null
           homepage_about_section_title?: string | null
+          homepage_about_section_title_first_line?: string | null
+          homepage_about_section_title_second_line?: string | null
           homepage_contact_hide_reservation_box?: boolean | null
           homepage_contact_section_description?: string | null
           homepage_contact_section_title?: string | null
+          homepage_contact_section_title_first_line?: string | null
+          homepage_contact_section_title_second_line?: string | null
           homepage_delivery_section_description?: string | null
           homepage_delivery_section_title?: string | null
           homepage_hero_background_url?: string | null
@@ -90,8 +116,12 @@ export type Database = {
           homepage_hero_title_second_line?: string | null
           homepage_menu_section_description?: string | null
           homepage_menu_section_title?: string | null
+          homepage_menu_section_title_first_line?: string | null
+          homepage_menu_section_title_second_line?: string | null
           homepage_services_section_description?: string | null
           homepage_services_section_title?: string | null
+          homepage_services_section_title_first_line?: string | null
+          homepage_services_section_title_second_line?: string | null
           id?: string
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
@@ -103,15 +133,26 @@ export type Database = {
           reviews_page_hero_title?: string | null
           reviews_page_hero_title_first_line?: string | null
           reviews_page_hero_title_second_line?: string | null
+          reviews_section_title_first_line?: string | null
+          reviews_section_title_second_line?: string | null
+          stats_awards_label?: string | null
+          stats_awards_number?: string | null
+          stats_clients_label?: string | null
+          stats_clients_number?: string | null
+          stats_experience_label?: string | null
+          stats_experience_number?: string | null
           updated_at?: string
         }
         Update: {
+          about_chef_info?: string | null
+          about_mission?: string | null
           about_page_content?: Json | null
           about_page_hero_background_url?: string | null
           about_page_hero_description?: string | null
           about_page_hero_title?: string | null
           about_page_hero_title_first_line?: string | null
           about_page_hero_title_second_line?: string | null
+          about_story?: string | null
           client_id?: string
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
@@ -121,9 +162,13 @@ export type Database = {
           created_at?: string
           homepage_about_section_description?: string | null
           homepage_about_section_title?: string | null
+          homepage_about_section_title_first_line?: string | null
+          homepage_about_section_title_second_line?: string | null
           homepage_contact_hide_reservation_box?: boolean | null
           homepage_contact_section_description?: string | null
           homepage_contact_section_title?: string | null
+          homepage_contact_section_title_first_line?: string | null
+          homepage_contact_section_title_second_line?: string | null
           homepage_delivery_section_description?: string | null
           homepage_delivery_section_title?: string | null
           homepage_hero_background_url?: string | null
@@ -135,8 +180,12 @@ export type Database = {
           homepage_hero_title_second_line?: string | null
           homepage_menu_section_description?: string | null
           homepage_menu_section_title?: string | null
+          homepage_menu_section_title_first_line?: string | null
+          homepage_menu_section_title_second_line?: string | null
           homepage_services_section_description?: string | null
           homepage_services_section_title?: string | null
+          homepage_services_section_title_first_line?: string | null
+          homepage_services_section_title_second_line?: string | null
           id?: string
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
@@ -148,6 +197,14 @@ export type Database = {
           reviews_page_hero_title?: string | null
           reviews_page_hero_title_first_line?: string | null
           reviews_page_hero_title_second_line?: string | null
+          reviews_section_title_first_line?: string | null
+          reviews_section_title_second_line?: string | null
+          stats_awards_label?: string | null
+          stats_awards_number?: string | null
+          stats_clients_label?: string | null
+          stats_clients_number?: string | null
+          stats_experience_label?: string | null
+          stats_experience_number?: string | null
           updated_at?: string
         }
         Relationships: [

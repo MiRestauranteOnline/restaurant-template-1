@@ -1,7 +1,14 @@
 import { Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { useClient } from '@/contexts/ClientContext';
 
 const Reviews = () => {
+  const { adminContent } = useClient();
+  
+  // Use separate title fields from database
+  const reviewsTitleFirstLine = (adminContent as any)?.reviews_section_title_first_line || "Lo Que Dicen";
+  const reviewsTitleSecondLine = (adminContent as any)?.reviews_section_title_second_line || "Nuestros Clientes";
+  
   const reviews = [
     {
       name: "María González",
@@ -58,8 +65,10 @@ const Reviews = () => {
             Testimonios
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
-            Lo Que Dicen
-            <span className="block text-gradient font-normal">Nuestros Clientes</span>
+            <span>{reviewsTitleFirstLine}</span>
+            {reviewsTitleSecondLine && (
+              <span className="block text-gradient font-normal">{reviewsTitleSecondLine}</span>
+            )}
           </h2>
           <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
             Cada opinión refleja nuestro compromiso con la excelencia culinaria y el servicio excepcional.
