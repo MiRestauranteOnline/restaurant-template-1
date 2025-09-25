@@ -1,11 +1,13 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import { useClientData, ClientData, MenuItem, MenuCategory, ClientSettings, AdminContent } from '@/hooks/useClientData';
+import { useClientData, ClientData, MenuItem, MenuCategory, ClientSettings, AdminContent, TeamMember, Review } from '@/hooks/useClientData';
 
 interface ClientContextType {
   client: ClientData | null;
   adminContent: AdminContent | null;
   menuItems: MenuItem[];
   menuCategories: MenuCategory[];
+  teamMembers: TeamMember[];
+  reviews: Review[];
   clientSettings: ClientSettings | null;
   loading: boolean;
   error: string | null;

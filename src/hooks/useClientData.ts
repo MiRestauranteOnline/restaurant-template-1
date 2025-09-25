@@ -245,6 +245,31 @@ export interface AdminContent {
   updated_at: string;
 }
 
+export interface TeamMember {
+  id: string;
+  client_id: string;
+  name: string;
+  title: string;
+  bio?: string;
+  image_url?: string;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Review {
+  id: string;
+  client_id: string;
+  reviewer_name: string;
+  review_text: string;
+  star_rating: number;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ClientSettings {
   id: string;
   client_id: string;
@@ -264,6 +289,8 @@ export const useClientData = (subdomain?: string) => {
   const [adminContent, setAdminContent] = useState<AdminContent | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [menuCategories, setMenuCategories] = useState<MenuCategory[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [clientSettings, setClientSettings] = useState<ClientSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -346,6 +373,21 @@ export const useClientData = (subdomain?: string) => {
               .single()
           ]);
 
+          // Fetch team members and reviews separately due to type limitations
+          const teamResponse = await (supabase as any)
+            .from('team_members')
+            .select('*')
+            .eq('client_id', clientData.id)
+            .eq('is_active', true)
+            .order('display_order', { ascending: true });
+
+          const reviewsResponse = await (supabase as any)
+            .from('reviews')
+            .select('*')
+            .eq('client_id', clientData.id)
+            .eq('is_active', true)
+            .order('display_order', { ascending: true });
+
           // Set menu data
           if (menuResponse.error) {
             console.error('Error fetching menu items:', menuResponse.error);
@@ -358,6 +400,20 @@ export const useClientData = (subdomain?: string) => {
             console.error('Error fetching menu categories:', categoriesResponse.error);
           } else {
             setMenuCategories(categoriesResponse.data || []);
+          }
+
+          // Set team members data
+          if (teamResponse.error) {
+            console.error('Error fetching team members:', teamResponse.error);
+          } else {
+            setTeamMembers(teamResponse.data as TeamMember[] || []);
+          }
+
+          // Set reviews data
+          if (reviewsResponse.error) {
+            console.error('Error fetching reviews:', reviewsResponse.error);
+          } else {
+            setReviews(reviewsResponse.data as Review[] || []);
           }
 
           // Set admin content
@@ -398,6 +454,8 @@ export const useClientData = (subdomain?: string) => {
     adminContent,
     menuItems,
     menuCategories,
+    teamMembers,
+    reviews,
     clientSettings,
     loading,
     error,

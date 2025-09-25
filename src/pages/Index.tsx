@@ -4,7 +4,7 @@ import About from '@/components/About';
 import Menu from '@/components/Menu';
 import DeliveryServices from '@/components/DeliveryServices';
 import Services from '@/components/Services';
-import Reviews from '@/components/Reviews';
+import HomepageReviews from '@/components/HomepageReviews';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 
@@ -17,7 +17,7 @@ const RestaurantContent = () => {
       <Menu />
       <DeliveryServices />
       <Services />
-      <Reviews />
+      <HomepageReviews />
       <Contact />
       <Footer />
     </div>

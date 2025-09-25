@@ -2,7 +2,7 @@ import { Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useClient } from '@/contexts/ClientContext';
 
-const Reviews = () => {
+const HomepageReviews = () => {
   const { adminContent, reviews } = useClient();
   
   // Use separate title fields from database
@@ -13,6 +13,9 @@ const Reviews = () => {
   if (!reviews || reviews.length === 0) {
     return null;
   }
+
+  // Show only the first 6 reviews on homepage
+  const homepageReviews = reviews.slice(0, 6);
 
   const renderStars = (rating: number) => {
     return [...Array(5)].map((_, i) => (
@@ -45,7 +48,7 @@ const Reviews = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {reviews.map((review) => (
+          {homepageReviews.map((review) => (
             <Card key={review.id} className="bg-card border-border card-hover fade-in">
               <CardContent className="p-6">
                 <div className="flex items-center mb-4">
@@ -88,4 +91,4 @@ const Reviews = () => {
   );
 };
 
-export default Reviews;
+export default HomepageReviews;

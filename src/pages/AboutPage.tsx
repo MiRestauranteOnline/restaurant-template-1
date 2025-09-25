@@ -7,7 +7,7 @@ import { useClient } from '@/contexts/ClientContext';
 import { Users } from 'lucide-react';
 
 const AboutPage = () => {
-  const { adminContent } = useClient();
+  const { adminContent, teamMembers } = useClient();
   
   // Get dynamic content from database
   const aboutHeroTitleFirst = (adminContent as any)?.about_page_hero_title_first_line || 'Sobre';
@@ -105,41 +105,53 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="py-16 bg-card">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-heading font-light mb-6">
-              {teamTitleFirst}
-              <span className="block text-gradient font-normal">{teamTitleSecond}</span>
-            </h2>
-            <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
-              {teamDescription}
-            </p>
-          </div>
+      {/* Team Section - Only show if team members exist */}
+      {teamMembers && teamMembers.length > 0 && (
+        <section className="py-16 bg-card">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-heading font-light mb-6">
+                {teamTitleFirst}
+                <span className="block text-gradient font-normal">{teamTitleSecond}</span>
+              </h2>
+              <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
+                {teamDescription}
+              </p>
+            </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {team.map((member, index) => (
-              <Card key={index} className="bg-background border-border card-hover text-center">
-                <CardContent className="p-8">
-                  <div className="w-24 h-24 bg-accent/10 rounded-full mx-auto mb-6 flex items-center justify-center">
-                    <Users className="w-12 h-12 text-accent" />
-                  </div>
-                  <h3 className="text-xl font-heading font-semibold mb-2 text-foreground">
-                    {member.name}
-                  </h3>
-                  <p className="text-accent font-medium mb-4">
-                    {member.role}
-                  </p>
-                  <p className="text-foreground/70 leading-relaxed">
-                    {member.description}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+            <div className="grid md:grid-cols-3 gap-8">
+              {teamMembers.map((member) => (
+                <Card key={member.id} className="bg-background border-border card-hover text-center">
+                  <CardContent className="p-8">
+                    {member.image_url ? (
+                      <img 
+                        src={member.image_url} 
+                        alt={member.name}
+                        className="w-24 h-24 rounded-full mx-auto mb-6 object-cover"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 bg-accent/10 rounded-full mx-auto mb-6 flex items-center justify-center">
+                        <Users className="w-12 h-12 text-accent" />
+                      </div>
+                    )}
+                    <h3 className="text-xl font-heading font-semibold mb-2 text-foreground">
+                      {member.name}
+                    </h3>
+                    <p className="text-accent font-medium mb-4">
+                      {member.title}
+                    </p>
+                    {member.bio && (
+                      <p className="text-foreground/70 leading-relaxed">
+                        {member.bio}
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <Footer />
     </div>
