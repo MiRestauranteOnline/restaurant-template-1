@@ -1,45 +1,52 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useClient } from '@/contexts/ClientContext';
 import grilledSteak from '@/assets/grilled-steak.jpg';
 import seafoodPlatter from '@/assets/seafood-platter.jpg';
 import chocolateDessert from '@/assets/chocolate-dessert.jpg';
 import heroPasta from '@/assets/hero-pasta.jpg';
 
 const Menu = () => {
-  const menuItems = [
+  const { menuItems, client } = useClient();
+
+  // Fallback menu items if no database items exist
+  const fallbackMenuItems = [
     {
-      id: 1,
+      id: '1',
       name: "Pasta Suprema con Trufa",
       description: "Pasta artesanal con láminas de trufa negra, hongos silvestres y salsa cremosa de parmesano",
-      price: "S/ 65",
+      price: 65,
       image: heroPasta,
       category: "Especialidad"
     },
     {
-      id: 2,
+      id: '2',
       name: "Lomo de Res Premium",
       description: "Corte premium con romero, ajo confitado y vegetales de temporada",
-      price: "S/ 85",
+      price: 85,
       image: grilledSteak,
       category: "Plato Principal"
     },
     {
-      id: 3,
+      id: '3',
       name: "Plato del Océano",
       description: "Langosta fresca, ostras y mariscos de temporada con mignonette cítrica",
-      price: "S/ 95",
+      price: 95,
       image: seafoodPlatter,
       category: "Mariscos"
     },
     {
-      id: 4,
+      id: '4',
       name: "Decadencia de Chocolate",
       description: "Soufflé de chocolate negro con hoja de oro y helado de vainilla",
-      price: "S/ 28",
+      price: 28,
       image: chocolateDessert,
       category: "Postre"
     }
   ];
+
+  const displayMenuItems = menuItems.length > 0 ? menuItems : fallbackMenuItems;
+  const currency = client?.other_customizations?.currency || 'S/';
 
   return (
     <section id="menu" className="py-20 lg:py-32 bg-secondary/20">
@@ -59,7 +66,7 @@ const Menu = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          {menuItems.map((item, index) => (
+          {displayMenuItems.map((item, index) => (
             <Card 
               key={item.id} 
               className="card-hover bg-card border-border overflow-hidden group"
@@ -67,7 +74,7 @@ const Menu = () => {
             >
               <div className="relative h-64 overflow-hidden">
                 <img
-                  src={item.image}
+                  src={item.image_url || (typeof item.image === 'string' ? item.image : heroPasta)}
                   alt={item.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
@@ -85,7 +92,7 @@ const Menu = () => {
                     {item.name}
                   </h3>
                   <span className="text-2xl font-heading font-bold text-accent">
-                    {item.price}
+                    {currency} {typeof item.price === 'number' ? item.price : item.price}
                   </span>
                 </div>
                 <p className="text-foreground/70 text-sm leading-relaxed">

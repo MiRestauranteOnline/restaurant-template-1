@@ -1,0 +1,137 @@
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+
+export interface ClientData {
+  id: string;
+  subdomain: string;
+  restaurant_name: string;
+  phone?: string;
+  email?: string;
+  whatsapp?: string;
+  address?: string;
+  coordinates?: any;
+  opening_hours?: any;
+  social_media_links?: any;
+  brand_colors?: any;
+  other_customizations?: any;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MenuItem {
+  id: string;
+  client_id: string;
+  name: string;
+  description?: string;
+  price: number;
+  category: string;
+  image_url?: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ClientSettings {
+  id: string;
+  client_id: string;
+  whatsapp_messages?: any;
+  delivery_info?: any;
+  other_customizations?: any;
+  created_at: string;
+  updated_at: string;
+}
+
+export const useClientData = (subdomain?: string) => {
+  const [client, setClient] = useState<ClientData | null>(null);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [clientSettings, setClientSettings] = useState<ClientSettings | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Auto-detect subdomain from URL if not provided
+  const detectedSubdomain = subdomain || getSubdomainFromUrl();
+
+  function getSubdomainFromUrl(): string {
+    // For development, we'll use a default subdomain
+    if (window.location.hostname === 'localhost' || window.location.hostname.includes('lovable.app')) {
+      return 'demo'; // Default subdomain for template
+    }
+    
+    const hostname = window.location.hostname;
+    const parts = hostname.split('.');
+    return parts.length > 2 ? parts[0] : 'demo';
+  }
+
+  useEffect(() => {
+    const fetchClientData = async () => {
+      if (!detectedSubdomain) {
+        setError('No subdomain detected');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Fetch client data
+        const { data: clientData, error: clientError } = await supabase
+          .from('clients')
+          .select('*')
+          .eq('subdomain', detectedSubdomain)
+          .single();
+
+        if (clientError) {
+          throw clientError;
+        }
+
+        setClient(clientData);
+
+        if (clientData?.id) {
+          // Fetch menu items
+          const { data: menuData, error: menuError } = await supabase
+            .from('menu_items')
+            .select('*')
+            .eq('client_id', clientData.id)
+            .eq('is_active', true)
+            .order('category', { ascending: true });
+
+          if (menuError) {
+            console.error('Error fetching menu items:', menuError);
+          } else {
+            setMenuItems(menuData || []);
+          }
+
+          // Fetch client settings
+          const { data: settingsData, error: settingsError } = await supabase
+            .from('client_settings')
+            .select('*')
+            .eq('client_id', clientData.id)
+            .single();
+
+          if (settingsError) {
+            console.error('Error fetching client settings:', settingsError);
+          } else {
+            setClientSettings(settingsData);
+          }
+        }
+      } catch (err: any) {
+        console.error('Error fetching client data:', err);
+        setError(err.message || 'Failed to load restaurant data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClientData();
+  }, [detectedSubdomain]);
+
+  return {
+    client,
+    menuItems,
+    clientSettings,
+    loading,
+    error,
+    subdomain: detectedSubdomain
+  };
+};

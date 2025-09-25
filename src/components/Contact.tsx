@@ -3,28 +3,48 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { useClient } from '@/contexts/ClientContext';
 
 const Contact = () => {
+  const { client, clientSettings } = useClient();
+  
+  const formatOpeningHours = (hours: any) => {
+    if (!hours || typeof hours !== 'object') {
+      return ["Lun-Jue: 12:00 PM - 10:00 PM", "Vie-Sáb: 12:00 PM - 11:00 PM", "Dom: 12:00 PM - 9:00 PM"];
+    }
+    
+    const formatDay = (day: string, schedule: any) => {
+      if (!schedule || !schedule.open || !schedule.close) return null;
+      return `${day}: ${schedule.open} - ${schedule.close}`;
+    };
+    
+    return [
+      formatDay("Lun-Jue", hours.weekdays),
+      formatDay("Vie-Sáb", hours.weekend),
+      formatDay("Dom", hours.sunday)
+    ].filter(Boolean);
+  };
+
   const contactInfo = [
     {
       icon: Phone,
       title: "Teléfono",
-      details: ["+51 987 654 321"]
+      details: client?.phone ? [client.phone] : ["+51 987 654 321"]
     },
     {
       icon: Mail,
       title: "Email",
-      details: ["info@savoria.com"]
+      details: client?.email ? [client.email] : ["info@savoria.com"]
     },
     {
       icon: MapPin,
       title: "Ubicación",
-      details: ["Av. Larco 123", "Miraflores, Lima"]
+      details: client?.address ? [client.address] : ["Av. Larco 123", "Miraflores, Lima"]
     },
     {
       icon: Clock,
       title: "Horarios",
-      details: ["Lun-Jue: 12:00 PM - 10:00 PM", "Vie-Sáb: 12:00 PM - 11:00 PM", "Dom: 12:00 PM - 9:00 PM"]
+      details: formatOpeningHours(client?.opening_hours)
     }
   ];
 
@@ -106,7 +126,12 @@ const Contact = () => {
                   <div className="grid gap-4">
                     <Button 
                       className="btn-primary w-full py-4 text-lg rounded-full"
-                      onClick={() => window.open('https://wa.me/51987654321?text=Hola, me gustaría hacer una reserva para [fecha] a las [hora] para [número de personas] personas.', '_blank')}
+                      onClick={() => {
+                        const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
+                        const message = clientSettings?.whatsapp_messages?.reservation || 
+                          'Hola, me gustaría hacer una reserva para [fecha] a las [hora] para [número de personas] personas.';
+                        window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+                      }}
                     >
                       Reservar por WhatsApp
                     </Button>
@@ -114,7 +139,7 @@ const Contact = () => {
                     <Button 
                       variant="outline"
                       className="w-full py-4 text-lg rounded-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
-                      onClick={() => window.open('tel:+51987654321', '_self')}
+                      onClick={() => window.open(`tel:${client?.phone || '+51987654321'}`, '_self')}
                     >
                       Llamar Ahora
                     </Button>
@@ -122,7 +147,7 @@ const Contact = () => {
                   
                   <div className="text-center pt-4 border-t border-border">
                     <p className="text-sm text-foreground/60">
-                      Horarios: Lun-Jue 12:00 PM - 10:00 PM | Vie-Sáb 12:00 PM - 11:00 PM | Dom 12:00 PM - 9:00 PM
+                      Horarios: {formatOpeningHours(client?.opening_hours).join(' | ')}
                     </p>
                   </div>
                 </div>

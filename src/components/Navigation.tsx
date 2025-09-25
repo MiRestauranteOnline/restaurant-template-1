@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'react-router-dom';
+import { useClient } from '@/contexts/ClientContext';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { client } = useClient();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,7 +39,7 @@ const Navigation = () => {
           {/* Logo */}
           <div className="flex-shrink-0">
             <h1 className="text-2xl md:text-3xl font-heading font-bold text-gradient">
-              Savoria
+              {client?.restaurant_name || 'Savoria'}
             </h1>
           </div>
 
@@ -65,13 +67,16 @@ const Navigation = () => {
             <div className="flex items-center space-x-3">
               <Button 
                 className="btn-ghost px-4 py-2 rounded-full text-sm"
-                onClick={() => window.open('tel:+51987654321', '_self')}
+                onClick={() => window.open(`tel:${client?.phone || '+51987654321'}`, '_self')}
               >
                 Llamar
               </Button>
               <Button 
                 className="btn-primary px-6 py-2 rounded-full"
-                onClick={() => window.open('https://wa.me/51987654321?text=Hola, me gustaría hacer una reserva', '_blank')}
+                onClick={() => {
+                  const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
+                  window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
+                }}
               >
                 WhatsApp
               </Button>
@@ -118,13 +123,16 @@ const Navigation = () => {
               <div className="px-3 py-2 space-y-2">
                 <Button 
                   className="btn-ghost w-full rounded-full"
-                  onClick={() => window.open('tel:+51987654321', '_self')}
+                  onClick={() => window.open(`tel:${client?.phone || '+51987654321'}`, '_self')}
                 >
                   Llamar
                 </Button>
                 <Button 
                   className="btn-primary w-full rounded-full"
-                  onClick={() => window.open('https://wa.me/51987654321?text=Hola, me gustaría hacer una reserva', '_blank')}
+                  onClick={() => {
+                    const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
+                    window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
+                  }}
                 >
                   WhatsApp
                 </Button>

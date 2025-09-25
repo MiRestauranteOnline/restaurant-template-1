@@ -1,22 +1,42 @@
 import { Instagram, Facebook, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import { useClient } from '@/contexts/ClientContext';
 
 const Footer = () => {
+  const { client } = useClient();
+  
+  const formatOpeningHours = (hours: any) => {
+    if (!hours || typeof hours !== 'object') {
+      return [
+        "Lunes - Jueves: 12:00 PM - 10:00 PM",
+        "Viernes - Sábado: 12:00 PM - 11:00 PM", 
+        "Domingo: 12:00 PM - 9:00 PM"
+      ];
+    }
+    
+    const formatDay = (day: string, schedule: any) => {
+      if (!schedule || !schedule.open || !schedule.close) return null;
+      return `${day}: ${schedule.open} - ${schedule.close}`;
+    };
+    
+    return [
+      formatDay("Lunes - Jueves", hours.weekdays),
+      formatDay("Viernes - Sábado", hours.weekend),
+      formatDay("Domingo", hours.sunday)
+    ].filter(Boolean);
+  };
+
   const restaurantInfo = [
     {
       title: "Contacto",
       items: [
-        { icon: Phone, text: "+51 987 654 321" },
-        { icon: Mail, text: "info@savoria.com" },
-        { icon: MapPin, text: "Av. Larco 123, Miraflores, Lima" }
+        { icon: Phone, text: client?.phone || "+51 987 654 321" },
+        { icon: Mail, text: client?.email || "info@savoria.com" },
+        { icon: MapPin, text: client?.address || "Av. Larco 123, Miraflores, Lima" }
       ]
     },
     {
       title: "Horarios",
-      items: [
-        "Lunes - Jueves: 12:00 PM - 10:00 PM",
-        "Viernes - Sábado: 12:00 PM - 11:00 PM", 
-        "Domingo: 12:00 PM - 9:00 PM"
-      ]
+      items: formatOpeningHours(client?.opening_hours)
     },
     {
       title: "Enlaces",
@@ -46,7 +66,7 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="lg:col-span-1">
             <h3 className="text-3xl font-heading font-bold text-gradient mb-4">
-              Savoria
+              {client?.restaurant_name || 'Savoria'}
             </h3>
             <p className="text-foreground/70 mb-6 leading-relaxed">
               Experimenta la excelencia culinaria en un ambiente de elegancia refinada. 
@@ -111,13 +131,16 @@ const Footer = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
               <button 
                 className="btn-primary px-6 py-3 rounded-full"
-                onClick={() => window.open('https://wa.me/51987654321?text=Hola, me gustaría hacer una reserva', '_blank')}
+                onClick={() => {
+                  const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
+                  window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
+                }}
               >
                 WhatsApp
               </button>
               <button 
                 className="btn-ghost px-6 py-3 rounded-full"
-                onClick={() => window.open('tel:+51987654321', '_self')}
+                onClick={() => window.open(`tel:${client?.phone || '+51987654321'}`, '_self')}
               >
                 Llamar
               </button>
@@ -129,7 +152,7 @@ const Footer = () => {
         <div className="border-t border-border pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-foreground/60 text-sm mb-4 md:mb-0">
-              © {new Date().getFullYear()} Restaurante Savoria. Todos los derechos reservados.
+              © {new Date().getFullYear()} Restaurante {client?.restaurant_name || 'Savoria'}. Todos los derechos reservados.
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-4 text-sm">
               <span className="text-foreground/60">

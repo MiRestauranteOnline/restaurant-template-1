@@ -1,6 +1,16 @@
 import restaurantInterior from '@/assets/restaurant-interior.jpg';
+import { useClient } from '@/contexts/ClientContext';
 
 const About = () => {
+  const { client } = useClient();
+  
+  const aboutContent = client?.other_customizations?.about_content || {
+    title: `Donde la Tradición\nSe Encuentra con la Innovación`,
+    story: `Desde 2010, ${client?.restaurant_name || 'Savoria'} ha sido un faro de excelencia culinaria, combinando técnicas tradicionales con un toque contemporáneo. Nuestra pasión por ingredientes excepcionales y métodos de preparación innovadores crea una experiencia gastronómica inolvidable.`,
+    chef_info: 'Dirigido por el Chef Ejecutivo Carlos Mendoza, nuestro equipo selecciona los mejores ingredientes de temporada de granjas locales y productores artesanales, asegurando que cada plato cuente una historia de calidad y artesanía.',
+    mission: `Desde cenas íntimas hasta grandes celebraciones, creamos momentos que perduran en la memoria mucho después del último bocado. Bienvenido a ${client?.restaurant_name || 'Savoria'}, donde cada comida es una obra maestra.`
+  };
+
   return (
     <section id="about" className="py-20 lg:py-32">
       <div className="container mx-auto px-4">
@@ -13,31 +23,18 @@ const About = () => {
                 Nuestra Historia
               </span>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
-                Donde la Tradición
-                <span className="block text-gradient font-normal">Se Encuentra con la Innovación</span>
+                {aboutContent.title.split('\n').map((line, index) => (
+                  <span key={index} className={index > 0 ? 'block text-gradient font-normal' : ''}>
+                    {line}
+                  </span>
+                ))}
               </h2>
             </div>
             
             <div className="space-y-6 text-foreground/80 text-lg leading-relaxed">
-              <p>
-                Desde 2010, Savoria ha sido un faro de excelencia culinaria, 
-                combinando técnicas tradicionales con un toque contemporáneo. Nuestra 
-                pasión por ingredientes excepcionales y métodos de preparación 
-                innovadores crea una experiencia gastronómica inolvidable.
-              </p>
-              
-              <p>
-                Dirigido por el Chef Ejecutivo Carlos Mendoza, nuestro equipo selecciona 
-                los mejores ingredientes de temporada de granjas locales y productores 
-                artesanales, asegurando que cada plato cuente una historia de calidad 
-                y artesanía.
-              </p>
-              
-              <p>
-                Desde cenas íntimas hasta grandes celebraciones, creamos momentos 
-                que perduran en la memoria mucho después del último bocado. Bienvenido a 
-                Savoria, donde cada comida es una obra maestra.
-              </p>
+              <p>{aboutContent.story}</p>
+              <p>{aboutContent.chef_info}</p>
+              <p>{aboutContent.mission}</p>
             </div>
 
             <div className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-border">
