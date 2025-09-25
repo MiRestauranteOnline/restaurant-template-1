@@ -12,9 +12,9 @@ const About = () => {
   const aboutTitleSecondLine = (adminContent as any)?.homepage_about_section_title_second_line || "Se Encuentra con la Innovación";
   
   // Use separate content fields from database
-  const aboutStory = (adminContent as any)?.about_story || `Desde 2010, ${client?.restaurant_name || 'Savoria'} ha sido un faro de excelencia culinaria, combinando técnicas tradicionales con un toque contemporáneo. Nuestra pasión por ingredientes excepcionales y métodos de preparación innovadores crea una experiencia gastronómica inolvidable.`;
-  const aboutChefInfo = (adminContent as any)?.about_chef_info || 'Dirigido por el Chef Ejecutivo Carlos Mendoza, nuestro equipo selecciona los mejores ingredientes de temporada de granjas locales y productores artesanales, asegurando que cada plato cuente una historia de calidad y artesanía.';
-  const aboutMission = (adminContent as any)?.about_mission || `Desde cenas íntimas hasta grandes celebraciones, creamos momentos que perduran en la memoria mucho después del último bocado. Bienvenido a ${client?.restaurant_name || 'Savoria'}, donde cada comida es una obra maestra.`;
+  const aboutStory = (adminContent as any)?.about_story;
+  const aboutChefInfo = (adminContent as any)?.about_chef_info;
+  const aboutMission = (adminContent as any)?.about_mission;
   
   // Stats from database
   const stats = {
