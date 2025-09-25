@@ -43,7 +43,8 @@ const ContactPage = () => {
       content: "Envíanos un mensaje",
       action: () => {
         const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
-        window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me gustaría contactarlos')}`, '_blank');
+        const cleanNumber = whatsappNumber.replace(/\D/g, '');
+        window.open(`https://api.whatsapp.com/send/?phone=${cleanNumber}&text=Hola%2C+me+gustar%C3%ADa+contactarlos&type=phone_number&app_absent=0`, '_blank');
       },
       buttonText: "Escribir"
     },
