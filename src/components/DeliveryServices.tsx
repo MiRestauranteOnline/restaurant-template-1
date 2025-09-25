@@ -2,11 +2,9 @@ import { useClient } from '@/contexts/ClientContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ExternalLink } from 'lucide-react';
-
-// Temporary placeholder images - replace with actual logos
-const rappiLogo = "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=120&h=60&fit=crop&crop=center";
-const pedidosyaLogo = "https://images.unsplash.com/photo-1574077147475-cd313e2fb809?w=120&h=60&fit=crop&crop=center";
-const didiLogo = "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=120&h=60&fit=crop&crop=center";
+import rappiLogo from '@/assets/rappi-logo.svg';
+import pedidosyaLogo from '@/assets/pedidosya-logo.svg';
+import didiLogo from '@/assets/didifoods-logo.svg';
 
 interface DeliveryService {
   id: string;
