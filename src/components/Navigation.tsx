@@ -13,7 +13,7 @@ import {
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { client, clientSettings } = useClient();
+  const { client, clientSettings, reviews } = useClient();
   const location = useLocation();
 
   useEffect(() => {
@@ -24,13 +24,21 @@ const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = [
+  const baseNavItems = [
     { label: 'Inicio', href: '/' },
     { label: 'Sobre Nosotros', href: '/about' },
     { label: 'Menú', href: '/menu' },
     { label: 'Reseñas', href: '/reviews' },
     { label: 'Contacto', href: '/contact' },
   ];
+
+  // Filter out Reviews if no reviews exist
+  const navItems = baseNavItems.filter(item => {
+    if (item.href === '/reviews') {
+      return reviews && reviews.length > 0;
+    }
+    return true;
+  });
 
   const isActivePage = (href: string) => {
     return location.pathname === href;
