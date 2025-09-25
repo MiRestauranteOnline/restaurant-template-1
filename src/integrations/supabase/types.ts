@@ -22,6 +22,7 @@ export type Database = {
           header_background_enabled: boolean | null
           header_background_style: string | null
           id: string
+          layout_type: string | null
           other_customizations: Json | null
           primary_color: string | null
           updated_at: string
@@ -34,6 +35,7 @@ export type Database = {
           header_background_enabled?: boolean | null
           header_background_style?: string | null
           id?: string
+          layout_type?: string | null
           other_customizations?: Json | null
           primary_color?: string | null
           updated_at?: string
@@ -46,6 +48,7 @@ export type Database = {
           header_background_enabled?: boolean | null
           header_background_style?: string | null
           id?: string
+          layout_type?: string | null
           other_customizations?: Json | null
           primary_color?: string | null
           updated_at?: string

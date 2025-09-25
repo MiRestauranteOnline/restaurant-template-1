@@ -55,6 +55,7 @@ export interface ClientSettings {
   header_background_enabled?: boolean;
   header_background_style?: 'dark' | 'bright';
   primary_color?: string;
+  layout_type?: 'layout1' | 'layout2' | 'layout3' | 'layout4';
   created_at: string;
   updated_at: string;
 }
