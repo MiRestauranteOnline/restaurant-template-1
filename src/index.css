@@ -168,7 +168,7 @@
   }
   
   .btn-ghost {
-    @apply border border-foreground/30 text-foreground hover:bg-foreground hover:text-background;
+    @apply border border-foreground/30 bg-foreground text-background hover:bg-foreground/80;
     transition: var(--transition-smooth);
   }
   
