@@ -53,6 +53,65 @@ const applyDynamicColors = (primaryColor: string) => {
   document.documentElement.style.setProperty('--gradient-primary', gradientPrimary);
 };
 
+// LocalStorage cache management
+const CACHE_PREFIX = 'client_styles_';
+const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+
+const getCacheKey = (subdomain: string) => `${CACHE_PREFIX}${subdomain}`;
+
+const loadCachedStyles = (subdomain: string) => {
+  try {
+    const cacheKey = getCacheKey(subdomain);
+    const cached = localStorage.getItem(cacheKey);
+    if (!cached) return null;
+    
+    const { data, timestamp } = JSON.parse(cached);
+    
+    // Check if cache is expired
+    if (Date.now() - timestamp > CACHE_EXPIRY) {
+      localStorage.removeItem(cacheKey);
+      return null;
+    }
+    
+    return data;
+  } catch (error) {
+    console.warn('Failed to load cached styles:', error);
+    return null;
+  }
+};
+
+const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, client: ClientData) => {
+  try {
+    const cacheKey = getCacheKey(subdomain);
+    const cacheData = {
+      primary_color: clientSettings.primary_color || '#FFD700',
+      theme: client.theme || 'dark',
+      layout_type: clientSettings.layout_type || 'layout1'
+    };
+    
+    localStorage.setItem(cacheKey, JSON.stringify({
+      data: cacheData,
+      timestamp: Date.now()
+    }));
+  } catch (error) {
+    console.warn('Failed to save cached styles:', error);
+  }
+};
+
+const applyEarlyStyles = (subdomain: string) => {
+  const cachedData = loadCachedStyles(subdomain);
+  if (cachedData) {
+    // Apply cached primary color immediately
+    applyDynamicColors(cachedData.primary_color);
+    
+    // Apply cached theme
+    document.documentElement.classList.remove('dark', 'bright', 'light');
+    if (cachedData.theme === 'bright') {
+      document.documentElement.classList.add('bright');
+    }
+  }
+};
+
 export interface ClientData {
   id: string;
   subdomain: string;
@@ -122,6 +181,13 @@ export const useClientData = (subdomain?: string) => {
 
   // Auto-detect subdomain from URL if not provided
   const detectedSubdomain = subdomain || getSubdomainFromUrl();
+
+  // Apply cached styles immediately on hook initialization
+  useEffect(() => {
+    if (detectedSubdomain) {
+      applyEarlyStyles(detectedSubdomain);
+    }
+  }, [detectedSubdomain]);
 
   function getSubdomainFromUrl(): string {
     // For development and Lovable platform, use demos subdomain
@@ -205,6 +271,9 @@ export const useClientData = (subdomain?: string) => {
             // Apply dynamic colors immediately when settings are loaded
             const primaryColor = (settingsData as ClientSettings)?.primary_color || '#FFD700';
             applyDynamicColors(primaryColor);
+            
+            // Cache the styles for future visits
+            saveCachedStyles(detectedSubdomain, settingsData as ClientSettings, clientData as ClientData);
           }
         }
       } catch (err: any) {
