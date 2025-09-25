@@ -61,11 +61,6 @@ const About = () => {
                   <span className="block text-gradient font-normal">{aboutTitleSecondLine}</span>
                 )}
               </h2>
-              {sectionDescription && (
-                <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
-                  {sectionDescription}
-                </p>
-              )}
             </div>
             
             <div className="space-y-6 text-foreground/80 text-lg leading-relaxed text-center">
