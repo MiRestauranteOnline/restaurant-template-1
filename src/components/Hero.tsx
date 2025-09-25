@@ -8,7 +8,7 @@ const Hero = () => {
   
   const heroTitle = adminContent?.homepage_hero_title || 
     client?.other_customizations?.hero_title || 
-    `${client?.restaurant_name || 'Excelencia'}\nCulinaria`;
+    `Excelencia\nCulinaria`;
   
   const heroDescription = adminContent?.homepage_hero_description || 
     client?.other_customizations?.hero_description || 
