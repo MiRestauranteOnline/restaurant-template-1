@@ -78,10 +78,27 @@ const Navigation = () => {
   const deliveryServices = getDeliveryServices();
   const showDeliveryMenu = deliveryServices.length > 0;
 
+  // Get header background settings from client settings
+  const headerBackgroundEnabled = clientSettings?.header_background_enabled || false;
+  const headerBackgroundStyle = clientSettings?.header_background_style || 'dark';
+  
+  // Dynamic header background logic
+  const getHeaderBackground = () => {
+    if (!headerBackgroundEnabled) {
+      return isScrolled ? 'bg-background/95 backdrop-blur-md shadow-lg' : 'bg-transparent';
+    }
+    
+    // When header background is enabled
+    const baseClasses = 'backdrop-blur-md shadow-lg';
+    if (headerBackgroundStyle === 'bright') {
+      return `bg-card/95 ${baseClasses}`;
+    } else {
+      return `bg-background/95 ${baseClasses}`;
+    }
+  };
+
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-background/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
-    }`}>
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${getHeaderBackground()}`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* 🔒 PROTECTED: Dynamic restaurant name from Supabase - DO NOT MODIFY LOGIC */}

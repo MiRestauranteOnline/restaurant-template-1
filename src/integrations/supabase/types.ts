@@ -19,6 +19,8 @@ export type Database = {
           client_id: string
           created_at: string
           delivery_info: Json | null
+          header_background_enabled: boolean | null
+          header_background_style: string | null
           id: string
           other_customizations: Json | null
           updated_at: string
@@ -28,6 +30,8 @@ export type Database = {
           client_id: string
           created_at?: string
           delivery_info?: Json | null
+          header_background_enabled?: boolean | null
+          header_background_style?: string | null
           id?: string
           other_customizations?: Json | null
           updated_at?: string
@@ -37,6 +41,8 @@ export type Database = {
           client_id?: string
           created_at?: string
           delivery_info?: Json | null
+          header_background_enabled?: boolean | null
+          header_background_style?: string | null
           id?: string
           other_customizations?: Json | null
           updated_at?: string
