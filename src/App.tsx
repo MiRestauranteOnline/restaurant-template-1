@@ -3,8 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ClientProvider } from "@/contexts/ClientContext";
-import { useTheme } from '@/hooks/useTheme';
+import { ClientProvider, useClient } from "@/contexts/ClientContext";
+import { useEffect } from 'react';
 import Index from "./pages/Index";
 import MenuPage from "./pages/MenuPage";
 import AboutPage from "./pages/AboutPage";
@@ -14,12 +14,32 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-// Theme wrapper component
+// Theme wrapper component that waits for client data
 const ThemedApp = () => {
   console.log('🔍 ThemedApp: Component mounting');
-  // PROTECTED: Initialize theme from database
-  useTheme();
-  console.log('🔍 ThemedApp: Theme initialized, rendering routes');
+  const { client, loading } = useClient();
+  
+  // Wait for client data to load before applying theme
+  useEffect(() => {
+    if (!loading && client) {
+      console.log('🔍 ThemedApp: Applying theme from client data');
+      // PROTECTED: Dynamic theme switching based on database value
+      const theme = client.theme || 'dark';
+      
+      // Remove existing theme classes
+      document.documentElement.classList.remove('dark', 'bright', 'light');
+      
+      // Apply the theme from database
+      if (theme === 'bright') {
+        document.documentElement.classList.add('bright');
+      } else {
+        // Default to dark theme (no class needed as it's the root styles)
+        document.documentElement.classList.remove('bright');
+      }
+    }
+  }, [client, loading]);
+
+  console.log('🔍 ThemedApp: Rendering routes');
 
   return (
     <Routes>
