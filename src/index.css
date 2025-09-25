@@ -182,11 +182,13 @@
   
   /* Header background variants */
   .header-bg-dark {
-    @apply bg-slate-900/95 backdrop-blur-md shadow-lg;
+    @apply backdrop-blur-md shadow-lg;
+    background-color: hsl(var(--background) / 0.95);
   }
   
   .header-bg-bright {
-    @apply bg-white/95 backdrop-blur-md shadow-lg;
+    @apply backdrop-blur-md shadow-lg;
+    background-color: hsl(var(--background) / 0.95);
   }
   
   /* Animation utilities */
