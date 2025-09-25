@@ -16,8 +16,10 @@ const queryClient = new QueryClient();
 
 // Theme wrapper component
 const ThemedApp = () => {
+  console.log('🔍 ThemedApp: Component mounting');
   // PROTECTED: Initialize theme from database
   useTheme();
+  console.log('🔍 ThemedApp: Theme initialized, rendering routes');
 
   return (
     <Routes>

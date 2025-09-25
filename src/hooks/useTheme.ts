@@ -5,7 +5,9 @@ import { useEffect } from 'react';
 import { useClient } from '@/contexts/ClientContext';
 
 export const useTheme = () => {
+  console.log('🔍 useTheme: Starting theme initialization');
   const { client } = useClient();
+  console.log('🔍 useTheme: Got client data:', client?.restaurant_name || 'No client yet');
   
   useEffect(() => {
     // PROTECTED: Dynamic theme switching based on database value
