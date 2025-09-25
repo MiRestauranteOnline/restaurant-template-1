@@ -7,11 +7,14 @@ const About = () => {
   const sectionTitle = adminContent?.homepage_about_section_title || "Nuestra Historia";
   const sectionDescription = adminContent?.homepage_about_section_description;
   
-  const aboutContent = client?.other_customizations?.about_content || {
-    title: `Donde la Tradición\nSe Encuentra con la Innovación`,
-    story: `Desde 2010, ${client?.restaurant_name || 'Savoria'} ha sido un faro de excelencia culinaria, combinando técnicas tradicionales con un toque contemporáneo. Nuestra pasión por ingredientes excepcionales y métodos de preparación innovadores crea una experiencia gastronómica inolvidable.`,
-    chef_info: 'Dirigido por el Chef Ejecutivo Carlos Mendoza, nuestro equipo selecciona los mejores ingredientes de temporada de granjas locales y productores artesanales, asegurando que cada plato cuente una historia de calidad y artesanía.',
-    mission: `Desde cenas íntimas hasta grandes celebraciones, creamos momentos que perduran en la memoria mucho después del último bocado. Bienvenido a ${client?.restaurant_name || 'Savoria'}, donde cada comida es una obra maestra.`
+  // Use admin content for about page content, with fallbacks
+  const aboutPageContent = adminContent?.about_page_content || {};
+  
+  const aboutContent = {
+    title: aboutPageContent.title || `Donde la Tradición\nSe Encuentra con la Innovación`,
+    story: aboutPageContent.story || `Desde 2010, ${client?.restaurant_name || 'Savoria'} ha sido un faro de excelencia culinaria, combinando técnicas tradicionales con un toque contemporáneo. Nuestra pasión por ingredientes excepcionales y métodos de preparación innovadores crea una experiencia gastronómica inolvidable.`,
+    chef_info: aboutPageContent.chef_info || 'Dirigido por el Chef Ejecutivo Carlos Mendoza, nuestro equipo selecciona los mejores ingredientes de temporada de granjas locales y productores artesanales, asegurando que cada plato cuente una historia de calidad y artesanía.',
+    mission: aboutPageContent.mission || `Desde cenas íntimas hasta grandes celebraciones, creamos momentos que perduran en la memoria mucho después del último bocado. Bienvenido a ${client?.restaurant_name || 'Savoria'}, donde cada comida es una obra maestra.`
   };
 
   return (
