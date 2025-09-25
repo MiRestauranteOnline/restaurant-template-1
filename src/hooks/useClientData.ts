@@ -84,9 +84,28 @@ const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, cli
   try {
     const cacheKey = getCacheKey(subdomain);
     const cacheData = {
+      // Color and theme settings
       primary_color: clientSettings.primary_color || '#FFD700',
       theme: client.theme || 'dark',
-      layout_type: clientSettings.layout_type || 'layout1'
+      
+      // Layout and navigation settings
+      layout_type: clientSettings.layout_type || 'layout1',
+      header_background_enabled: clientSettings.header_background_enabled || false,
+      header_background_style: clientSettings.header_background_style || 'dark',
+      
+      // Restaurant basic info to prevent layout shifts
+      restaurant_name: client.restaurant_name || '',
+      phone: client.phone || null,
+      whatsapp: client.whatsapp || null,
+      
+      // Delivery services info
+      delivery: client.delivery || {},
+      
+      // Other customizations that might affect layout
+      other_customizations: {
+        ...client.other_customizations,
+        ...clientSettings.other_customizations
+      }
     };
     
     localStorage.setItem(cacheKey, JSON.stringify({
@@ -109,6 +128,26 @@ const applyEarlyStyles = (subdomain: string) => {
     if (cachedData.theme === 'bright') {
       document.documentElement.classList.add('bright');
     }
+    
+    // Set CSS variables for header background if cached
+    if (cachedData.header_background_enabled !== undefined) {
+      document.documentElement.style.setProperty(
+        '--header-background-enabled', 
+        cachedData.header_background_enabled ? '1' : '0'
+      );
+    }
+    
+    if (cachedData.header_background_style) {
+      document.documentElement.style.setProperty(
+        '--header-background-style', 
+        cachedData.header_background_style
+      );
+    }
+    
+    // Set layout type for any layout-specific styling
+    if (cachedData.layout_type) {
+      document.documentElement.setAttribute('data-layout', cachedData.layout_type);
+    }
   }
 };
 
@@ -127,6 +166,7 @@ export interface ClientData {
   brand_colors?: any;
   theme?: 'dark' | 'bright';
   other_customizations?: any;
+  delivery?: any;
   created_at: string;
   updated_at: string;
 }
