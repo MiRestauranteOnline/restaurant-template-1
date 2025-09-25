@@ -3,12 +3,8 @@ import Footer from '@/components/Footer';
 import About from '@/components/About';
 import { Card, CardContent } from '@/components/ui/card';
 import { Clock, Users, Award } from 'lucide-react';
-import { useDynamicColors } from '@/hooks/useDynamicColors';
 
 const AboutPage = () => {
-  // Initialize dynamic colors
-  useDynamicColors();
-  
   const stats = [
     { icon: Clock, number: "15+", label: "Años de Experiencia" },
     { icon: Users, number: "5000+", label: "Clientes Satisfechos" },

@@ -7,13 +7,9 @@ import Services from '@/components/Services';
 import Reviews from '@/components/Reviews';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
-import { useDynamicColors } from '@/hooks/useDynamicColors';
 import { useLayoutType } from '@/hooks/useLayoutType';
 
 const RestaurantContent = () => {
-  // Initialize dynamic colors
-  useDynamicColors();
-  
   // Get layout type for conditional styling
   const layoutType = useLayoutType();
   

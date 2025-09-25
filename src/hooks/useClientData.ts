@@ -1,6 +1,58 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+// Utility function to convert hex to HSL
+const hexToHsl = (hex: string) => {
+  // Remove the hash if present
+  hex = hex.replace('#', '');
+  
+  // Convert hex to RGB
+  const r = parseInt(hex.substr(0, 2), 16) / 255;
+  const g = parseInt(hex.substr(2, 2), 16) / 255;
+  const b = parseInt(hex.substr(4, 2), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0, s = 0, l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0; // achromatic
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+    h /= 6;
+  }
+
+  // Convert to degrees and percentages
+  h = Math.round(h * 360);
+  s = Math.round(s * 100);
+  l = Math.round(l * 100);
+
+  return `${h} ${s}% ${l}%`;
+};
+
+// Apply dynamic colors immediately when settings are available
+const applyDynamicColors = (primaryColor: string) => {
+  // Convert hex to HSL
+  const hslColor = hexToHsl(primaryColor);
+  
+  // Update CSS custom properties
+  document.documentElement.style.setProperty('--primary', hslColor);
+  document.documentElement.style.setProperty('--accent', hslColor);
+  
+  // Update gradients to use the new primary color
+  const [h, s, l] = hslColor.split(' ');
+  const lighterL = Math.min(parseInt(l.replace('%', '')) + 10, 90);
+  
+  const gradientPrimary = `linear-gradient(135deg, hsl(${h} ${s} ${l}) 0%, hsl(${h} ${s} ${lighterL}%) 100%)`;
+  document.documentElement.style.setProperty('--gradient-primary', gradientPrimary);
+};
+
 export interface ClientData {
   id: string;
   subdomain: string;
@@ -149,6 +201,10 @@ export const useClientData = (subdomain?: string) => {
             console.error('Error fetching client settings:', settingsError);
           } else {
             setClientSettings(settingsData as ClientSettings);
+            
+            // Apply dynamic colors immediately when settings are loaded
+            const primaryColor = (settingsData as ClientSettings)?.primary_color || '#FFD700';
+            applyDynamicColors(primaryColor);
           }
         }
       } catch (err: any) {

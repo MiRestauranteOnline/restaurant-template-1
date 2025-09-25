@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTheme } from '@/hooks/useTheme';
-import { useDynamicColors } from '@/hooks/useDynamicColors';
 
 interface DidiIconProps {
   className?: string;
@@ -9,7 +8,6 @@ interface DidiIconProps {
 
 export const DidiIcon: React.FC<DidiIconProps> = ({ className = "", size = 64 }) => {
   const theme = useTheme();
-  const primaryColor = useDynamicColors();
   
   // Use primary color in bright mode, white in dark mode
   const fillColor = theme === 'bright' ? `hsl(var(--primary))` : 'white';

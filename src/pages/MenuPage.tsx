@@ -3,12 +3,9 @@ import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { useClient } from '@/contexts/ClientContext';
 import heroPasta from '@/assets/hero-pasta.jpg';
-import { useDynamicColors } from '@/hooks/useDynamicColors';
 
 const MenuPage = () => {
   const { menuItems, menuCategories, client } = useClient();
-  // Initialize dynamic colors
-  useDynamicColors();
   
   const currency = client?.other_customizations?.currency || 'S/';
 
