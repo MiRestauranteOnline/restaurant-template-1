@@ -4,6 +4,12 @@ import { useClient } from '@/contexts/ClientContext';
 const About = () => {
   const { client } = useClient();
   
+  const adminContent = client?.other_customizations?.admin_content;
+  const aboutSectionContent = adminContent?.about_section;
+
+  const sectionTitle = aboutSectionContent?.title || "Nuestra Historia";
+  const sectionDescription = aboutSectionContent?.description;
+  
   const aboutContent = client?.other_customizations?.about_content || {
     title: `Donde la Tradición\nSe Encuentra con la Innovación`,
     story: `Desde 2010, ${client?.restaurant_name || 'Savoria'} ha sido un faro de excelencia culinaria, combinando técnicas tradicionales con un toque contemporáneo. Nuestra pasión por ingredientes excepcionales y métodos de preparación innovadores crea una experiencia gastronómica inolvidable.`,
@@ -32,7 +38,7 @@ const About = () => {
           <div className="fade-in">
             <div className="mb-6 text-center">
               <span className="text-accent font-medium tracking-wider uppercase text-sm">
-                Nuestra Historia
+                {sectionTitle}
               </span>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
                 {aboutContent.title.split('\n').map((line, index) => (
@@ -41,6 +47,11 @@ const About = () => {
                   </span>
                 ))}
               </h2>
+              {sectionDescription && (
+                <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
+                  {sectionDescription}
+                </p>
+              )}
             </div>
             
             <div className="space-y-6 text-foreground/80 text-lg leading-relaxed text-center">

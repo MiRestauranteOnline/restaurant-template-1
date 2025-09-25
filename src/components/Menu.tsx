@@ -9,6 +9,12 @@ import heroPasta from '@/assets/hero-pasta.jpg';
 const Menu = () => {
   const { menuItems, client } = useClient();
 
+  const adminContent = client?.other_customizations?.admin_content;
+  const menuSectionContent = adminContent?.menu_section;
+
+  const sectionTitle = menuSectionContent?.title || "Nuestro Menú";
+  const sectionDescription = menuSectionContent?.description || "Descubre nuestra selección de platos cuidadosamente elaborados";
+
   // Get items marked for homepage display (limit 8)
   const homepageItems = menuItems.filter(item => item.show_on_homepage).slice(0, 8);
 
@@ -68,12 +74,17 @@ const Menu = () => {
             Obras Maestras Culinarias
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
-            Selecciones
-            <span className="block text-gradient font-normal">Especiales</span>
+            {sectionTitle.includes(' ') ? (
+              <>
+                {sectionTitle.split(' ').slice(0, -1).join(' ')}
+                <span className="block text-gradient font-normal">{sectionTitle.split(' ').slice(-1)[0]}</span>
+              </>
+            ) : (
+              <span className="text-gradient font-normal">{sectionTitle}</span>
+            )}
           </h2>
           <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
-            Descubre la selección cuidadosamente curada de nuestro chef con platos excepcionales, 
-            cada uno elaborado con pasión y los mejores ingredientes.
+            {sectionDescription}
           </p>
         </div>
 

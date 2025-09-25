@@ -6,18 +6,25 @@ import heroPasta from '@/assets/hero-pasta.jpg';
 const Hero = () => {
   const { client } = useClient();
   
-  const heroTitle = client?.other_customizations?.hero_title || 
+  const adminContent = client?.other_customizations?.admin_content;
+  const heroContent = adminContent?.hero;
+  
+  const heroTitle = heroContent?.title || client?.other_customizations?.hero_title || 
     `${client?.restaurant_name || 'Excelencia'}\nCulinaria`;
   
-  const heroDescription = client?.other_customizations?.hero_description || 
+  const heroDescription = heroContent?.description || client?.other_customizations?.hero_description || 
     'Experimenta lo mejor de la gastronomía contemporánea con nuestros platos cuidadosamente elaborados y un servicio impecable en un ambiente de elegancia refinada.';
+  
+  const rightButtonText = heroContent?.right_button_text || 'Reservar Mesa';
+  const rightButtonLink = heroContent?.right_button_link || '#contact';
+  const backgroundImageUrl = heroContent?.background_image_url;
 
   return (
     <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${heroPasta})` }}
+        style={{ backgroundImage: `url(${backgroundImageUrl || heroPasta})` }}
       >
         <div className="absolute inset-0 hero-overlay"></div>
       </div>
@@ -41,8 +48,18 @@ const Hero = () => {
             <Button className="btn-primary px-8 py-3 text-lg rounded-full">
               Ver Menú
             </Button>
-            <Button variant="contrast" className="px-8 py-3 text-lg rounded-full">
-              Reservar Mesa
+            <Button 
+              variant="contrast" 
+              className="px-8 py-3 text-lg rounded-full"
+              onClick={() => {
+                if (rightButtonLink.startsWith('#')) {
+                  document.querySelector(rightButtonLink)?.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  window.open(rightButtonLink, '_blank');
+                }
+              }}
+            >
+              {rightButtonText}
             </Button>
           </div>
         </div>

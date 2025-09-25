@@ -17,6 +17,12 @@ interface DeliveryService {
 const DeliveryServices = () => {
   const { client, clientSettings } = useClient();
 
+  const adminContent = client?.other_customizations?.admin_content;
+  const deliverySectionContent = adminContent?.delivery_section;
+
+  const sectionTitle = deliverySectionContent?.title || "Delivery";
+  const sectionDescription = deliverySectionContent?.description || "Ordena desde la comodidad de tu hogar a través de nuestros partners de delivery";
+
   // ====================================
   // 🔒 PROTECTED DYNAMIC FUNCTIONALITY 
   // ====================================
@@ -69,10 +75,10 @@ const DeliveryServices = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-foreground">
-            Delivery
+            {sectionTitle}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Ordena desde la comodidad de tu hogar a través de nuestros partners de delivery
+            {sectionDescription}
           </p>
         </div>
         

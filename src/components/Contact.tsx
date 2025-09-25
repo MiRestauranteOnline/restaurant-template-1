@@ -9,6 +9,13 @@ import { formatOpeningHours } from '@/utils/formatOpeningHours';
 const Contact = () => {
   const { client, clientSettings } = useClient();
   
+  const adminContent = client?.other_customizations?.admin_content;
+  const contactSectionContent = adminContent?.contact_section;
+
+  const sectionTitle = contactSectionContent?.title || "Reserva Tu Experiencia";
+  const sectionDescription = contactSectionContent?.description || "¿Listo para disfrutar de sabores únicos? Te esperamos en Savoria.";
+  const hideReservationBox = contactSectionContent?.hide_reservation_box || false;
+  
 
   const contactInfo = [
     {
@@ -41,11 +48,17 @@ const Contact = () => {
             Contáctanos
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
-            Reserva Tu
-            <span className="block text-gradient font-normal">Experiencia</span>
+            {sectionTitle.includes(' ') ? (
+              <>
+                {sectionTitle.split(' ').slice(0, -1).join(' ')}
+                <span className="block text-gradient font-normal">{sectionTitle.split(' ').slice(-1)[0]}</span>
+              </>
+            ) : (
+              <span className="text-gradient font-normal">{sectionTitle}</span>
+            )}
           </h2>
           <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
-            ¿Listo para disfrutar de sabores únicos? Te esperamos en Savoria.
+            {sectionDescription}
           </p>
         </div>
 
@@ -95,45 +108,47 @@ const Contact = () => {
           </div>
 
           {/* Contact Actions */}
-          <div className="fade-in">
-            <Card className="bg-card border-border">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-heading font-semibold mb-6 text-foreground">
-                  Reserva Tu Mesa
-                </h3>
-                
-                <div className="space-y-6">
-                  <p className="text-foreground/80 leading-relaxed">
-                    ¿Listo para disfrutar de una experiencia culinaria excepcional? 
-                    Contáctanos directamente para hacer tu reserva o resolver cualquier consulta.
-                  </p>
+          {!hideReservationBox && (
+            <div className="fade-in">
+              <Card className="bg-card border-border">
+                <CardContent className="p-8">
+                  <h3 className="text-2xl font-heading font-semibold mb-6 text-foreground">
+                    Reserva Tu Mesa
+                  </h3>
                   
-                  <div className="grid gap-4">
-                    <Button 
-                      className="btn-primary w-full py-4 text-lg rounded-full"
-                      onClick={() => {
-                        const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
-                        const message = clientSettings?.whatsapp_messages?.reservation || 
-                          'Hola, me gustaría hacer una reserva para [fecha] a las [hora] para [número de personas] personas.';
-                        window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
-                      }}
-                    >
-                      Reservar por WhatsApp
-                    </Button>
+                  <div className="space-y-6">
+                    <p className="text-foreground/80 leading-relaxed">
+                      ¿Listo para disfrutar de una experiencia culinaria excepcional? 
+                      Contáctanos directamente para hacer tu reserva o resolver cualquier consulta.
+                    </p>
                     
-                    <Button 
-                      variant="outline"
-                      className="w-full py-4 text-lg rounded-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
-                      onClick={() => window.open(`tel:${client?.phone || '+51987654321'}`, '_self')}
-                    >
-                      Llamar Ahora
-                    </Button>
+                    <div className="grid gap-4">
+                      <Button 
+                        className="btn-primary w-full py-4 text-lg rounded-full"
+                        onClick={() => {
+                          const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
+                          const message = clientSettings?.whatsapp_messages?.reservation || 
+                            'Hola, me gustaría hacer una reserva para [fecha] a las [hora] para [número de personas] personas.';
+                          window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+                        }}
+                      >
+                        Reservar por WhatsApp
+                      </Button>
+                      
+                      <Button 
+                        variant="outline"
+                        className="w-full py-4 text-lg rounded-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                        onClick={() => window.open(`tel:${client?.phone || '+51987654321'}`, '_self')}
+                      >
+                        Llamar Ahora
+                      </Button>
+                    </div>
+                    
                   </div>
-                  
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </div>
     </section>
