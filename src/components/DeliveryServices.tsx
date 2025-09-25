@@ -17,6 +17,13 @@ interface DeliveryService {
 const DeliveryServices = () => {
   const { client, clientSettings } = useClient();
 
+  // ====================================
+  // 🔒 PROTECTED DYNAMIC FUNCTIONALITY 
+  // ====================================
+  // DO NOT MODIFY: This section fetches delivery data from Supabase database
+  // Clients can configure delivery URLs through the admin panel
+  // ONLY STYLING/LAYOUT can be modified below, NOT the data logic
+  
   const clientDelivery = (client as any)?.delivery;
   const settingsDelivery = (clientSettings as any)?.delivery_info;
 
@@ -47,6 +54,10 @@ const DeliveryServices = () => {
 
   // Filter services that have URLs configured
   const availableServices = services.filter(service => service.url);
+  
+  // ====================================
+  // END PROTECTED SECTION
+  // ====================================
 
   // Don't render if no services are configured
   if (availableServices.length === 0) {

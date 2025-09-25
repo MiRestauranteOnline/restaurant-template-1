@@ -36,7 +36,12 @@ const Navigation = () => {
     return location.pathname === href;
   };
 
-  // Get delivery services for navigation
+  // ====================================
+  // 🔒 PROTECTED DYNAMIC FUNCTIONALITY 
+  // ====================================
+  // DO NOT MODIFY: This section fetches delivery data from Supabase database
+  // Clients can configure delivery URLs and navigation visibility through admin panel
+  
   const getDeliveryServices = () => {
     const clientDelivery = (client as any)?.delivery;
     const settingsDelivery = (clientSettings as any)?.delivery_info;
@@ -65,6 +70,10 @@ const Navigation = () => {
 
     return services.filter((service) => service.url && service.show);
   };
+  
+  // ====================================
+  // END PROTECTED SECTION  
+  // ====================================
 
   const deliveryServices = getDeliveryServices();
   const showDeliveryMenu = deliveryServices.length > 0;
@@ -75,7 +84,7 @@ const Navigation = () => {
     }`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
+          {/* 🔒 PROTECTED: Dynamic restaurant name from Supabase - DO NOT MODIFY LOGIC */}
           <div className="flex-shrink-0">
             <h1 className="text-2xl md:text-3xl font-heading font-bold text-gradient">
               {client?.restaurant_name || 'Savoria'}
@@ -130,6 +139,7 @@ const Navigation = () => {
               </DropdownMenu>
             )}
             
+            {/* 🔒 PROTECTED: Dynamic phone/WhatsApp from Supabase - DO NOT MODIFY LOGIC */}
             <div className="flex items-center space-x-3">
               <Button 
                 className="btn-ghost px-4 py-2 rounded-full text-sm"
@@ -207,6 +217,7 @@ const Navigation = () => {
                 </div>
               )}
               
+              {/* 🔒 PROTECTED: Dynamic phone/WhatsApp from Supabase - DO NOT MODIFY LOGIC */}
               <div className="px-3 py-2 space-y-2">
                 <Button 
                   className="btn-ghost w-full rounded-full"
