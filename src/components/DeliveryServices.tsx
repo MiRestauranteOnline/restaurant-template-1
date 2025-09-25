@@ -2,14 +2,14 @@ import { useClient } from '@/contexts/ClientContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ExternalLink } from 'lucide-react';
-import rappiLogo from '@/assets/rappi-logo.svg';
-import pedidosyaLogo from '@/assets/pedidosya-logo.svg';
-import didiLogo from '@/assets/didifoods-logo.svg';
+import { RappiIcon } from '@/components/icons/RappiIcon';
+import { PedidosYaIcon } from '@/components/icons/PedidosYaIcon';
+import { DidiIcon } from '@/components/icons/DidiIcon';
 
 interface DeliveryService {
   id: string;
   name: string;
-  logo: string;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
   url?: string;
   show_in_nav?: boolean;
 }
@@ -35,19 +35,19 @@ const DeliveryServices = () => {
     {
       id: 'rappi',
       name: 'Rappi',
-      logo: rappiLogo,
+      icon: RappiIcon,
       url: clientDelivery ? clientDelivery?.rappi : settingsDelivery?.rappi?.url,
     },
     {
       id: 'pedidosya',
       name: 'PedidosYa',
-      logo: pedidosyaLogo,
+      icon: PedidosYaIcon,
       url: clientDelivery ? clientDelivery?.pedidos_ya : settingsDelivery?.pedidosya?.url,
     },
     {
       id: 'didi',
       name: 'DiDi Food',
-      logo: didiLogo,
+      icon: DidiIcon,
       url: clientDelivery ? clientDelivery?.didi_food : settingsDelivery?.didi?.url,
     },
   ];
@@ -77,36 +77,35 @@ const DeliveryServices = () => {
         </div>
         
         <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          {availableServices.map((service) => (
-            <Card key={service.id} className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-accent/50">
-              <CardContent className="p-8 text-center">
-                <div className="mb-6">
-                  <img
-                    src={service.logo}
-                    alt={`${service.name} logo`}
-                    className="h-16 mx-auto object-contain"
-                  />
-                </div>
-                <h3 className="text-xl font-semibold mb-4 text-foreground">
-                  {service.name}
-                </h3>
-                <Button
-                  asChild
-                  className="w-full group-hover:scale-105 transition-transform duration-300"
-                >
-                  <a 
-                    href={service.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2"
+          {availableServices.map((service) => {
+            const IconComponent = service.icon;
+            return (
+              <Card key={service.id} className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-accent/50">
+                <CardContent className="p-8 text-center">
+                  <div className="mb-6 flex justify-center">
+                    <IconComponent size={64} />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-4 text-foreground">
+                    {service.name}
+                  </h3>
+                  <Button
+                    asChild
+                    className="w-full group-hover:scale-105 transition-transform duration-300"
                   >
-                    Ordenar Ahora
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                    <a 
+                      href={service.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2"
+                    >
+                      Ordenar Ahora
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </section>
