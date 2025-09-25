@@ -3,37 +3,67 @@ import Footer from '@/components/Footer';
 import Contact from '@/components/Contact';
 import { Card, CardContent } from '@/components/ui/card';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { useClient } from '@/contexts/ClientContext';
 
 const ContactPage = () => {
+  const { client } = useClient();
+
+  const formatOpeningHours = (hours: any) => {
+    if (!hours || typeof hours !== 'object') {
+      return [
+        { day: "Lunes - Jueves", time: "12:00 PM - 10:00 PM" },
+        { day: "Viernes - Sábado", time: "12:00 PM - 11:00 PM" },
+        { day: "Domingo", time: "12:00 PM - 9:00 PM" }
+      ];
+    }
+    
+    const formatDay = (day: string, schedule: any) => {
+      if (!schedule || !schedule.open || !schedule.close) return null;
+      return { day, time: `${schedule.open} - ${schedule.close}` };
+    };
+    
+    return [
+      formatDay("Lunes - Jueves", hours.weekdays),
+      formatDay("Viernes - Sábado", hours.weekend),
+      formatDay("Domingo", hours.sunday)
+    ].filter(Boolean);
+  };
+
   const contactMethods = [
     {
       icon: Phone,
       title: "Llámanos",
-      content: "+51 987 654 321",
-      action: () => window.open('tel:+51987654321', '_self'),
+      content: client?.phone || "+51 987 654 321",
+      action: () => window.open(`tel:${client?.phone || '+51987654321'}`, '_self'),
       buttonText: "Llamar Ahora"
     },
     {
       icon: Mail,
       title: "WhatsApp", 
       content: "Envíanos un mensaje",
-      action: () => window.open('https://wa.me/51987654321?text=Hola, me gustaría contactarlos', '_blank'),
+      action: () => {
+        const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
+        window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me gustaría contactarlos')}`, '_blank');
+      },
       buttonText: "Escribir"
     },
     {
       icon: MapPin,
       title: "Visítanos",
-      content: "Av. Larco 123, Miraflores, Lima",
-      action: () => window.open('https://maps.google.com/?q=-12.1267,-77.0365', '_blank'),
+      content: client?.address || "Av. Larco 123, Miraflores, Lima",
+      action: () => {
+        if (client?.coordinates) {
+          const coords = client.coordinates;
+          window.open(`https://maps.google.com/?q=${coords.lat},${coords.lng}`, '_blank');
+        } else {
+          window.open('https://maps.google.com/?q=-12.1267,-77.0365', '_blank');
+        }
+      },
       buttonText: "Ver Mapa"
     }
   ];
 
-  const hours = [
-    { day: "Lunes - Jueves", time: "12:00 PM - 10:00 PM" },
-    { day: "Viernes - Sábado", time: "12:00 PM - 11:00 PM" },
-    { day: "Domingo", time: "12:00 PM - 9:00 PM" }
-  ];
+  const hours = formatOpeningHours(client?.opening_hours);
 
   return (
     <div className="min-h-screen bg-background">
