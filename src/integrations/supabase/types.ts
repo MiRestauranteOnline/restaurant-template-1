@@ -434,7 +434,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      link_user_to_client: {
+        Args: { client_uuid: string; user_email: string; user_role?: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
