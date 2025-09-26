@@ -49,9 +49,10 @@ const getDomainFromUrl = (): string => {
   
   const hostname = window.location.hostname;
   
-  // Check if it's our subdomain (contains mirestaurante.online or similar pattern)
+  // Check if it's our subdomain platform (you can update this logic for your actual domain)
   const isOurSubdomain = hostname.includes('lovable') || 
                          hostname.includes('lovableproject.com') ||
+                         hostname.includes('mirestaurante.online') || // Add your actual domain here
                          hostname.split('.').length > 2;
   
   if (isOurSubdomain) {

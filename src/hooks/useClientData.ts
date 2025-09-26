@@ -479,6 +479,7 @@ export const preloadAllClientData = async (domain?: string) => {
     const hostname = window.location.hostname;
     const isOurSubdomain = hostname.includes('lovable') || 
                            hostname.includes('lovableproject.com') ||
+                           hostname.includes('mirestaurante.online') || // Add your actual domain here
                            hostname.split('.').length > 2;
     
     let clientQuery;
@@ -652,12 +653,31 @@ export const useClientData = (domain?: string) => {
         
         // Skip fast-load data for now, go straight to database
         console.log('⏳ Fetching fresh data from database...');
+        
+        // Determine query method based on domain type
+        const hostname = window.location.hostname;
+        const isOurSubdomain = hostname.includes('lovable') || 
+                               hostname.includes('lovableproject.com') ||
+                               hostname.includes('mirestaurante.online') || // Add your actual domain here
+                               hostname.split('.').length > 2;
+        
+        let clientQuery;
+        if (isOurSubdomain) {
+          // Query by subdomain for our platform subdomains
+          clientQuery = supabase
+            .from('clients')
+            .select('*')
+            .eq('subdomain', detectedDomain);
+        } else {
+          // Query by domain for custom domains
+          clientQuery = supabase
+            .from('clients')
+            .select('*')
+            .eq('domain', detectedDomain);
+        }
+        
         // Fetch complete data from database
-        const { data: clientData, error: clientError } = await supabase
-          .from('clients')
-          .select('*')
-          .eq('subdomain', detectedDomain)
-          .single();
+        const { data: clientData, error: clientError } = await clientQuery.single();
 
         if (clientError) {
           console.error('Error fetching client:', clientError);
