@@ -6,11 +6,13 @@ function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>)
 
 // Enhanced skeleton components for layout shift prevention
 export const MenuItemSkeleton = () => (
-  <div className="space-y-4 p-4">
-    <Skeleton className="h-4 w-3/4" />
-    <Skeleton className="h-3 w-full" />
-    <Skeleton className="h-3 w-1/2" />
-    <Skeleton className="h-4 w-16" />
+  <div className="space-y-3">
+    <div className="flex justify-between items-start">
+      <Skeleton className="h-5 w-3/4" />
+      <Skeleton className="h-5 w-12" />
+    </div>
+    <Skeleton className="h-4 w-full" />
+    <Skeleton className="h-4 w-4/5" />
   </div>
 );
 

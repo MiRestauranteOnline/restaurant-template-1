@@ -48,6 +48,12 @@
     
     /* Sophisticated Shadows */
     --shadow-elegant: 0 25px 50px -12px hsl(220 13% 4% / 0.4);
+    
+    /* Layout Shift Prevention */
+    --nav-height: 4rem;
+    --nav-height-md: 5rem;
+    --menu-card-height: 400px;
+    --menu-image-height: 256px;
     --shadow-glow: 0 0 30px hsl(45 100% 65% / 0.15);
     
     /* Smooth Transitions */
@@ -207,6 +213,48 @@
   .parallax {
     transform: translateZ(0);
     will-change: transform;
+  }
+
+  /* Layout Shift Prevention */
+  .nav-logo-container {
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .nav-logo-container {
+      min-height: 3rem;
+    }
+  }
+
+  /* Prevent image layout shifts */
+  .menu-card-image {
+    aspect-ratio: 400 / 256;
+    background-color: hsl(var(--muted));
+  }
+
+  .menu-card-container {
+    min-height: var(--menu-card-height);
+  }
+
+  /* Smooth image transitions */
+  img {
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  img[loading="lazy"] {
+    opacity: 0;
+    animation: imageLoad 0.3s ease-in-out 0.1s forwards;
+  }
+
+  @keyframes imageLoad {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
 /* Template 1 - Premium Elegant Design System */

@@ -90,8 +90,8 @@ const Menu = () => {
           {loading && menuItems.length === 0 ? (
             // Show skeleton loading states to prevent layout shift
             Array(4).fill(0).map((_, index) => (
-              <Card key={`skeleton-${index}`} className="bg-card border-border overflow-hidden">
-                <div className="h-64 bg-muted animate-pulse" />
+              <Card key={`skeleton-${index}`} className="menu-card-container bg-card border-border overflow-hidden">
+                <div className="menu-card-image bg-muted animate-pulse" />
                 <CardContent className="p-4">
                   <MenuItemSkeleton />
                 </CardContent>
@@ -101,16 +101,19 @@ const Menu = () => {
             displayMenuItems.map((item, index) => (
               <Card 
                 key={item.id} 
-                className="card-hover bg-card border-border overflow-hidden group"
+                className="menu-card-container card-hover bg-card border-border overflow-hidden group"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="relative h-64 overflow-hidden">
+                <div className="menu-card-image relative overflow-hidden">
                   {(item.image_url || (typeof item.image === 'string' && item.show_image_home !== false)) && (
                     <img
                       src={item.image_url || (typeof item.image === 'string' ? item.image : heroPasta)}
                       alt={item.name}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy" // Optimize image loading
+                      width="400"
+                      height="256"
+                      style={{ aspectRatio: '400/256' }}
+                      loading="lazy"
                     />
                   )}
                   {!item.image_url && !item.image && (
