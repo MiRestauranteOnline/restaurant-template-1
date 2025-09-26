@@ -58,9 +58,29 @@ const MenuPage = () => {
               Nuestro
               <span className="block text-gradient font-normal">Menú</span>
             </h1>
-            <p className="text-xl text-foreground/90 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-foreground/90 max-w-2xl mx-auto leading-relaxed mb-8">
               Descubre los auténticos sabores preparados con ingredientes frescos y recetas tradicionales.
             </p>
+            
+            {/* Download Menu Button */}
+            {((adminContent as any)?.downloadable_menu_url || cachedAdminContent?.downloadable_menu_url) && (
+              <button 
+                className="btn-primary px-6 py-3 rounded-full text-lg font-medium transition-all duration-300 hover:scale-105"
+                onClick={() => {
+                  const menuUrl = (adminContent as any)?.downloadable_menu_url || cachedAdminContent?.downloadable_menu_url;
+                  if (menuUrl) {
+                    const link = document.createElement('a');
+                    link.href = menuUrl;
+                    link.download = 'menu.pdf';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }
+                }}
+              >
+                Descargar Menú
+              </button>
+            )}
           </div>
         </div>
       </section>
