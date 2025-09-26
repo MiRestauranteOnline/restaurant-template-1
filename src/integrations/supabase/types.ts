@@ -345,6 +345,7 @@ export type Database = {
           primary_button_text_style: string | null
           primary_color: string | null
           title_font: string | null
+          title_font_weight: string | null
           updated_at: string
           whatsapp_messages: Json | null
         }
@@ -361,6 +362,7 @@ export type Database = {
           primary_button_text_style?: string | null
           primary_color?: string | null
           title_font?: string | null
+          title_font_weight?: string | null
           updated_at?: string
           whatsapp_messages?: Json | null
         }
@@ -377,6 +379,7 @@ export type Database = {
           primary_button_text_style?: string | null
           primary_color?: string | null
           title_font?: string | null
+          title_font_weight?: string | null
           updated_at?: string
           whatsapp_messages?: Json | null
         }

@@ -99,6 +99,7 @@ const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, cli
       // Font settings
       title_font: clientSettings.title_font || 'Cormorant Garamond',
       body_font: clientSettings.body_font || 'Inter',
+      title_font_weight: (clientSettings as any).title_font_weight || '400',
       
       // Navigation settings
       header_background_enabled: clientSettings.header_background_enabled || false,
@@ -180,7 +181,8 @@ const applyEarlyStyles = (subdomain: string) => {
     if (cachedData.title_font || cachedData.body_font) {
       loadAndApplyFonts({
         titleFont: cachedData.title_font,
-        bodyFont: cachedData.body_font
+        bodyFont: cachedData.body_font,
+        titleFontWeight: cachedData.title_font_weight
       });
     }
     
@@ -737,10 +739,11 @@ export const useClientData = (subdomain?: string) => {
             // Apply fonts immediately when settings are loaded
             const titleFont = (settingsResponse.data as ClientSettings)?.title_font || 'Cormorant Garamond';
             const bodyFont = (settingsResponse.data as ClientSettings)?.body_font || 'Inter';
-            loadAndApplyFonts({ titleFont, bodyFont });
+            const titleFontWeight = (settingsResponse.data as any)?.title_font_weight || '400';
+            loadAndApplyFonts({ titleFont, bodyFont, titleFontWeight });
             
             // Cache fonts for early application
-            cacheFonts(detectedSubdomain, { titleFont, bodyFont });
+            cacheFonts(detectedSubdomain, { titleFont, bodyFont, titleFontWeight });
             
             // Get delivery services for caching
             const clientDelivery = (clientData as any)?.delivery;

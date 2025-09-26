@@ -62,9 +62,10 @@
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-elegant: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
     
-    /* Typography Scale */
+    /* Typography Scale - with weight support */
     --font-heading: 'Cormorant Garamond', serif;
     --font-body: 'Inter', sans-serif;
+    --font-heading-weight: 400;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -141,6 +142,7 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading font-normal;
     font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
   }
   
   /* Smooth scrolling */

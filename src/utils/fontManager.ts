@@ -2,6 +2,7 @@
 export interface FontSettings {
   titleFont?: string;
   bodyFont?: string;
+  titleFontWeight?: string;
 }
 
 // Cache for loaded fonts to avoid duplicate requests
@@ -36,9 +37,10 @@ const formatFontName = (fontName: string): string => {
   return fontName.replace(/\s+/g, '+');
 };
 
-// Generate Google Fonts URL for multiple fonts
-const generateGoogleFontsUrl = (fonts: string[]): string => {
-  const formattedFonts = fonts.map(font => `${formatFontName(font)}:wght@300;400;500;600;700`);
+// Generate Google Fonts URL for multiple fonts with custom weights
+const generateGoogleFontsUrl = (fonts: string[], titleFontWeight?: string): string => {
+  const weights = titleFontWeight ? `${titleFontWeight};400;500;600;700` : '300;400;500;600;700';
+  const formattedFonts = fonts.map(font => `${formatFontName(font)}:wght@${weights}`);
   const timestamp = Date.now(); // Add timestamp to prevent caching
   return `https://fonts.googleapis.com/css2?${formattedFonts.map(font => `family=${font}`).join('&')}&display=swap&v=${timestamp}`;
 };
@@ -63,7 +65,7 @@ export const loadGoogleFonts = (fonts: FontSettings): void => {
   // Create and append font link to head
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = generateGoogleFontsUrl(fontsToLoad);
+  link.href = generateGoogleFontsUrl(fontsToLoad, fonts.titleFontWeight);
   
   // Remove any existing dynamic font links to prevent duplicates
   const existingLinks = document.querySelectorAll('link[data-dynamic-font]');
@@ -95,6 +97,11 @@ export const applyFonts = (fonts: FontSettings): void => {
     const fallback = serifFonts.includes(fonts.bodyFont) ? 'serif' : 'sans-serif';
     
     root.style.setProperty('--font-body', `'${fonts.bodyFont}', ${fallback}`);
+  }
+  
+  // Apply title font weight
+  if (fonts.titleFontWeight) {
+    root.style.setProperty('--font-heading-weight', fonts.titleFontWeight);
   }
 };
 
