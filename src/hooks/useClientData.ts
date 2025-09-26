@@ -369,25 +369,189 @@ export interface ClientSettings {
   updated_at: string;
 }
 
+// Global data cache for instant access
+interface GlobalDataCache {
+  client: ClientData | null;
+  adminContent: AdminContent | null;
+  menuItems: MenuItem[];
+  menuCategories: MenuCategory[];
+  teamMembers: TeamMember[];
+  reviews: Review[];
+  clientSettings: ClientSettings | null;
+  loading: boolean;
+  error: string | null;
+  subdomain: string;
+}
+
+const globalDataCache: GlobalDataCache = {
+  client: null,
+  adminContent: null,
+  menuItems: [],
+  menuCategories: [],
+  teamMembers: [],
+  reviews: [],
+  clientSettings: null,
+  loading: true,
+  error: null,
+  subdomain: ''
+};
+
+// Helper function for subdomain detection
+function getSubdomainFromUrl(): string {
+  // For development and Lovable platform, use demos subdomain
+  if (window.location.hostname === 'localhost' || 
+      window.location.hostname.includes('lovable') ||
+      window.location.hostname.includes('lovableproject.com')) {
+    return 'demos'; // Default subdomain for template
+  }
+  
+  const hostname = window.location.hostname;
+  const parts = hostname.split('.');
+  return parts.length > 2 ? parts[0] : 'demo';
+}
+
+// Preload all data immediately
+export const preloadAllClientData = async (subdomain?: string) => {
+  const detectedSubdomain = subdomain || getSubdomainFromUrl();
+  globalDataCache.subdomain = detectedSubdomain;
+  globalDataCache.loading = true;
+  globalDataCache.error = null;
+
+  console.log('🚀 Preloading ALL client data for:', detectedSubdomain);
+
+  if (!detectedSubdomain) {
+    globalDataCache.error = 'No subdomain detected';
+    globalDataCache.loading = false;
+    return;
+  }
+
+  try {
+    // Apply cached styles immediately
+    applyEarlyStyles(detectedSubdomain);
+
+    // Fetch client data first
+    const { data: clientData, error: clientError } = await supabase
+      .from('clients')
+      .select('*')
+      .eq('subdomain', detectedSubdomain)
+      .single();
+
+    if (clientError) {
+      console.error('Error fetching client:', clientError);
+      throw clientError;
+    }
+
+    globalDataCache.client = clientData as ClientData;
+
+    if (clientData?.id) {
+      // Fetch ALL data in parallel for instant access
+      const [menuResponse, categoriesResponse, settingsResponse, adminContentResponse, teamResponse, reviewsResponse] = await Promise.all([
+        supabase
+          .from('menu_items')
+          .select('*')
+          .eq('client_id', clientData.id)
+          .eq('is_active', true)
+          .order('category', { ascending: true }),
+        
+        supabase
+          .from('menu_categories')
+          .select('*')
+          .eq('client_id', clientData.id)
+          .eq('is_active', true)
+          .order('display_order', { ascending: true }),
+        
+        supabase
+          .from('client_settings')
+          .select('*')
+          .eq('client_id', clientData.id)
+          .single(),
+        
+        supabase
+          .from('admin_content')
+          .select('*')
+          .eq('client_id', clientData.id)
+          .single(),
+
+        supabase
+          .from('team_members')
+          .select('*')
+          .eq('client_id', clientData.id)
+          .eq('is_active', true)
+          .order('display_order', { ascending: true }),
+
+        supabase
+          .from('reviews')
+          .select('*')
+          .eq('client_id', clientData.id)
+          .eq('is_active', true)
+          .order('display_order', { ascending: true })
+      ]);
+
+      // Store all data in global cache
+      globalDataCache.menuItems = menuResponse.data || [];
+      globalDataCache.menuCategories = categoriesResponse.data || [];
+      globalDataCache.teamMembers = teamResponse.data || [];
+      globalDataCache.reviews = reviewsResponse.data || [];
+      globalDataCache.adminContent = adminContentResponse.data || null;
+      globalDataCache.clientSettings = settingsResponse.data as ClientSettings || null;
+
+      // Apply dynamic colors immediately
+      if (settingsResponse.data) {
+        const settings = settingsResponse.data as ClientSettings;
+        applyDynamicColors(settings.primary_color, settings.primary_button_text_style);
+        
+        // Save to cache for future visits
+        saveCachedStyles(
+          detectedSubdomain,
+          settings,
+          clientData as ClientData,
+          adminContentResponse.data,
+          reviewsResponse.data || [],
+          [] // delivery services - extracted from client data
+        );
+      }
+
+      console.log('✅ All data preloaded successfully');
+      globalDataCache.loading = false;
+    }
+  } catch (error: any) {
+    console.error('❌ Preload failed:', error);
+    globalDataCache.error = error.message;
+    globalDataCache.loading = false;
+  }
+};
+
 export const useClientData = (subdomain?: string) => {
-  const [client, setClient] = useState<ClientData | null>(null);
-  const [adminContent, setAdminContent] = useState<AdminContent | null>(null);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [menuCategories, setMenuCategories] = useState<MenuCategory[]>([]);
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [clientSettings, setClientSettings] = useState<ClientSettings | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [client, setClient] = useState<ClientData | null>(globalDataCache.client);
+  const [adminContent, setAdminContent] = useState<AdminContent | null>(globalDataCache.adminContent);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(globalDataCache.menuItems);
+  const [menuCategories, setMenuCategories] = useState<MenuCategory[]>(globalDataCache.menuCategories);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(globalDataCache.teamMembers);
+  const [reviews, setReviews] = useState<Review[]>(globalDataCache.reviews);
+  const [clientSettings, setClientSettings] = useState<ClientSettings | null>(globalDataCache.clientSettings);
+  const [loading, setLoading] = useState(globalDataCache.loading);
+  const [error, setError] = useState<string | null>(globalDataCache.error);
 
   // Auto-detect subdomain from URL if not provided
   const detectedSubdomain = subdomain || getSubdomainFromUrl();
 
-  // Apply cached styles immediately on hook initialization
+  // Watch global cache for updates
   useEffect(() => {
-    if (detectedSubdomain) {
-      applyEarlyStyles(detectedSubdomain);
-    }
+    const interval = setInterval(() => {
+      if (globalDataCache.subdomain === detectedSubdomain) {
+        setClient(globalDataCache.client);
+        setAdminContent(globalDataCache.adminContent);
+        setMenuItems(globalDataCache.menuItems);
+        setMenuCategories(globalDataCache.menuCategories);
+        setTeamMembers(globalDataCache.teamMembers);
+        setReviews(globalDataCache.reviews);
+        setClientSettings(globalDataCache.clientSettings);
+        setLoading(globalDataCache.loading);
+        setError(globalDataCache.error);
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
   }, [detectedSubdomain]);
 
   function getSubdomainFromUrl(): string {
