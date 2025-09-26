@@ -45,52 +45,62 @@ const generateGoogleFontsUrl = (fonts: string[], _titleFontWeight?: string): str
   return `https://fonts.googleapis.com/css2?${formattedFonts.map(font => `family=${font}`).join('&')}&display=swap`;
 };
 
-// Load fonts from Google Fonts with preloading support
-export const loadGoogleFonts = (fonts: FontSettings): void => {
+// Load fonts from Google Fonts with preloading support (returns when ready)
+export const loadGoogleFonts = async (fonts: FontSettings): Promise<void> => {
   const fontsToLoad: string[] = [];
-  
-  // Clear cache and force reload of fonts
+
   if (fonts.titleFont) {
     fontsToLoad.push(fonts.titleFont);
     loadedFonts.add(fonts.titleFont);
   }
-  
+
   if (fonts.bodyFont) {
     fontsToLoad.push(fonts.bodyFont);
     loadedFonts.add(fonts.bodyFont);
   }
-  
+
   if (fontsToLoad.length === 0) return;
 
-// Check if fonts are already preloaded - comprehensive list to prevent loading
+  // Check if fonts are already preloaded - comprehensive list to prevent loading
   const preloadedFonts = [
-    'Cormorant Garamond', 'Inter', 'Poppins', 'Montserrat', 'Playfair Display', 'Lato', 
-    'Open Sans', 'Roboto', 'Merriweather', 'Lora', 'Raleway', 'Ubuntu', 'Oswald', 
+    'Cormorant Garamond', 'Inter', 'Poppins', 'Montserrat', 'Playfair Display', 'Lato',
+    'Open Sans', 'Roboto', 'Merriweather', 'Lora', 'Raleway', 'Ubuntu', 'Oswald',
     'Source Sans Pro', 'Nunito', 'Work Sans'
   ];
   const needsLoading = fontsToLoad.filter(font => !preloadedFonts.includes(font));
-  
-  if (needsLoading.length > 0) {
-    // Create and append font link for non-preloaded fonts
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = generateGoogleFontsUrl(needsLoading, fonts.titleFontWeight);
-    
-    // Remove any existing dynamic font links to prevent duplicates
-    const existingLinks = document.querySelectorAll('link[data-dynamic-font]');
-    existingLinks.forEach(link => link.remove());
-    
-    link.setAttribute('data-dynamic-font', 'true');
-    
-    // Force a small delay to ensure the DOM is ready
-    setTimeout(() => {
-      document.head.appendChild(link);
-    }, 10);
-    
-    console.log('🔗 Loading additional fonts:', needsLoading);
-  } else {
-    console.log('✅ All fonts are preloaded, using cached versions');
+
+  if (needsLoading.length === 0) {
+    return; // everything we need is already available
   }
+
+  // Create and append font link for non-preloaded fonts and wait for it
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = generateGoogleFontsUrl(needsLoading, fonts.titleFontWeight);
+
+  // Remove any existing dynamic font links to prevent duplicates
+  const existingLinks = document.querySelectorAll('link[data-dynamic-font]');
+  existingLinks.forEach(l => l.remove());
+  link.setAttribute('data-dynamic-font', 'true');
+
+  await new Promise<void>((resolve) => {
+    link.addEventListener('load', () => resolve());
+    // Fallback resolve in case 'load' doesn't fire
+    setTimeout(() => resolve(), 500);
+    document.head.appendChild(link);
+  });
+
+  // Ensure key weights are available before switching
+  const weightCandidates = ['400', '700', fonts.titleFontWeight || '600'];
+  const fontPromises: Promise<FontFace[]>[] = [];
+  needsLoading.forEach((family) => {
+    weightCandidates.forEach((w) => {
+      try {
+        fontPromises.push((document as any).fonts.load(`${w} 1em '${family}'`));
+      } catch {}
+    });
+  });
+  await Promise.allSettled(fontPromises);
 };
 
 // Apply fonts to CSS custom properties with smooth transition
@@ -129,13 +139,14 @@ export const applyFonts = (fonts: FontSettings): void => {
   root.offsetHeight;
 };
 
-// Combined function to load and apply fonts with preload optimization
-export const loadAndApplyFonts = (fonts: FontSettings): void => {
-  // Apply fonts immediately (preloaded fonts should be available)
+// Combined function to load and apply fonts without visible swap
+export const loadAndApplyFonts = async (fonts: FontSettings): Promise<void> => {
+  // 1) Ensure the new font files are ready
+  try {
+    await loadGoogleFonts(fonts);
+  } catch {}
+  // 2) Switch variables only after fonts are ready
   applyFonts(fonts);
-  
-  // Only load additional fonts if needed
-  loadGoogleFonts(fonts);
 };
 
 // Cache fonts in localStorage for early application
