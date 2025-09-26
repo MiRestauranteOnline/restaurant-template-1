@@ -3,7 +3,7 @@ import { Menu, X, Phone, ChevronDown, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'react-router-dom';
 import { useClient } from '@/contexts/ClientContext';
-import { getCachedClientSettings, getCachedNavigationData, getCachedAdminContent } from '@/utils/cachedContent';
+import { getCachedClientSettings, getCachedNavigationData, getFastLoadCachedContent } from '@/utils/cachedContent';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,10 +20,10 @@ const Navigation = () => {
   // Get cached settings and navigation data to prevent layout shifts
   const cachedSettings = getCachedClientSettings();
   const cachedNavData = getCachedNavigationData();
-  const cachedAdmin = getCachedAdminContent();
+  const fastLoadData = getFastLoadCachedContent();
 
-  // Prevent text-to-logo shift: prefer cached logo, show skeleton while loading
-  const logoUrl = cachedAdmin?.header_logo_url || adminContent?.header_logo_url;
+  // Prevent text-to-logo shift: prefer fast-load data, then cached, then live data
+  const logoUrl = fastLoadData?.header_logo_url || adminContent?.header_logo_url;
   const isLoadingAdmin = !logoUrl && loading;
 
   useEffect(() => {

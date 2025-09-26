@@ -1,4 +1,6 @@
 // Utility to access cached content immediately to prevent layout shifts
+import { getFastLoadData, type FastLoadData } from '@/utils/fastLoadData';
+
 const CACHE_PREFIX = 'client_styles_';
 
 const getCacheKey = (subdomain: string) => `${CACHE_PREFIX}${subdomain}`;
@@ -15,6 +17,10 @@ const getSubdomainFromUrl = (): string => {
   const parts = hostname.split('.');
   return parts.length > 2 ? parts[0] : 'demo';
 };
+
+// Global fast-load data cache
+let fastLoadDataCache: FastLoadData | null = null;
+let fastLoadPromise: Promise<FastLoadData | null> | null = null;
 
 export const getCachedContent = () => {
   try {
@@ -38,6 +44,20 @@ export const getCachedContent = () => {
     console.warn('Failed to access cached content:', error);
     return null;
   }
+};
+
+// New fast-load data getter with instant synchronous access
+export const getFastLoadCachedContent = (): FastLoadData | null => {
+  return fastLoadDataCache;
+};
+
+// Initialize fast-load data (call this early in app lifecycle)
+export const initializeFastLoadData = async (): Promise<void> => {
+  if (fastLoadPromise) return fastLoadPromise.then(() => {});
+  
+  fastLoadPromise = getFastLoadData();
+  fastLoadDataCache = await fastLoadPromise;
+  fastLoadPromise = null;
 };
 
 export const getCachedAdminContent = () => {
