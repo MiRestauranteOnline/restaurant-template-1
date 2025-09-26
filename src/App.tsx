@@ -11,6 +11,7 @@ import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import ReviewsPage from "./pages/ReviewsPage";
 import NotFound from "./pages/NotFound";
+import WhatsAppPopup from "./components/WhatsAppPopup";
 
 const queryClient = new QueryClient();
 
@@ -42,15 +43,18 @@ const ThemedApp = () => {
   console.log('🔍 ThemedApp: Rendering routes');
 
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/menu" element={<MenuPage />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="/reviews" element={<ReviewsPage />} />
-      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/menu" element={<MenuPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/reviews" element={<ReviewsPage />} />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <WhatsAppPopup />
+    </>
   );
 };
 

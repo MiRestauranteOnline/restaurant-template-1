@@ -105,10 +105,19 @@ const saveCachedStyles = (domain: string, clientSettings: ClientSettings, client
       header_background_enabled: clientSettings.header_background_enabled || false,
       header_background_style: clientSettings.header_background_style || 'dark',
       
+      // Menu button controls
+      hide_whatsapp_button_menu: clientSettings.hide_whatsapp_button_menu || false,
+      hide_phone_button_menu: clientSettings.hide_phone_button_menu || false,
+      custom_cta_button_link: clientSettings.custom_cta_button_link || null,
+      custom_cta_button_text: clientSettings.custom_cta_button_text || null,
+      show_whatsapp_popup: clientSettings.show_whatsapp_popup || false,
+      
       // Restaurant basic info to prevent layout shifts
       restaurant_name: client.restaurant_name || '',
       phone: client.phone || null,
+      phone_country_code: client.phone_country_code || null,
       whatsapp: client.whatsapp || null,
+      whatsapp_country_code: client.whatsapp_country_code || null,
       
       // Delivery services info
       delivery: client.delivery || {},
@@ -385,6 +394,11 @@ export interface ClientSettings {
   primary_button_text_style?: 'bright' | 'dark';
   title_font?: string;
   body_font?: string;
+  hide_whatsapp_button_menu?: boolean;
+  hide_phone_button_menu?: boolean;
+  custom_cta_button_link?: string;
+  custom_cta_button_text?: string;
+  show_whatsapp_popup?: boolean;
   created_at: string;
   updated_at: string;
 }

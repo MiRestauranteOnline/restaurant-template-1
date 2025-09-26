@@ -205,30 +205,47 @@ const Navigation = () => {
             
             {/* 🔒 PROTECTED: Dynamic phone/WhatsApp from Supabase - DO NOT MODIFY LOGIC */}
             <div className="flex items-center space-x-3">
-              {(client?.phone || cachedClient?.phone) && (
+              {(client?.phone || cachedClient?.phone) && !(clientSettings?.hide_phone_button_menu ?? cachedSettings?.hide_phone_button_menu ?? false) && (
                 <Button 
                   className="btn-ghost px-4 py-2 rounded-full text-sm"
                   onClick={() => {
                     const phoneNumber = client?.phone ? 
                       `${client.phone_country_code || '+51'}${client.phone}` : 
-                      '+51987654321';
+                      `${cachedClient?.phone_country_code || '+51'}${cachedClient?.phone}`;
                     window.open(`tel:${phoneNumber}`, '_self');
                   }}
                 >
                   Llamar
                 </Button>
               )}
-              {(client?.whatsapp || cachedClient?.whatsapp) && (
+              {(client?.whatsapp || cachedClient?.whatsapp) && !(clientSettings?.hide_whatsapp_button_menu ?? cachedSettings?.hide_whatsapp_button_menu ?? false) && (
                 <Button 
                   className="btn-primary px-6 py-2 rounded-full"
                   onClick={() => {
                     const whatsappNumber = client?.whatsapp ? 
                       `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
-                      '51987654321';
+                      `${cachedClient?.whatsapp_country_code?.replace('+', '') || '51'}${cachedClient?.whatsapp}`;
                     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
                   }}
                 >
                   WhatsApp
+                </Button>
+              )}
+              {(clientSettings?.custom_cta_button_link || cachedSettings?.custom_cta_button_link) && (
+                <Button 
+                  className="btn-secondary px-6 py-2 rounded-full"
+                  onClick={() => {
+                    const link = clientSettings?.custom_cta_button_link || cachedSettings?.custom_cta_button_link;
+                    if (link?.startsWith('http')) {
+                      window.open(link, '_blank');
+                    } else if (link?.startsWith('#')) {
+                      document.querySelector(link)?.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                      window.location.href = link || '#';
+                    }
+                  }}
+                >
+                  {clientSettings?.custom_cta_button_text || cachedSettings?.custom_cta_button_text || 'CTA'}
                 </Button>
               )}
             </div>
@@ -294,30 +311,47 @@ const Navigation = () => {
               
               {/* 🔒 PROTECTED: Dynamic phone/WhatsApp from Supabase - DO NOT MODIFY LOGIC */}
               <div className="px-3 py-2 space-y-2">
-                {(client?.phone || cachedClient?.phone) && (
+                {(client?.phone || cachedClient?.phone) && !(clientSettings?.hide_phone_button_menu ?? cachedSettings?.hide_phone_button_menu ?? false) && (
                   <Button 
                     className="btn-ghost w-full rounded-full"
                     onClick={() => {
                       const phoneNumber = client?.phone ? 
                         `${client.phone_country_code || '+51'}${client.phone}` : 
-                        '+51987654321';
+                        `${cachedClient?.phone_country_code || '+51'}${cachedClient?.phone}`;
                       window.open(`tel:${phoneNumber}`, '_self');
                     }}
                   >
                     Llamar
                   </Button>
                 )}
-                {(client?.whatsapp || cachedClient?.whatsapp) && (
+                {(client?.whatsapp || cachedClient?.whatsapp) && !(clientSettings?.hide_whatsapp_button_menu ?? cachedSettings?.hide_whatsapp_button_menu ?? false) && (
                   <Button 
                     className="btn-primary w-full rounded-full"
                     onClick={() => {
                       const whatsappNumber = client?.whatsapp ? 
                         `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
-                        '51987654321';
+                        `${cachedClient?.whatsapp_country_code?.replace('+', '') || '51'}${cachedClient?.whatsapp}`;
                       window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
                     }}
                   >
                     WhatsApp
+                  </Button>
+                )}
+                {(clientSettings?.custom_cta_button_link || cachedSettings?.custom_cta_button_link) && (
+                  <Button 
+                    className="btn-secondary w-full rounded-full"
+                    onClick={() => {
+                      const link = clientSettings?.custom_cta_button_link || cachedSettings?.custom_cta_button_link;
+                      if (link?.startsWith('http')) {
+                        window.open(link, '_blank');
+                      } else if (link?.startsWith('#')) {
+                        document.querySelector(link)?.scrollIntoView({ behavior: 'smooth' });
+                      } else {
+                        window.location.href = link || '#';
+                      }
+                    }}
+                  >
+                    {clientSettings?.custom_cta_button_text || cachedSettings?.custom_cta_button_text || 'CTA'}
                   </Button>
                 )}
               </div>

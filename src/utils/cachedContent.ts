@@ -74,6 +74,11 @@ export const getCachedClientSettings = () => {
     header_background_style: cached.header_background_style,
     primary_color: cached.primary_color,
     primary_button_text_style: cached.primary_button_text_style,
+    hide_whatsapp_button_menu: cached.hide_whatsapp_button_menu,
+    hide_phone_button_menu: cached.hide_phone_button_menu,
+    custom_cta_button_link: cached.custom_cta_button_link,
+    custom_cta_button_text: cached.custom_cta_button_text,
+    show_whatsapp_popup: cached.show_whatsapp_popup,
   };
 };
 

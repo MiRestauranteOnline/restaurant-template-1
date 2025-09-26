@@ -36,6 +36,7 @@ export type Database = {
           contact_page_hero_title_first_line: string | null
           contact_page_hero_title_second_line: string | null
           created_at: string
+          downloadable_menu_url: string | null
           footer_description: string | null
           footer_logo_url: string | null
           header_logo_url: string | null
@@ -138,6 +139,7 @@ export type Database = {
           contact_page_hero_title_first_line?: string | null
           contact_page_hero_title_second_line?: string | null
           created_at?: string
+          downloadable_menu_url?: string | null
           footer_description?: string | null
           footer_logo_url?: string | null
           header_logo_url?: string | null
@@ -240,6 +242,7 @@ export type Database = {
           contact_page_hero_title_first_line?: string | null
           contact_page_hero_title_second_line?: string | null
           created_at?: string
+          downloadable_menu_url?: string | null
           footer_description?: string | null
           footer_logo_url?: string | null
           header_logo_url?: string | null
@@ -336,14 +339,19 @@ export type Database = {
           body_font: string | null
           client_id: string
           created_at: string
+          custom_cta_button_link: string | null
+          custom_cta_button_text: string | null
           delivery_info: Json | null
           header_background_enabled: boolean | null
           header_background_style: string | null
+          hide_phone_button_menu: boolean | null
+          hide_whatsapp_button_menu: boolean | null
           id: string
           layout_type: string | null
           other_customizations: Json | null
           primary_button_text_style: string | null
           primary_color: string | null
+          show_whatsapp_popup: boolean | null
           title_font: string | null
           title_font_weight: string | null
           updated_at: string
@@ -353,14 +361,19 @@ export type Database = {
           body_font?: string | null
           client_id: string
           created_at?: string
+          custom_cta_button_link?: string | null
+          custom_cta_button_text?: string | null
           delivery_info?: Json | null
           header_background_enabled?: boolean | null
           header_background_style?: string | null
+          hide_phone_button_menu?: boolean | null
+          hide_whatsapp_button_menu?: boolean | null
           id?: string
           layout_type?: string | null
           other_customizations?: Json | null
           primary_button_text_style?: string | null
           primary_color?: string | null
+          show_whatsapp_popup?: boolean | null
           title_font?: string | null
           title_font_weight?: string | null
           updated_at?: string
@@ -370,14 +383,19 @@ export type Database = {
           body_font?: string | null
           client_id?: string
           created_at?: string
+          custom_cta_button_link?: string | null
+          custom_cta_button_text?: string | null
           delivery_info?: Json | null
           header_background_enabled?: boolean | null
           header_background_style?: string | null
+          hide_phone_button_menu?: boolean | null
+          hide_whatsapp_button_menu?: boolean | null
           id?: string
           layout_type?: string | null
           other_customizations?: Json | null
           primary_button_text_style?: string | null
           primary_color?: string | null
+          show_whatsapp_popup?: boolean | null
           title_font?: string | null
           title_font_weight?: string | null
           updated_at?: string
@@ -406,12 +424,14 @@ export type Database = {
           opening_hours_ordered: Json | null
           other_customizations: Json | null
           phone: string | null
+          phone_country_code: string | null
           restaurant_name: string
           social_media_links: Json | null
           subdomain: string
           theme: string | null
           updated_at: string
           whatsapp: string | null
+          whatsapp_country_code: string | null
         }
         Insert: {
           address?: string | null
@@ -425,12 +445,14 @@ export type Database = {
           opening_hours_ordered?: Json | null
           other_customizations?: Json | null
           phone?: string | null
+          phone_country_code?: string | null
           restaurant_name: string
           social_media_links?: Json | null
           subdomain: string
           theme?: string | null
           updated_at?: string
           whatsapp?: string | null
+          whatsapp_country_code?: string | null
         }
         Update: {
           address?: string | null
@@ -444,12 +466,14 @@ export type Database = {
           opening_hours_ordered?: Json | null
           other_customizations?: Json | null
           phone?: string | null
+          phone_country_code?: string | null
           restaurant_name?: string
           social_media_links?: Json | null
           subdomain?: string
           theme?: string | null
           updated_at?: string
           whatsapp?: string | null
+          whatsapp_country_code?: string | null
         }
         Relationships: []
       }
