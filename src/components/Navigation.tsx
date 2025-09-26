@@ -135,7 +135,7 @@ const Navigation = () => {
                 <img 
                   src={adminContent.header_logo_url} 
                   alt={`${client?.restaurant_name || 'Savoria'} Logo`}
-                  className="h-8 md:h-10"
+                  className="h-10 md:h-12 w-auto max-w-none object-contain"
                 />
               ) : (
                 <h1 className="text-2xl md:text-3xl font-heading font-bold text-gradient">
