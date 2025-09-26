@@ -145,6 +145,11 @@
     font-weight: var(--font-heading-weight);
   }
   
+  /* Ensure heading class controls weight dynamically */
+  .font-heading {
+    font-weight: var(--font-heading-weight) !important;
+  }
+  
   /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
