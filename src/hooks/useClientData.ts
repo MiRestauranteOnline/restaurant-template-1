@@ -107,6 +107,7 @@ const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, cli
       
       // Navigation-related data to prevent layout shifts
       has_reviews: reviews ? reviews.length > 0 : false,
+      show_reviews_nav: reviews ? reviews.length > 0 : false, // Explicit navigation config
       delivery_services: deliveryServices || [],
       
       // Other customizations that might affect layout

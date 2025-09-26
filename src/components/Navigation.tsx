@@ -37,13 +37,20 @@ const Navigation = () => {
     { label: 'Contacto', href: '/contact' },
   ];
 
-  // Determine if Reviews link should be visible; avoid layout shift by reserving space
-  const features = (clientSettings as any)?.other_customizations?.features ?? [];
-  const showReviewsLink = (reviews && reviews.length > 0) 
-    || (cachedNavData?.has_reviews ?? false)
-    || features.includes('reviews');
+  // Determine if Reviews link should be visible - prioritize cached/explicit config to prevent shifts
+  const explicitReviewsConfig = (clientSettings as any)?.other_customizations?.show_reviews_nav;
+  const cachedHasReviews = cachedNavData?.has_reviews;
+  const currentHasReviews = reviews && reviews.length > 0;
+  
+  // Use explicit config if set, otherwise use cached value, otherwise use current data
+  // Default to FALSE to prevent "show then hide" layout shift on first load
+  const showReviewsLink = explicitReviewsConfig !== undefined 
+    ? explicitReviewsConfig 
+    : cachedHasReviews !== undefined 
+      ? cachedHasReviews 
+      : currentHasReviews || false; // Conservative default: don't show until confirmed
 
-  // Do not filter items to prevent layout shifts; we'll hide Reviews visually if needed
+  // Always render all nav items to prevent layout shifts
   const navItems = baseNavItems;
 
   const isActivePage = (href: string) => {
