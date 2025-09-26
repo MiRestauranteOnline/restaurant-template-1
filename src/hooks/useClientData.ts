@@ -731,6 +731,8 @@ export const useClientData = (subdomain?: string) => {
           } else {
             setClientSettings(settingsResponse.data as ClientSettings);
             
+            console.log('🔍 Raw settings data:', settingsResponse.data);
+            
             // Apply dynamic colors immediately when settings are loaded
             const primaryColor = (settingsResponse.data as ClientSettings)?.primary_color || '#FFD700';
             const textStyle = (settingsResponse.data as ClientSettings)?.primary_button_text_style || 'bright';
@@ -740,6 +742,9 @@ export const useClientData = (subdomain?: string) => {
             const titleFont = (settingsResponse.data as ClientSettings)?.title_font || 'Cormorant Garamond';
             const bodyFont = (settingsResponse.data as ClientSettings)?.body_font || 'Inter';
             const titleFontWeight = (settingsResponse.data as any)?.title_font_weight || '400';
+            
+            console.log('🔍 Font settings from database:', { titleFont, bodyFont, titleFontWeight });
+            
             loadAndApplyFonts({ titleFont, bodyFont, titleFontWeight });
             
             // Cache fonts for early application

@@ -83,12 +83,15 @@ export const loadGoogleFonts = (fonts: FontSettings): void => {
 export const applyFonts = (fonts: FontSettings): void => {
   const root = document.documentElement;
   
+  console.log('🎨 Applying fonts:', fonts);
+  
   if (fonts.titleFont) {
     // Get font category (serif/sans-serif) for fallback
     const serifFonts = ['Playfair Display', 'Cormorant Garamond', 'Merriweather', 'Crimson Text', 'Libre Baskerville', 'Lora', 'Source Serif Pro'];
     const fallback = serifFonts.includes(fonts.titleFont) ? 'serif' : 'sans-serif';
     
     root.style.setProperty('--font-heading', `'${fonts.titleFont}', ${fallback}`);
+    console.log('✅ Set --font-heading to:', `'${fonts.titleFont}', ${fallback}`);
   }
   
   if (fonts.bodyFont) {
@@ -97,18 +100,32 @@ export const applyFonts = (fonts: FontSettings): void => {
     const fallback = serifFonts.includes(fonts.bodyFont) ? 'serif' : 'sans-serif';
     
     root.style.setProperty('--font-body', `'${fonts.bodyFont}', ${fallback}`);
+    console.log('✅ Set --font-body to:', `'${fonts.bodyFont}', ${fallback}`);
   }
   
   // Apply title font weight
   if (fonts.titleFontWeight) {
     root.style.setProperty('--font-heading-weight', fonts.titleFontWeight);
+    console.log('✅ Set --font-heading-weight to:', fonts.titleFontWeight);
   }
 };
 
-// Combined function to load and apply fonts
+// Combined function to load and apply fonts with forced refresh
 export const loadAndApplyFonts = (fonts: FontSettings): void => {
+  console.log('🚀 Loading and applying fonts:', fonts);
+  
+  // Force clear any existing font cache
+  loadedFonts.clear();
+  
   loadGoogleFonts(fonts);
   applyFonts(fonts);
+  
+  // Force refresh styles by triggering a reflow
+  document.body.style.display = 'none';
+  document.body.offsetHeight; // trigger reflow
+  document.body.style.display = '';
+  
+  console.log('✅ Fonts loaded and applied successfully');
 };
 
 // Cache fonts in localStorage for early application
