@@ -37,14 +37,14 @@ const Navigation = () => {
     { label: 'Contacto', href: '/contact' },
   ];
 
-  // Filter out Reviews if no reviews exist - use cached data as fallback (default to true to avoid shift on first load)
-  const hasReviews = reviews ? reviews.length > 0 : (cachedNavData?.has_reviews ?? true);
-  const navItems = baseNavItems.filter(item => {
-    if (item.href === '/reviews') {
-      return hasReviews;
-    }
-    return true;
-  });
+  // Determine if Reviews link should be visible; avoid layout shift by reserving space
+  const features = (clientSettings as any)?.other_customizations?.features ?? [];
+  const showReviewsLink = (reviews && reviews.length > 0) 
+    || (cachedNavData?.has_reviews ?? false)
+    || features.includes('reviews');
+
+  // Do not filter items to prevent layout shifts; we'll hide Reviews visually if needed
+  const navItems = baseNavItems;
 
   const isActivePage = (href: string) => {
     return location.pathname === href;
@@ -138,7 +138,7 @@ const Navigation = () => {
                   isActivePage(item.href) 
                     ? 'text-accent font-bold' 
                     : 'text-foreground/80 hover:text-accent'
-                }`}
+                } ${item.href === '/reviews' && !showReviewsLink ? 'invisible' : ''}`}
                 onClick={(e) => {
                   if (item.href.startsWith('#')) {
                     e.preventDefault();
