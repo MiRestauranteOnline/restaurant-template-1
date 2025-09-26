@@ -141,11 +141,15 @@
     @apply font-heading font-normal;
     font-family: var(--font-heading);
     font-weight: var(--font-heading-weight);
+    font-synthesis-weight: none;
+    font-synthesis-style: none;
   }
   
   /* Ensure heading class controls weight dynamically */
   .font-heading {
     font-weight: var(--font-heading-weight) !important;
+    font-synthesis-weight: none;
+    font-synthesis-style: none;
   }
   
   /* Smooth scrolling */

@@ -62,23 +62,29 @@
           const cached = localStorage.getItem(cacheKey);
           
           if (cached) {
-            const { data } = JSON.parse(cached);
+            const parsed = JSON.parse(cached);
+            const data = parsed && typeof parsed === 'object' && 'data' in parsed ? parsed.data : parsed;
             const root = document.documentElement;
             
             // Apply fonts and weights immediately to prevent any shifts
             if (data.title_font) {
               const serifFonts = ['Playfair Display', 'Cormorant Garamond', 'Merriweather', 'Crimson Text', 'Libre Baskerville', 'Lora', 'Source Serif Pro'];
-              const fallback = serifFonts.includes(data.title_font) ? 'serif' : 'sans-serif';
-              root.style.setProperty('--font-heading', `'${data.title_font}', ${fallback}`);
+              const isSerif = serifFonts.includes(data.title_font);
+              const fallbackStack = isSerif
+                ? "Georgia, 'Times New Roman', serif"
+                : "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif";
+              root.style.setProperty('--font-heading', `'${data.title_font}', ${fallbackStack}`);
             }
             
             if (data.body_font) {
               const serifFonts = ['Playfair Display', 'Cormorant Garamond', 'Merriweather', 'Crimson Text', 'Libre Baskerville', 'Lora', 'Source Serif Pro'];
-              const fallback = serifFonts.includes(data.body_font) ? 'serif' : 'sans-serif';
-              root.style.setProperty('--font-body', `'${data.body_font}', ${fallback}`);
+              const isSerif = serifFonts.includes(data.body_font);
+              const fallbackStack = isSerif
+                ? "Georgia, 'Times New Roman', serif"
+                : "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif";
+              root.style.setProperty('--font-body', `'${data.body_font}', ${fallbackStack}`);
             }
             
-            // Most critical: apply font weight immediately
             if (data.title_font_weight) {
               root.style.setProperty('--font-heading-weight', data.title_font_weight);
             }

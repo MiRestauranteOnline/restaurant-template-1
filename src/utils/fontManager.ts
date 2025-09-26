@@ -38,11 +38,11 @@ const formatFontName = (fontName: string): string => {
 };
 
 // Generate Google Fonts URL for multiple fonts with custom weights
-const generateGoogleFontsUrl = (fonts: string[], titleFontWeight?: string): string => {
-  const weights = titleFontWeight ? `${titleFontWeight};400;500;600;700` : '300;400;500;600;700';
+const generateGoogleFontsUrl = (fonts: string[], _titleFontWeight?: string): string => {
+  // Request a full, cached weight range to avoid swaps when switching
+  const weights = '100;200;300;400;500;600;700;800;900';
   const formattedFonts = fonts.map(font => `${formatFontName(font)}:wght@${weights}`);
-  const timestamp = Date.now(); // Add timestamp to prevent caching
-  return `https://fonts.googleapis.com/css2?${formattedFonts.map(font => `family=${font}`).join('&')}&display=swap&v=${timestamp}`;
+  return `https://fonts.googleapis.com/css2?${formattedFonts.map(font => `family=${font}`).join('&')}&display=swap`;
 };
 
 // Load fonts from Google Fonts with preloading support
@@ -101,19 +101,23 @@ export const applyFonts = (fonts: FontSettings): void => {
   root.offsetHeight;
   
   if (fonts.titleFont) {
-    // Get font category (serif/sans-serif) for fallback
     const serifFonts = ['Playfair Display', 'Cormorant Garamond', 'Merriweather', 'Crimson Text', 'Libre Baskerville', 'Lora', 'Source Serif Pro'];
-    const fallback = serifFonts.includes(fonts.titleFont) ? 'serif' : 'sans-serif';
-    
-    root.style.setProperty('--font-heading', `'${fonts.titleFont}', ${fallback}`);
+    const isSerif = serifFonts.includes(fonts.titleFont);
+    const fallbackStack = isSerif
+      ? `Georgia, 'Times New Roman', serif`
+      : `system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif`;
+
+    root.style.setProperty('--font-heading', `'${fonts.titleFont}', ${fallbackStack}`);
   }
   
   if (fonts.bodyFont) {
-    // Body fonts are typically sans-serif
     const serifFonts = ['Playfair Display', 'Cormorant Garamond', 'Merriweather', 'Crimson Text', 'Libre Baskerville', 'Lora', 'Source Serif Pro'];
-    const fallback = serifFonts.includes(fonts.bodyFont) ? 'serif' : 'sans-serif';
-    
-    root.style.setProperty('--font-body', `'${fonts.bodyFont}', ${fallback}`);
+    const isSerif = serifFonts.includes(fonts.bodyFont);
+    const fallbackStack = isSerif
+      ? `Georgia, 'Times New Roman', serif`
+      : `system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif`;
+
+    root.style.setProperty('--font-body', `'${fonts.bodyFont}', ${fallbackStack}`);
   }
   
   // Apply title font weight immediately and force recalculation
