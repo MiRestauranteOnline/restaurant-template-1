@@ -62,8 +62,8 @@ export const loadGoogleFonts = (fonts: FontSettings): void => {
   
   if (fontsToLoad.length === 0) return;
 
-  // Check if fonts are already preloaded
-  const preloadedFonts = ['Cormorant Garamond', 'Inter', 'Poppins', 'Montserrat', 'Playfair Display', 'Lato'];
+// Check if fonts are already preloaded - extensive list to prevent loading
+  const preloadedFonts = ['Cormorant Garamond', 'Inter', 'Poppins', 'Montserrat', 'Playfair Display', 'Lato', 'Open Sans', 'Roboto', 'Merriweather', 'Lora'];
   const needsLoading = fontsToLoad.filter(font => !preloadedFonts.includes(font));
   
   if (needsLoading.length > 0) {

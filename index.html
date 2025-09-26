@@ -21,26 +21,33 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- Preload default fonts with all common weights -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <!-- Preload comprehensive font set with all weights to prevent FOUC -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@100;200;300;400;500;600;700;800;900&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@100;200;300;400;500;600;700;800;900&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap">
     
-    <!-- Additional popular fonts preload for instant switching -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&display=swap">
+    <!-- Popular fonts with all weights -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap">
     
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700;800&family=Lato:wght@300;400;700;900&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700;800&family=Lato:wght@300;400;700;900&display=swap">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Lato:wght@100;300;400;700;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Lato:wght@100;300;400;700;900&display=swap">
+    
+    <!-- Additional common fonts -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=Roboto:wght@100;300;400;500;700;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=Roboto:wght@100;300;400;500;700;900&display=swap">
+    
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Lora:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Lora:wght@400;500;600;700&display=swap">
     
     <script>
-      // Early font application from cache to prevent layout shifts
+      // Immediate font application from cache to prevent layout shifts
       (function() {
         try {
           // Get subdomain for demos/localhost
           const hostname = window.location.hostname;
           const subdomain = (hostname === 'localhost' || hostname.includes('lovable') || hostname.includes('lovableproject.com')) ? 'demos' : hostname.split('.')[0];
           
-          // Load cached font settings
+          // Load cached font settings immediately
           const cacheKey = `fonts_${subdomain}`;
           const cached = localStorage.getItem(cacheKey);
           
@@ -48,7 +55,7 @@
             const { data } = JSON.parse(cached);
             const root = document.documentElement;
             
-            // Apply cached fonts immediately
+            // Apply fonts and weights immediately to prevent any shifts
             if (data.title_font) {
               const serifFonts = ['Playfair Display', 'Cormorant Garamond', 'Merriweather', 'Crimson Text', 'Libre Baskerville', 'Lora', 'Source Serif Pro'];
               const fallback = serifFonts.includes(data.title_font) ? 'serif' : 'sans-serif';
@@ -61,15 +68,38 @@
               root.style.setProperty('--font-body', `'${data.body_font}', ${fallback}`);
             }
             
+            // Most critical: apply font weight immediately
             if (data.title_font_weight) {
               root.style.setProperty('--font-heading-weight', data.title_font_weight);
             }
+            
+            // Force immediate style recalculation
+            root.offsetHeight;
           }
         } catch (error) {
-          console.warn('Early font loading failed:', error);
+          // Silently fail to avoid console noise
         }
       })();
     </script>
+    
+    <style>
+      /* Prevent font weight shifts by ensuring consistent baseline */
+      :root {
+        --font-heading: 'Cormorant Garamond', serif;
+        --font-body: 'Inter', sans-serif;
+        --font-heading-weight: 400;
+      }
+      
+      /* Critical CSS to prevent layout shifts */
+      h1, h2, h3, h4, h5, h6, .font-heading {
+        font-family: var(--font-heading) !important;
+        font-weight: var(--font-heading-weight) !important;
+      }
+      
+      body {
+        font-family: var(--font-body) !important;
+      }
+    </style>
   </head>
 
   <body>
