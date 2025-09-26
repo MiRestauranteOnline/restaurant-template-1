@@ -130,17 +130,19 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* 🔒 PROTECTED: Dynamic restaurant name from Supabase - DO NOT MODIFY LOGIC */}
           <div className="flex-shrink-0">
-            {adminContent?.header_logo_url ? (
-              <img 
-                src={adminContent.header_logo_url} 
-                alt={`${client?.restaurant_name || 'Savoria'} Logo`}
-                className="h-8 md:h-10"
-              />
-            ) : (
-              <h1 className="text-2xl md:text-3xl font-heading font-bold text-gradient">
-                {client?.restaurant_name || 'Savoria'}
-              </h1>
-            )}
+            <a href="/" className="block">
+              {adminContent?.header_logo_url ? (
+                <img 
+                  src={adminContent.header_logo_url} 
+                  alt={`${client?.restaurant_name || 'Savoria'} Logo`}
+                  className="h-8 md:h-10"
+                />
+              ) : (
+                <h1 className="text-2xl md:text-3xl font-heading font-bold text-gradient">
+                  {client?.restaurant_name || 'Savoria'}
+                </h1>
+              )}
+            </a>
           </div>
 
           {/* Desktop Navigation */}
