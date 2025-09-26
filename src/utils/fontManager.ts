@@ -39,19 +39,21 @@ const formatFontName = (fontName: string): string => {
 // Generate Google Fonts URL for multiple fonts
 const generateGoogleFontsUrl = (fonts: string[]): string => {
   const formattedFonts = fonts.map(font => `${formatFontName(font)}:wght@300;400;500;600;700`);
-  return `https://fonts.googleapis.com/css2?${formattedFonts.map(font => `family=${font}`).join('&')}&display=swap`;
+  const timestamp = Date.now(); // Add timestamp to prevent caching
+  return `https://fonts.googleapis.com/css2?${formattedFonts.map(font => `family=${font}`).join('&')}&display=swap&v=${timestamp}`;
 };
 
 // Load fonts from Google Fonts
 export const loadGoogleFonts = (fonts: FontSettings): void => {
   const fontsToLoad: string[] = [];
   
-  if (fonts.titleFont && !loadedFonts.has(fonts.titleFont)) {
+  // Clear cache and force reload of fonts
+  if (fonts.titleFont) {
     fontsToLoad.push(fonts.titleFont);
     loadedFonts.add(fonts.titleFont);
   }
   
-  if (fonts.bodyFont && !loadedFonts.has(fonts.bodyFont)) {
+  if (fonts.bodyFont) {
     fontsToLoad.push(fonts.bodyFont);
     loadedFonts.add(fonts.bodyFont);
   }
@@ -68,7 +70,11 @@ export const loadGoogleFonts = (fonts: FontSettings): void => {
   existingLinks.forEach(link => link.remove());
   
   link.setAttribute('data-dynamic-font', 'true');
-  document.head.appendChild(link);
+  
+  // Force a small delay to ensure the DOM is ready
+  setTimeout(() => {
+    document.head.appendChild(link);
+  }, 10);
 };
 
 // Apply fonts to CSS custom properties
