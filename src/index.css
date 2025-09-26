@@ -6,6 +6,8 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
+/* Note: Additional fonts are loaded dynamically based on client settings */
+
 @layer base {
   :root {
     /* Dark Theme - Premium Elegant */

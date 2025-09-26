@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { getFastLoadData, generateFastLoadData } from '@/utils/fastLoadData';
 import { ensureFastLoadDataExists } from '@/utils/triggerFastLoad';
+import { loadAndApplyFonts, cacheFonts, applyEarlyFonts, type FontSettings } from '@/utils/fontManager';
 
 // Utility function to convert hex to HSL
 const hexToHsl = (hex: string) => {
@@ -95,6 +96,10 @@ const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, cli
       primary_button_text_style: clientSettings.primary_button_text_style || 'bright',
       theme: client.theme || 'dark',
       
+      // Font settings
+      title_font: clientSettings.title_font || 'Cormorant Garamond',
+      body_font: clientSettings.body_font || 'Inter',
+      
       // Navigation settings
       header_background_enabled: clientSettings.header_background_enabled || false,
       header_background_style: clientSettings.header_background_style || 'dark',
@@ -170,6 +175,14 @@ const applyEarlyStyles = (subdomain: string) => {
   if (cachedData) {
     // Apply cached primary color immediately with text style
     applyDynamicColors(cachedData.primary_color, cachedData.primary_button_text_style);
+    
+    // Apply cached fonts immediately
+    if (cachedData.title_font || cachedData.body_font) {
+      loadAndApplyFonts({
+        titleFont: cachedData.title_font,
+        bodyFont: cachedData.body_font
+      });
+    }
     
     // Apply cached theme
     document.documentElement.classList.remove('dark', 'bright', 'light');
@@ -365,6 +378,8 @@ export interface ClientSettings {
   header_background_style?: 'dark' | 'bright';
   primary_color?: string;
   primary_button_text_style?: 'bright' | 'dark';
+  title_font?: string;
+  body_font?: string;
   created_at: string;
   updated_at: string;
 }
@@ -718,6 +733,14 @@ export const useClientData = (subdomain?: string) => {
             const primaryColor = (settingsResponse.data as ClientSettings)?.primary_color || '#FFD700';
             const textStyle = (settingsResponse.data as ClientSettings)?.primary_button_text_style || 'bright';
             applyDynamicColors(primaryColor, textStyle);
+            
+            // Apply fonts immediately when settings are loaded
+            const titleFont = (settingsResponse.data as ClientSettings)?.title_font || 'Cormorant Garamond';
+            const bodyFont = (settingsResponse.data as ClientSettings)?.body_font || 'Inter';
+            loadAndApplyFonts({ titleFont, bodyFont });
+            
+            // Cache fonts for early application
+            cacheFonts(detectedSubdomain, { titleFont, bodyFont });
             
             // Get delivery services for caching
             const clientDelivery = (clientData as any)?.delivery;

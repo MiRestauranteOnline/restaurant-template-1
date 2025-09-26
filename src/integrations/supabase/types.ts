@@ -333,6 +333,7 @@ export type Database = {
       }
       client_settings: {
         Row: {
+          body_font: string | null
           client_id: string
           created_at: string
           delivery_info: Json | null
@@ -343,10 +344,12 @@ export type Database = {
           other_customizations: Json | null
           primary_button_text_style: string | null
           primary_color: string | null
+          title_font: string | null
           updated_at: string
           whatsapp_messages: Json | null
         }
         Insert: {
+          body_font?: string | null
           client_id: string
           created_at?: string
           delivery_info?: Json | null
@@ -357,10 +360,12 @@ export type Database = {
           other_customizations?: Json | null
           primary_button_text_style?: string | null
           primary_color?: string | null
+          title_font?: string | null
           updated_at?: string
           whatsapp_messages?: Json | null
         }
         Update: {
+          body_font?: string | null
           client_id?: string
           created_at?: string
           delivery_info?: Json | null
@@ -371,6 +376,7 @@ export type Database = {
           other_customizations?: Json | null
           primary_button_text_style?: string | null
           primary_color?: string | null
+          title_font?: string | null
           updated_at?: string
           whatsapp_messages?: Json | null
         }
