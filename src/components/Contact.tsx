@@ -48,10 +48,10 @@ const Contact = () => {
           <span className="text-accent font-medium tracking-wider uppercase text-sm">
             Contáctanos
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading mt-2 mb-6">
             <span>{contactTitleFirstLine}</span>
             {contactTitleSecondLine && (
-              <span className="block text-gradient font-normal">{contactTitleSecondLine}</span>
+              <span className="block text-gradient">{contactTitleSecondLine}</span>
             )}
           </h2>
           <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">

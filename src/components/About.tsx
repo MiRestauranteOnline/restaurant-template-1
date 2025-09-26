@@ -103,10 +103,10 @@ const About = () => {
               <span className="text-accent font-medium tracking-wider uppercase text-sm">
                 {sectionTitle}
               </span>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading mt-2 mb-6">
                 <span>{aboutTitleFirstLine}</span>
                 {aboutTitleSecondLine && (
-                  <span className="block text-gradient font-normal">{aboutTitleSecondLine}</span>
+                  <span className="block text-gradient">{aboutTitleSecondLine}</span>
                 )}
               </h2>
             </div>

@@ -54,10 +54,10 @@ const Services = () => {
     <section id="services" className="py-20 lg:py-32" style={{ backgroundColor: '#ffffff' }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 fade-in">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mt-2 mb-6 text-gray-900">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading mt-2 mb-6 text-gray-900">
             <span>{servicesTitleFirstLine}</span>
             {servicesTitleSecondLine && (
-              <span className="block text-gradient font-normal">{servicesTitleSecondLine}</span>
+              <span className="block text-gradient">{servicesTitleSecondLine}</span>
             )}
           </h2>
           <p className="text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">

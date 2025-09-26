@@ -48,10 +48,10 @@ const Hero = () => {
       {/* Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
         <div className="fade-in">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-light mb-6 leading-tight hero-text">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading mb-6 leading-tight hero-text">
             <span>{heroTitleFirstLine}</span>
             {heroTitleSecondLine && (
-              <span className="block text-gradient font-normal">{heroTitleSecondLine}</span>
+              <span className="block text-gradient">{heroTitleSecondLine}</span>
             )}
           </h1>
           
