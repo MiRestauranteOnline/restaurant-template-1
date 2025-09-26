@@ -871,6 +871,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_fast_load_data: {
+        Args: { client_subdomain: string }
+        Returns: undefined
+      }
       generate_opening_hours_ordered: {
         Args: { opening_hours_obj: Json }
         Returns: Json
