@@ -35,7 +35,7 @@ export const EditMenuItemDialog = ({
     name: '',
     description: '',
     price: '',
-    category: '',
+    category_id: '',
     image_url: '',
     show_on_homepage: false,
     show_image_home: false,
@@ -51,7 +51,7 @@ export const EditMenuItemDialog = ({
         name: item.name,
         description: item.description || '',
         price: item.price.toString(),
-        category: item.category,
+        category_id: item.category_id || '',
         image_url: item.image_url || '',
         show_on_homepage: item.show_on_homepage,
         show_image_home: item.show_image_home,
@@ -69,7 +69,7 @@ export const EditMenuItemDialog = ({
       return;
     }
 
-    if (!formData.category) {
+    if (!formData.category_id) {
       toast.error('Selecciona una categoría');
       return;
     }
@@ -82,13 +82,15 @@ export const EditMenuItemDialog = ({
     setLoading(true);
 
     try {
+      const selectedCat = categories.find(cat => cat.id === formData.category_id);
       await supabase
         .from('menu_items')
         .update({
           name: formData.name.trim(),
           description: formData.description.trim() || null,
           price: Number(formData.price),
-          category: formData.category,
+          category: selectedCat?.name || '',
+          category_id: formData.category_id,
           image_url: formData.image_url.trim() || null,
           show_on_homepage: formData.show_on_homepage,
           show_image_home: formData.show_image_home,
@@ -165,15 +167,15 @@ export const EditMenuItemDialog = ({
               <div className="space-y-2">
                 <Label htmlFor="edit-item-category">Categoría *</Label>
                 <Select 
-                  value={formData.category} 
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
+                  value={formData.category_id} 
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, category_id: value }))}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona una categoría" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((category) => (
-                      <SelectItem key={category.id} value={category.name}>
+                      <SelectItem key={category.id} value={category.id}>
                         {category.name}
                       </SelectItem>
                     ))}
@@ -291,7 +293,7 @@ export const EditMenuItemDialog = ({
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={loading || !formData.name.trim() || !formData.category || !formData.price}>
+              <Button type="submit" disabled={loading || !formData.name.trim() || !formData.category_id || !formData.price}>
                 {loading ? 'Guardando...' : 'Guardar Cambios'}
               </Button>
             </DialogFooter>

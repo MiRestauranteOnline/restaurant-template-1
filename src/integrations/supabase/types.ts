@@ -647,6 +647,7 @@ export type Database = {
       menu_items: {
         Row: {
           category: string
+          category_id: string | null
           client_id: string
           created_at: string
           description: string | null
@@ -662,6 +663,7 @@ export type Database = {
         }
         Insert: {
           category: string
+          category_id?: string | null
           client_id: string
           created_at?: string
           description?: string | null
@@ -677,6 +679,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          category_id?: string | null
           client_id?: string
           created_at?: string
           description?: string | null
@@ -691,6 +694,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_menu_items_category_id"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "menu_categories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "menu_items_client_id_fkey"
             columns: ["client_id"]

@@ -35,7 +35,7 @@ export const AddMenuItemDialog = ({
     name: '',
     description: '',
     price: '',
-    category: selectedCategory || '',
+    category_id: selectedCategory || '',
     image_url: '',
     show_on_homepage: false,
     show_image_home: false,
@@ -51,7 +51,7 @@ export const AddMenuItemDialog = ({
       return;
     }
 
-    if (!formData.category) {
+    if (!formData.category_id) {
       toast.error('Selecciona una categoría');
       return;
     }
@@ -64,13 +64,15 @@ export const AddMenuItemDialog = ({
     setLoading(true);
 
     try {
+      const selectedCat = categories.find(cat => cat.id === formData.category_id);
       await supabase
         .from('menu_items')
         .insert({
           name: formData.name.trim(),
           description: formData.description.trim() || null,
           price: Number(formData.price),
-          category: formData.category,
+          category: selectedCat?.name || '',
+          category_id: formData.category_id,
           image_url: formData.image_url.trim() || null,
           client_id: clientId,
           is_active: true,
@@ -84,7 +86,7 @@ export const AddMenuItemDialog = ({
         name: '',
         description: '',
         price: '',
-        category: selectedCategory || '',
+        category_id: selectedCategory || '',
         image_url: '',
         show_on_homepage: false,
         show_image_home: false,
@@ -137,15 +139,15 @@ export const AddMenuItemDialog = ({
             <div className="space-y-2">
               <Label htmlFor="item-category">Categoría *</Label>
               <Select 
-                value={formData.category} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
+                value={formData.category_id} 
+                onValueChange={(value) => setFormData(prev => ({ ...prev, category_id: value }))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecciona una categoría" />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.name}>
+                    <SelectItem key={category.id} value={category.id}>
                       {category.name}
                     </SelectItem>
                   ))}
@@ -237,7 +239,7 @@ export const AddMenuItemDialog = ({
             >
               Cancelar
             </Button>
-            <Button type="submit" disabled={loading || !formData.name.trim() || !formData.category || !formData.price}>
+            <Button type="submit" disabled={loading || !formData.name.trim() || !formData.category_id || !formData.price}>
               {loading ? 'Creando...' : 'Crear Plato'}
             </Button>
           </DialogFooter>

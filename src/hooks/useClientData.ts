@@ -272,6 +272,7 @@ export interface MenuItem {
   description?: string;
   price: number;
   category: string;
+  category_id?: string;
   image_url?: string;
   is_active: boolean;
   show_image_home: boolean;

@@ -30,7 +30,7 @@ export const MenuManagement = () => {
   // Group items by category
   const groupedItems = localCategories.reduce((acc, category) => {
     const categoryItems = localMenuItems
-      .filter(item => item.category === category.name)
+      .filter(item => item.category_id === category.id || (!item.category_id && item.category === category.name))
       .sort((a, b) => a.name.localeCompare(b.name));
     acc[category.name] = categoryItems;
     return acc;
@@ -74,21 +74,17 @@ export const MenuManagement = () => {
 
   const handleCategoryRename = async (categoryId: string, newName: string) => {
     try {
-      // Update category name
+      // Update category name - menu items will automatically stay linked via category_id
       await supabase
         .from('menu_categories')
         .update({ name: newName })
         .eq('id', categoryId);
 
-      // Update all menu items in this category
-      const oldCategory = localCategories.find(cat => cat.id === categoryId);
-      if (oldCategory) {
-        await supabase
-          .from('menu_items')
-          .update({ category: newName })
-          .eq('category', oldCategory.name)
-          .eq('client_id', client?.id);
-      }
+      // Also update the category name in menu items for backward compatibility
+      await supabase
+        .from('menu_items')
+        .update({ category: newName })
+        .eq('category_id', categoryId);
 
       toast.success('Categoría renombrada exitosamente');
     } catch (error) {
@@ -122,7 +118,8 @@ export const MenuManagement = () => {
   };
 
   const handleAddItemToCategory = (categoryName: string) => {
-    setSelectedCategoryForNewItem(categoryName);
+    const category = localCategories.find(cat => cat.name === categoryName);
+    setSelectedCategoryForNewItem(category?.id || '');
     setIsAddItemOpen(true);
   };
 
