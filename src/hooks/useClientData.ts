@@ -415,13 +415,10 @@ export const useClientData = (subdomain?: string) => {
         setLoading(true);
         setError(null);
 
-        // Clear any stale fast-load cache (temporary debugging)
-        localStorage.removeItem('fast-load-demos-cache');
-        
         // Ensure fast-load data exists (generate if missing)  
         await ensureFastLoadDataExists();
 
-        // First try to get fast-load data (will be fresh after cache clear)
+        // First try to get fast-load data
         const fastLoadData = await getFastLoadData();
         
         if (fastLoadData) {
