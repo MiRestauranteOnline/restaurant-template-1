@@ -45,7 +45,7 @@ const generateGoogleFontsUrl = (fonts: string[], titleFontWeight?: string): stri
   return `https://fonts.googleapis.com/css2?${formattedFonts.map(font => `family=${font}`).join('&')}&display=swap&v=${timestamp}`;
 };
 
-// Load fonts from Google Fonts
+// Load fonts from Google Fonts with preloading support
 export const loadGoogleFonts = (fonts: FontSettings): void => {
   const fontsToLoad: string[] = [];
   
@@ -62,28 +62,36 @@ export const loadGoogleFonts = (fonts: FontSettings): void => {
   
   if (fontsToLoad.length === 0) return;
 
-  // Create and append font link to head
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = generateGoogleFontsUrl(fontsToLoad, fonts.titleFontWeight);
+  // Check if fonts are already preloaded
+  const preloadedFonts = ['Cormorant Garamond', 'Inter', 'Poppins', 'Montserrat', 'Playfair Display', 'Lato'];
+  const needsLoading = fontsToLoad.filter(font => !preloadedFonts.includes(font));
   
-  // Remove any existing dynamic font links to prevent duplicates
-  const existingLinks = document.querySelectorAll('link[data-dynamic-font]');
-  existingLinks.forEach(link => link.remove());
-  
-  link.setAttribute('data-dynamic-font', 'true');
-  
-  // Force a small delay to ensure the DOM is ready
-  setTimeout(() => {
-    document.head.appendChild(link);
-  }, 10);
+  if (needsLoading.length > 0) {
+    // Create and append font link for non-preloaded fonts
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = generateGoogleFontsUrl(needsLoading, fonts.titleFontWeight);
+    
+    // Remove any existing dynamic font links to prevent duplicates
+    const existingLinks = document.querySelectorAll('link[data-dynamic-font]');
+    existingLinks.forEach(link => link.remove());
+    
+    link.setAttribute('data-dynamic-font', 'true');
+    
+    // Force a small delay to ensure the DOM is ready
+    setTimeout(() => {
+      document.head.appendChild(link);
+    }, 10);
+    
+    console.log('🔗 Loading additional fonts:', needsLoading);
+  } else {
+    console.log('✅ All fonts are preloaded, using cached versions');
+  }
 };
 
 // Apply fonts to CSS custom properties
 export const applyFonts = (fonts: FontSettings): void => {
   const root = document.documentElement;
-  
-  console.log('🎨 Applying fonts:', fonts);
   
   if (fonts.titleFont) {
     // Get font category (serif/sans-serif) for fallback
@@ -91,7 +99,6 @@ export const applyFonts = (fonts: FontSettings): void => {
     const fallback = serifFonts.includes(fonts.titleFont) ? 'serif' : 'sans-serif';
     
     root.style.setProperty('--font-heading', `'${fonts.titleFont}', ${fallback}`);
-    console.log('✅ Set --font-heading to:', `'${fonts.titleFont}', ${fallback}`);
   }
   
   if (fonts.bodyFont) {
@@ -100,32 +107,21 @@ export const applyFonts = (fonts: FontSettings): void => {
     const fallback = serifFonts.includes(fonts.bodyFont) ? 'serif' : 'sans-serif';
     
     root.style.setProperty('--font-body', `'${fonts.bodyFont}', ${fallback}`);
-    console.log('✅ Set --font-body to:', `'${fonts.bodyFont}', ${fallback}`);
   }
   
   // Apply title font weight
   if (fonts.titleFontWeight) {
     root.style.setProperty('--font-heading-weight', fonts.titleFontWeight);
-    console.log('✅ Set --font-heading-weight to:', fonts.titleFontWeight);
   }
 };
 
-// Combined function to load and apply fonts with forced refresh
+// Combined function to load and apply fonts with preload optimization
 export const loadAndApplyFonts = (fonts: FontSettings): void => {
-  console.log('🚀 Loading and applying fonts:', fonts);
-  
-  // Force clear any existing font cache
-  loadedFonts.clear();
-  
-  loadGoogleFonts(fonts);
+  // Apply fonts immediately (preloaded fonts should be available)
   applyFonts(fonts);
   
-  // Force refresh styles by triggering a reflow
-  document.body.style.display = 'none';
-  document.body.offsetHeight; // trigger reflow
-  document.body.style.display = '';
-  
-  console.log('✅ Fonts loaded and applied successfully');
+  // Only load additional fonts if needed
+  loadGoogleFonts(fonts);
 };
 
 // Cache fonts in localStorage for early application

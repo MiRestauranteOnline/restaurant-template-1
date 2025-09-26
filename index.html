@@ -16,6 +16,60 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <!-- Preload essential fonts to prevent layout shifts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Preload default fonts with all common weights -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap">
+    
+    <!-- Additional popular fonts preload for instant switching -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&display=swap">
+    
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700;800&family=Lato:wght@300;400;700;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700;800&family=Lato:wght@300;400;700;900&display=swap">
+    
+    <script>
+      // Early font application from cache to prevent layout shifts
+      (function() {
+        try {
+          // Get subdomain for demos/localhost
+          const hostname = window.location.hostname;
+          const subdomain = (hostname === 'localhost' || hostname.includes('lovable') || hostname.includes('lovableproject.com')) ? 'demos' : hostname.split('.')[0];
+          
+          // Load cached font settings
+          const cacheKey = `fonts_${subdomain}`;
+          const cached = localStorage.getItem(cacheKey);
+          
+          if (cached) {
+            const { data } = JSON.parse(cached);
+            const root = document.documentElement;
+            
+            // Apply cached fonts immediately
+            if (data.title_font) {
+              const serifFonts = ['Playfair Display', 'Cormorant Garamond', 'Merriweather', 'Crimson Text', 'Libre Baskerville', 'Lora', 'Source Serif Pro'];
+              const fallback = serifFonts.includes(data.title_font) ? 'serif' : 'sans-serif';
+              root.style.setProperty('--font-heading', `'${data.title_font}', ${fallback}`);
+            }
+            
+            if (data.body_font) {
+              const serifFonts = ['Playfair Display', 'Cormorant Garamond', 'Merriweather', 'Crimson Text', 'Libre Baskerville', 'Lora', 'Source Serif Pro'];
+              const fallback = serifFonts.includes(data.body_font) ? 'serif' : 'sans-serif';
+              root.style.setProperty('--font-body', `'${data.body_font}', ${fallback}`);
+            }
+            
+            if (data.title_font_weight) {
+              root.style.setProperty('--font-heading-weight', data.title_font_weight);
+            }
+          }
+        } catch (error) {
+          console.warn('Early font loading failed:', error);
+        }
+      })();
+    </script>
   </head>
 
   <body>
