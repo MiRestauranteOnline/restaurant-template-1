@@ -3,7 +3,7 @@ import { Menu, X, Phone, ChevronDown, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'react-router-dom';
 import { useClient } from '@/contexts/ClientContext';
-import { getCachedClientSettings, getCachedNavigationData } from '@/utils/cachedContent';
+import { getCachedClientSettings, getCachedNavigationData, getCachedAdminContent } from '@/utils/cachedContent';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,12 +14,17 @@ import {
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { client, clientSettings, reviews, adminContent } = useClient();
+  const { client, clientSettings, reviews, adminContent, loading } = useClient();
   const location = useLocation();
 
   // Get cached settings and navigation data to prevent layout shifts
   const cachedSettings = getCachedClientSettings();
   const cachedNavData = getCachedNavigationData();
+  const cachedAdmin = getCachedAdminContent();
+
+  // Prevent text-to-logo shift: prefer cached logo, show skeleton while loading
+  const logoUrl = cachedAdmin?.header_logo_url || adminContent?.header_logo_url;
+  const isLoadingAdmin = !logoUrl && loading;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -130,13 +135,15 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* 🔒 PROTECTED: Dynamic restaurant name from Supabase - DO NOT MODIFY LOGIC */}
           <div className="flex-shrink-0">
-            <a href="/" className="block">
-              {adminContent?.header_logo_url ? (
-                <img 
-                  src={adminContent.header_logo_url} 
+            <a href="/" className="block" aria-label="Ir al inicio">
+              {logoUrl ? (
+                <img
+                  src={logoUrl}
                   alt={`${client?.restaurant_name || 'Savoria'} Logo`}
                   className="h-10 md:h-12 w-auto max-w-none object-contain"
                 />
+              ) : isLoadingAdmin ? (
+                <div className="h-10 md:h-12 w-32 bg-foreground/10 rounded animate-pulse" />
               ) : (
                 <h1 className="text-2xl md:text-3xl font-heading font-bold text-gradient">
                   {client?.restaurant_name || 'Savoria'}
