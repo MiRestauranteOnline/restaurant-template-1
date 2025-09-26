@@ -3,14 +3,14 @@ import { getFastLoadData, type FastLoadData } from '@/utils/fastLoadData';
 
 const CACHE_PREFIX = 'client_styles_';
 
-const getCacheKey = (subdomain: string) => `${CACHE_PREFIX}${subdomain}`;
+const getCacheKey = (domain: string) => `${CACHE_PREFIX}${domain}`;
 
-const getSubdomainFromUrl = (): string => {
-  // For development and Lovable platform, use demos subdomain
+const getDomainFromUrl = (): string => {
+  // For development and Lovable platform, use demos domain
   if (window.location.hostname === 'localhost' || 
       window.location.hostname.includes('lovable') ||
       window.location.hostname.includes('lovableproject.com')) {
-    return 'demos'; // Default subdomain for template
+    return 'demos'; // Default domain for template
   }
   
   const hostname = window.location.hostname;
@@ -24,8 +24,8 @@ let fastLoadPromise: Promise<FastLoadData | null> | null = null;
 
 export const getCachedContent = () => {
   try {
-    const subdomain = getSubdomainFromUrl();
-    const cacheKey = getCacheKey(subdomain);
+    const domain = getDomainFromUrl();
+    const cacheKey = getCacheKey(domain);
     const cached = localStorage.getItem(cacheKey);
     
     if (!cached) return null;

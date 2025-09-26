@@ -247,7 +247,7 @@ const applyEarlyStyles = (subdomain: string) => {
 
 export interface ClientData {
   id: string;
-  subdomain: string;
+  domain: string;
   restaurant_name: string;
   phone?: string;
   email?: string;
@@ -397,7 +397,7 @@ interface GlobalDataCache {
   clientSettings: ClientSettings | null;
   loading: boolean;
   error: string | null;
-  subdomain: string;
+  domain: string;
 }
 
 const globalDataCache: GlobalDataCache = {
@@ -410,16 +410,16 @@ const globalDataCache: GlobalDataCache = {
   clientSettings: null,
   loading: true,
   error: null,
-  subdomain: ''
+  domain: ''
 };
 
-// Helper function for subdomain detection
-function getSubdomainFromUrl(): string {
-  // For development and Lovable platform, use demos subdomain
+// Helper function for domain detection
+function getDomainFromUrl(): string {
+  // For development and Lovable platform, use demos domain
   if (window.location.hostname === 'localhost' || 
       window.location.hostname.includes('lovable') ||
       window.location.hostname.includes('lovableproject.com')) {
-    return 'demos'; // Default subdomain for template
+    return 'demos'; // Default domain for template
   }
   
   const hostname = window.location.hostname;
@@ -428,29 +428,29 @@ function getSubdomainFromUrl(): string {
 }
 
 // Preload all data immediately
-export const preloadAllClientData = async (subdomain?: string) => {
-  const detectedSubdomain = subdomain || getSubdomainFromUrl();
-  globalDataCache.subdomain = detectedSubdomain;
+export const preloadAllClientData = async (domain?: string) => {
+  const detectedDomain = domain || getDomainFromUrl();
+  globalDataCache.domain = detectedDomain;
   globalDataCache.loading = true;
   globalDataCache.error = null;
 
-  console.log('🚀 Preloading ALL client data for:', detectedSubdomain);
+  console.log('🚀 Preloading ALL client data for:', detectedDomain);
 
-  if (!detectedSubdomain) {
-    globalDataCache.error = 'No subdomain detected';
+  if (!detectedDomain) {
+    globalDataCache.error = 'No domain detected';
     globalDataCache.loading = false;
     return;
   }
 
   try {
     // Apply cached styles immediately
-    applyEarlyStyles(detectedSubdomain);
+    applyEarlyStyles(detectedDomain);
 
     // Fetch client data first
     const { data: clientData, error: clientError } = await supabase
       .from('clients')
       .select('*')
-      .eq('subdomain', detectedSubdomain)
+      .eq('domain', detectedDomain)
       .single();
 
     if (clientError) {
@@ -519,7 +519,7 @@ export const preloadAllClientData = async (subdomain?: string) => {
         
         // Save to cache for future visits
         saveCachedStyles(
-          detectedSubdomain,
+          detectedDomain,
           settings,
           clientData as ClientData,
           adminContentResponse.data,
@@ -538,7 +538,7 @@ export const preloadAllClientData = async (subdomain?: string) => {
   }
 };
 
-export const useClientData = (subdomain?: string) => {
+export const useClientData = (domain?: string) => {
   const [client, setClient] = useState<ClientData | null>(globalDataCache.client);
   const [adminContent, setAdminContent] = useState<AdminContent | null>(globalDataCache.adminContent);
   const [menuItems, setMenuItems] = useState<MenuItem[]>(globalDataCache.menuItems);
@@ -549,13 +549,13 @@ export const useClientData = (subdomain?: string) => {
   const [loading, setLoading] = useState(globalDataCache.loading);
   const [error, setError] = useState<string | null>(globalDataCache.error);
 
-  // Auto-detect subdomain from URL if not provided
-  const detectedSubdomain = subdomain || getSubdomainFromUrl();
+  // Auto-detect domain from URL if not provided
+  const detectedDomain = domain || getDomainFromUrl();
 
   // Watch global cache for updates
   useEffect(() => {
     const interval = setInterval(() => {
-      if (globalDataCache.subdomain === detectedSubdomain) {
+      if (globalDataCache.domain === detectedDomain) {
         setClient(globalDataCache.client);
         setAdminContent(globalDataCache.adminContent);
         setMenuItems(globalDataCache.menuItems);
@@ -569,14 +569,14 @@ export const useClientData = (subdomain?: string) => {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [detectedSubdomain]);
+  }, [detectedDomain]);
 
-  function getSubdomainFromUrl(): string {
-    // For development and Lovable platform, use demos subdomain
+  function getDomainFromUrl(): string {
+    // For development and Lovable platform, use demos domain
     if (window.location.hostname === 'localhost' || 
         window.location.hostname.includes('lovable') ||
         window.location.hostname.includes('lovableproject.com')) {
-      return 'demos'; // Default subdomain for template
+      return 'demos'; // Default domain for template
     }
     
     const hostname = window.location.hostname;
@@ -586,8 +586,8 @@ export const useClientData = (subdomain?: string) => {
 
   useEffect(() => {
     const fetchClientData = async () => {
-      if (!detectedSubdomain) {
-        setError('No subdomain detected');
+      if (!detectedDomain) {
+        setError('No domain detected');
         setLoading(false);
         return;
       }
@@ -605,7 +605,7 @@ export const useClientData = (subdomain?: string) => {
         const { data: clientData, error: clientError } = await supabase
           .from('clients')
           .select('*')
-          .eq('subdomain', detectedSubdomain)
+          .eq('domain', detectedDomain)
           .single();
 
         if (clientError) {
@@ -705,8 +705,8 @@ export const useClientData = (subdomain?: string) => {
                 header_background_style: 'dark',
               };
 
-              saveCachedStyles(
-                detectedSubdomain,
+        saveCachedStyles(
+          detectedDomain,
                 minimalSettings as ClientSettings,
                 clientData as ClientData,
                 undefined,
@@ -744,7 +744,7 @@ export const useClientData = (subdomain?: string) => {
             loadAndApplyFonts({ titleFont, bodyFont, titleFontWeight });
             
             // Cache fonts for early application
-            cacheFonts(detectedSubdomain, { titleFont, bodyFont, titleFontWeight });
+            cacheFonts(detectedDomain, { titleFont, bodyFont, titleFontWeight });
             
             // Get delivery services for caching
             const clientDelivery = (clientData as any)?.delivery;
@@ -774,8 +774,8 @@ export const useClientData = (subdomain?: string) => {
             }
             
             // Cache the styles for future visits including admin content, reviews, and delivery
-            saveCachedStyles(
-              detectedSubdomain, 
+              saveCachedStyles(
+                detectedDomain,
               settingsResponse.data as ClientSettings, 
               clientData as ClientData, 
               adminContentResponse.data as AdminContent, 
@@ -793,7 +793,7 @@ export const useClientData = (subdomain?: string) => {
     };
 
     fetchClientData();
-  }, [detectedSubdomain]);
+  }, [detectedDomain]);
 
   return {
     client,
@@ -805,6 +805,6 @@ export const useClientData = (subdomain?: string) => {
     clientSettings,
     loading,
     error,
-    subdomain: detectedSubdomain
+    domain: detectedDomain
   };
 };

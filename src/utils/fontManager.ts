@@ -150,9 +150,9 @@ export const loadAndApplyFonts = async (fonts: FontSettings): Promise<void> => {
 };
 
 // Cache fonts in localStorage for early application
-export const cacheFonts = (subdomain: string, fonts: FontSettings): void => {
+export const cacheFonts = (domain: string, fonts: FontSettings): void => {
   try {
-    const cacheKey = `fonts_${subdomain}`;
+    const cacheKey = `fonts_${domain}`;
     localStorage.setItem(cacheKey, JSON.stringify(fonts));
   } catch (error) {
     console.warn('Failed to cache fonts:', error);
@@ -160,9 +160,9 @@ export const cacheFonts = (subdomain: string, fonts: FontSettings): void => {
 };
 
 // Load cached fonts for early application
-export const getCachedFonts = (subdomain: string): FontSettings | null => {
+export const getCachedFonts = (domain: string): FontSettings | null => {
   try {
-    const cacheKey = `fonts_${subdomain}`;
+    const cacheKey = `fonts_${domain}`;
     const cached = localStorage.getItem(cacheKey);
     return cached ? JSON.parse(cached) : null;
   } catch (error) {
@@ -172,8 +172,8 @@ export const getCachedFonts = (subdomain: string): FontSettings | null => {
 };
 
 // Apply cached fonts early to prevent layout shifts
-export const applyEarlyFonts = (subdomain: string): void => {
-  const cachedFonts = getCachedFonts(subdomain);
+export const applyEarlyFonts = (domain: string): void => {
+  const cachedFonts = getCachedFonts(domain);
   if (cachedFonts) {
     loadAndApplyFonts(cachedFonts);
   }

@@ -1,10 +1,10 @@
 // Utility to manually trigger fast-load data generation
 import { supabase } from '@/integrations/supabase/client';
 
-export const triggerFastLoadGeneration = async (subdomain: string = 'demos') => {
+export const triggerFastLoadGeneration = async (domain: string = 'demos') => {
   try {
     const { data, error } = await supabase.functions.invoke('prebuild-client-data', {
-      body: { subdomain }
+      body: { domain }
     });
 
     if (error) {

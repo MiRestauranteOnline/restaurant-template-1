@@ -34,13 +34,13 @@ export interface FastLoadData {
   
   // Metadata
   generated_at: string;
-  subdomain: string;
+  domain: string;
 }
 
 const FAST_LOAD_CACHE_KEY = 'fast_load_data_';
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-const getSubdomainFromUrl = (): string => {
+const getDomainFromUrl = (): string => {
   if (window.location.hostname === 'localhost' || 
       window.location.hostname.includes('lovable') ||
       window.location.hostname.includes('lovableproject.com')) {
@@ -53,8 +53,8 @@ const getSubdomainFromUrl = (): string => {
 };
 
 export const getFastLoadData = async (): Promise<FastLoadData | null> => {
-  const subdomain = getSubdomainFromUrl();
-  const cacheKey = `${FAST_LOAD_CACHE_KEY}${subdomain}`;
+  const domain = getDomainFromUrl();
+  const cacheKey = `${FAST_LOAD_CACHE_KEY}${domain}`;
   
   // Try memory cache first
   try {
@@ -73,7 +73,7 @@ export const getFastLoadData = async (): Promise<FastLoadData | null> => {
   try {
     const { data, error } = await supabase.storage
       .from('client-assets')
-      .download(`fast-load/${subdomain}.json`);
+      .download(`fast-load/${domain}.json`);
 
     if (error) {
       console.warn('Fast-load file not found, falling back to regular loading');
@@ -96,12 +96,12 @@ export const getFastLoadData = async (): Promise<FastLoadData | null> => {
   }
 };
 
-export const generateFastLoadData = async (subdomain?: string): Promise<boolean> => {
-  const targetSubdomain = subdomain || getSubdomainFromUrl();
+export const generateFastLoadData = async (domain?: string): Promise<boolean> => {
+  const targetDomain = domain || getDomainFromUrl();
   
   try {
     const { data, error } = await supabase.functions.invoke('prebuild-client-data', {
-      body: { subdomain: targetSubdomain }
+      body: { domain: targetDomain }
     });
 
     if (error) {
@@ -112,7 +112,7 @@ export const generateFastLoadData = async (subdomain?: string): Promise<boolean>
     console.log('Fast-load data generated:', data);
     
     // Clear local cache to force refresh
-    const cacheKey = `${FAST_LOAD_CACHE_KEY}${targetSubdomain}`;
+    const cacheKey = `${FAST_LOAD_CACHE_KEY}${targetDomain}`;
     localStorage.removeItem(cacheKey);
     
     return true;

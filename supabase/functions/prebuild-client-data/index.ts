@@ -17,11 +17,11 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const { subdomain } = await req.json()
+    const { domain } = await req.json()
 
-    if (!subdomain) {
+    if (!domain) {
       return new Response(
-        JSON.stringify({ error: 'Subdomain is required' }),
+        JSON.stringify({ error: 'Domain is required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
@@ -30,7 +30,7 @@ serve(async (req) => {
     const { data: client } = await supabaseClient
       .from('clients')
       .select('*')
-      .eq('subdomain', subdomain)
+      .eq('domain', domain)
       .single()
 
     if (!client) {
@@ -119,11 +119,11 @@ serve(async (req) => {
       
       // Metadata
       generated_at: new Date().toISOString(),
-      subdomain: subdomain
+      domain: domain
     }
 
     // Upload to storage bucket for immediate access
-    const fileName = `fast-load/${subdomain}.json`
+    const fileName = `fast-load/${domain}.json`
     
     const { error: uploadError } = await supabaseClient.storage
       .from('client-assets')

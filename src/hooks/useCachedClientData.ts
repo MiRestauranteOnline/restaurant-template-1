@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 
 // Utility hook to access cached client data for preventing layout shifts
-export const useCachedClientData = (subdomain?: string) => {
+export const useCachedClientData = (domain?: string) => {
   const [cachedData, setCachedData] = useState<any>(null);
 
   useEffect(() => {
-    if (!subdomain) return;
+    if (!domain) return;
     
-    const getCacheKey = (subdomain: string) => `client_styles_${subdomain}`;
+    const getCacheKey = (domain: string) => `client_styles_${domain}`;
     
     try {
-      const cacheKey = getCacheKey(subdomain);
+      const cacheKey = getCacheKey(domain);
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
         const { data, timestamp } = JSON.parse(cached);
@@ -24,7 +24,7 @@ export const useCachedClientData = (subdomain?: string) => {
     } catch (error) {
       console.warn('Failed to load cached client data:', error);
     }
-  }, [subdomain]);
+  }, [domain]);
 
   return cachedData;
 };

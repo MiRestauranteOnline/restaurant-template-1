@@ -11,7 +11,7 @@ interface ClientContextType {
   clientSettings: ClientSettings | null;
   loading: boolean;
   error: string | null;
-  subdomain: string;
+  domain: string;
 }
 
 const ClientContext = createContext<ClientContextType | undefined>(undefined);
@@ -30,12 +30,12 @@ export const useClient = () => {
 
 interface ClientProviderProps {
   children: ReactNode;
-  subdomain?: string;
+  domain?: string;
 }
 
-export const ClientProvider: React.FC<ClientProviderProps> = ({ children, subdomain }) => {
-  console.log('🔍 ClientProvider: Initializing with subdomain:', subdomain);
-  const clientData = useClientData(subdomain);
+export const ClientProvider: React.FC<ClientProviderProps> = ({ children, domain }) => {
+  console.log('🔍 ClientProvider: Initializing with domain:', domain);
+  const clientData = useClientData(domain);
   
   console.log('🔍 ClientProvider: Client data loaded:', {
     client: clientData.client?.restaurant_name,

@@ -400,6 +400,7 @@ export type Database = {
           coordinates: Json | null
           created_at: string
           delivery: Json | null
+          domain: string
           email: string | null
           id: string
           opening_hours: Json | null
@@ -408,7 +409,6 @@ export type Database = {
           phone: string | null
           restaurant_name: string
           social_media_links: Json | null
-          subdomain: string
           theme: string | null
           updated_at: string
           whatsapp: string | null
@@ -419,6 +419,7 @@ export type Database = {
           coordinates?: Json | null
           created_at?: string
           delivery?: Json | null
+          domain: string
           email?: string | null
           id?: string
           opening_hours?: Json | null
@@ -427,7 +428,6 @@ export type Database = {
           phone?: string | null
           restaurant_name: string
           social_media_links?: Json | null
-          subdomain: string
           theme?: string | null
           updated_at?: string
           whatsapp?: string | null
@@ -438,6 +438,7 @@ export type Database = {
           coordinates?: Json | null
           created_at?: string
           delivery?: Json | null
+          domain?: string
           email?: string | null
           id?: string
           opening_hours?: Json | null
@@ -446,7 +447,6 @@ export type Database = {
           phone?: string | null
           restaurant_name?: string
           social_media_links?: Json | null
-          subdomain?: string
           theme?: string | null
           updated_at?: string
           whatsapp?: string | null
@@ -881,7 +881,7 @@ export type Database = {
     }
     Functions: {
       generate_fast_load_data: {
-        Args: { client_subdomain: string }
+        Args: { client_domain: string }
         Returns: undefined
       }
       generate_opening_hours_ordered: {
