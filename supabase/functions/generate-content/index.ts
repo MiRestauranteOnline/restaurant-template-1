@@ -52,6 +52,8 @@ serve(async (req) => {
               "reviews_page_hero_title_first_line": "First line of reviews page hero",
               "reviews_page_hero_title_second_line": "Second line of reviews page hero", 
               "reviews_page_hero_background_url": "URL for reviews page background",
+              "homepage_about_section_image_url": "URL for homepage about section image",
+              "about_page_about_section_image_url": "URL for about page about section image",
               "homepage_about_section_title_first_line": "First line of about section title",
               "homepage_about_section_title_second_line": "Second line of about section title",
               "homepage_about_section_description": "About section description",
