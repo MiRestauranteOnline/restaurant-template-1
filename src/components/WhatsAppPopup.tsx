@@ -46,7 +46,7 @@ const WhatsAppPopup = () => {
       {/* WhatsApp button */}
       <Button
         onClick={handleWhatsAppClick}
-        className="h-14 w-14 rounded-full bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+        className="h-14 w-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
         aria-label="Contactar por WhatsApp"
       >
         <MessageCircle className="h-6 w-6" />
