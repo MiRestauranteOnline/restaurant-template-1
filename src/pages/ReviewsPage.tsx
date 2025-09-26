@@ -2,11 +2,17 @@ import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import Reviews from '@/components/Reviews';
 import { useClient } from '@/contexts/ClientContext';
+import { getCachedAdminContent } from '@/utils/cachedContent';
 
 const ReviewsPage = () => {
   const { reviews, adminContent } = useClient();
   
-  const reviewsHeroBackground = (adminContent as any)?.reviews_page_hero_background_url || '/src/assets/chocolate-dessert.jpg';
+  // Get cached content to prevent layout shifts
+  const cachedAdminContent = getCachedAdminContent();
+  
+  const reviewsHeroBackground = 
+    (adminContent as any)?.reviews_page_hero_background_url ?? 
+    cachedAdminContent?.reviews_page_hero_background_url ?? '/src/assets/chocolate-dessert.jpg';
 
   // If no reviews exist, show a message instead
   if (!reviews || reviews.length === 0) {

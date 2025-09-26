@@ -3,6 +3,7 @@ import { Menu, X, Phone, ChevronDown, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'react-router-dom';
 import { useClient } from '@/contexts/ClientContext';
+import { getCachedClientSettings } from '@/utils/cachedContent';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +16,9 @@ const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { client, clientSettings, reviews } = useClient();
   const location = useLocation();
+
+  // Get cached settings to prevent layout shifts
+  const cachedSettings = getCachedClientSettings();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -86,9 +90,9 @@ const Navigation = () => {
   const deliveryServices = getDeliveryServices();
   const showDeliveryMenu = deliveryServices.length > 0;
 
-  // Get header background settings from client settings
-  const headerBackgroundEnabled = clientSettings?.header_background_enabled || false;
-  const headerBackgroundStyle = clientSettings?.header_background_style || 'dark';
+  // Get header background settings with cached fallbacks
+  const headerBackgroundEnabled = clientSettings?.header_background_enabled ?? cachedSettings?.header_background_enabled ?? false;
+  const headerBackgroundStyle = clientSettings?.header_background_style ?? cachedSettings?.header_background_style ?? 'dark';
   
   // Dynamic header background logic
   const getHeaderBackground = () => {

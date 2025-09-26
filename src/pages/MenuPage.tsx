@@ -2,12 +2,18 @@ import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { useClient } from '@/contexts/ClientContext';
+import { getCachedAdminContent } from '@/utils/cachedContent';
 import heroPasta from '@/assets/hero-pasta.jpg';
 
 const MenuPage = () => {
   const { menuItems, menuCategories, client, adminContent } = useClient();
   
-  const menuHeroBackground = (adminContent as any)?.menu_page_hero_background_url || heroPasta;
+  // Get cached content to prevent layout shifts
+  const cachedAdminContent = getCachedAdminContent();
+  
+  const menuHeroBackground = 
+    (adminContent as any)?.menu_page_hero_background_url ?? 
+    cachedAdminContent?.menu_page_hero_background_url ?? heroPasta;
   
   const currency = client?.other_customizations?.currency || 'S/';
 

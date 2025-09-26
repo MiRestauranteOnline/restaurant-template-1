@@ -4,12 +4,18 @@ import Contact from '@/components/Contact';
 import { Card, CardContent } from '@/components/ui/card';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
+import { getCachedAdminContent } from '@/utils/cachedContent';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
 
 const ContactPage = () => {
   const { client, adminContent } = useClient();
   
-  const contactHeroBackground = (adminContent as any)?.contact_page_hero_background_url || '/src/assets/grilled-steak.jpg';
+  // Get cached content to prevent layout shifts
+  const cachedAdminContent = getCachedAdminContent();
+  
+  const contactHeroBackground = 
+    (adminContent as any)?.contact_page_hero_background_url ?? 
+    cachedAdminContent?.contact_page_hero_background_url ?? '/src/assets/grilled-steak.jpg';
 
   const formatHoursForContactPage = (hours: any) => {
     const formattedHours = formatOpeningHours(hours);

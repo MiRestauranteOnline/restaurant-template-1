@@ -1,27 +1,39 @@
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
+import { getCachedAdminContent } from '@/utils/cachedContent';
 import heroPasta from '@/assets/hero-pasta.jpg';
 
 const Hero = () => {
   const { client, adminContent } = useClient();
-  // Fixed: Updated to use separate title fields
   
-  const heroTitleFirstLine = (adminContent as any)?.homepage_hero_title_first_line || 
-    client?.other_customizations?.hero_title?.split('\n')[0] || 
+  // Get cached content to prevent layout shifts
+  const cachedAdminContent = getCachedAdminContent();
+  
+  // Use cached content as fallback to prevent layout shifts
+  const heroTitleFirstLine = 
+    (adminContent as any)?.homepage_hero_title_first_line ?? 
+    cachedAdminContent?.homepage_hero_title_first_line ??
+    client?.other_customizations?.hero_title?.split('\n')[0] ?? 
     'Excelencia';
   
-  const heroTitleSecondLine = (adminContent as any)?.homepage_hero_title_second_line || 
-    client?.other_customizations?.hero_title?.split('\n')[1] || 
+  const heroTitleSecondLine = 
+    (adminContent as any)?.homepage_hero_title_second_line ?? 
+    cachedAdminContent?.homepage_hero_title_second_line ??
+    client?.other_customizations?.hero_title?.split('\n')[1] ?? 
     'Culinaria';
   
-  const heroDescription = adminContent?.homepage_hero_description || 
-    client?.other_customizations?.hero_description || 
+  const heroDescription = 
+    adminContent?.homepage_hero_description ?? 
+    cachedAdminContent?.homepage_hero_description ??
+    client?.other_customizations?.hero_description ?? 
     'Experimenta lo mejor de la gastronomía contemporánea con nuestros platos cuidadosamente elaborados y un servicio impecable en un ambiente de elegancia refinada.';
   
-  const rightButtonText = adminContent?.homepage_hero_right_button_text || 'Reservar Mesa';
-  const rightButtonLink = adminContent?.homepage_hero_right_button_link || '#contact';
-  const backgroundImageUrl = adminContent?.homepage_hero_background_url;
+  const rightButtonText = adminContent?.homepage_hero_right_button_text ?? 'Reservar Mesa';
+  const rightButtonLink = adminContent?.homepage_hero_right_button_link ?? '#contact';
+  const backgroundImageUrl = 
+    adminContent?.homepage_hero_background_url ?? 
+    cachedAdminContent?.homepage_hero_background_url;
 
   return (
     <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">

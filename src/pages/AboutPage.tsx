@@ -4,16 +4,29 @@ import About from '@/components/About';
 import { Card, CardContent } from '@/components/ui/card';
 import { getIcon } from '@/utils/iconMapper';
 import { useClient } from '@/contexts/ClientContext';
+import { getCachedAdminContent } from '@/utils/cachedContent';
 import { Users } from 'lucide-react';
 
 const AboutPage = () => {
   const { adminContent, teamMembers } = useClient();
   
-  // Get dynamic content from database
-  const aboutHeroTitleFirst = (adminContent as any)?.about_page_hero_title_first_line || 'Sobre';
-  const aboutHeroTitleSecond = (adminContent as any)?.about_page_hero_title_second_line || 'Nosotros';
-  const aboutHeroDescription = (adminContent as any)?.about_page_hero_description || 'Conoce la historia detrás de nuestro restaurante y nuestro compromiso con la excelencia culinaria.';
-  const aboutHeroBackground = (adminContent as any)?.about_page_hero_background_url || '/src/assets/restaurant-interior.jpg';
+  // Get cached content to prevent layout shifts
+  const cachedAdminContent = getCachedAdminContent();
+  
+  // Get dynamic content from database with cached fallbacks
+  const aboutHeroTitleFirst = 
+    (adminContent as any)?.about_page_hero_title_first_line ?? 
+    cachedAdminContent?.about_page_hero_title_first_line ?? 'Sobre';
+  const aboutHeroTitleSecond = 
+    (adminContent as any)?.about_page_hero_title_second_line ?? 
+    cachedAdminContent?.about_page_hero_title_second_line ?? 'Nosotros';
+  const aboutHeroDescription = 
+    (adminContent as any)?.about_page_hero_description ?? 
+    cachedAdminContent?.about_page_hero_description ?? 
+    'Conoce la historia detrás de nuestro restaurante y nuestro compromiso con la excelencia culinaria.';
+  const aboutHeroBackground = 
+    (adminContent as any)?.about_page_hero_background_url ?? 
+    cachedAdminContent?.about_page_hero_background_url ?? '/src/assets/restaurant-interior.jpg';
   
   const teamTitleFirst = (adminContent as any)?.about_team_section_title_first_line || 'Nuestro';
   const teamTitleSecond = (adminContent as any)?.about_team_section_title_second_line || 'Equipo';
