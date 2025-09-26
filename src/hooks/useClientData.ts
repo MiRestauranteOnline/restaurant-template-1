@@ -250,8 +250,10 @@ export interface ClientData {
   subdomain: string;
   restaurant_name: string;
   phone?: string;
+  phone_country_code?: string;
   email?: string;
   whatsapp?: string;
+  whatsapp_country_code?: string;
   address?: string;
   coordinates?: any;
   opening_hours?: any;

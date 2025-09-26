@@ -206,15 +206,22 @@ const Navigation = () => {
             <div className="flex items-center space-x-3">
               <Button 
                 className="btn-ghost px-4 py-2 rounded-full text-sm"
-                onClick={() => window.open(`tel:${client?.phone || '+51987654321'}`, '_self')}
+                onClick={() => {
+                  const phoneNumber = client?.phone ? 
+                    `${client.phone_country_code || '+51'}${client.phone}` : 
+                    '+51987654321';
+                  window.open(`tel:${phoneNumber}`, '_self');
+                }}
               >
                 Llamar
               </Button>
               <Button 
                 className="btn-primary px-6 py-2 rounded-full"
                 onClick={() => {
-                  const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
-                  window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
+                  const whatsappNumber = client?.whatsapp ? 
+                    `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
+                    '51987654321';
+                  window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
                 }}
               >
                 WhatsApp
@@ -284,15 +291,22 @@ const Navigation = () => {
               <div className="px-3 py-2 space-y-2">
                 <Button 
                   className="btn-ghost w-full rounded-full"
-                  onClick={() => window.open(`tel:${client?.phone || '+51987654321'}`, '_self')}
+                  onClick={() => {
+                    const phoneNumber = client?.phone ? 
+                      `${client.phone_country_code || '+51'}${client.phone}` : 
+                      '+51987654321';
+                    window.open(`tel:${phoneNumber}`, '_self');
+                  }}
                 >
                   Llamar
                 </Button>
                 <Button 
                   className="btn-primary w-full rounded-full"
                   onClick={() => {
-                    const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
-                    window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
+                    const whatsappNumber = client?.whatsapp ? 
+                      `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
+                      '51987654321';
+                    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
                   }}
                 >
                   WhatsApp

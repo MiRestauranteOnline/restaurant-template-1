@@ -9,7 +9,7 @@ const Footer = () => {
     {
       title: "Contacto",
       items: [
-        { icon: Phone, text: client?.phone || "+51 987 654 321" },
+        { icon: Phone, text: client?.phone ? `${client.phone_country_code || '+51'} ${client.phone}` : "+51 987 654 321" },
         { icon: Mail, text: client?.email || "info@savoria.com" },
         { icon: MapPin, text: client?.address || "Av. Larco 123, Miraflores, Lima" }
       ]
@@ -157,15 +157,22 @@ const Footer = () => {
               <button 
                 className="btn-primary px-6 py-3 rounded-full"
                 onClick={() => {
-                  const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
-                  window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
+                  const whatsappNumber = client?.whatsapp ? 
+                    `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
+                    '51987654321';
+                  window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
                 }}
               >
                 WhatsApp
               </button>
               <button 
                 className="btn-ghost px-6 py-3 rounded-full"
-                onClick={() => window.open(`tel:${client?.phone || '+51987654321'}`, '_self')}
+                onClick={() => {
+                  const phoneNumber = client?.phone ? 
+                    `${client.phone_country_code || '+51'}${client.phone}` : 
+                    '+51987654321';
+                  window.open(`tel:${phoneNumber}`, '_self');
+                }}
               >
                 Llamar
               </button>

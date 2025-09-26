@@ -29,8 +29,13 @@ const ContactPage = () => {
     {
       icon: Phone,
       title: "Llámanos",
-      content: client?.phone || "+51 987 654 321",
-      action: () => window.open(`tel:${client?.phone || '+51987654321'}`, '_self'),
+      content: client?.phone ? `${client.phone_country_code || '+51'} ${client.phone}` : "+51 987 654 321",
+      action: () => {
+        const phoneNumber = client?.phone ? 
+          `${client.phone_country_code || '+51'}${client.phone}` : 
+          '+51987654321';
+        window.open(`tel:${phoneNumber}`, '_self');
+      },
       buttonText: "Llamar Ahora"
     },
     {
@@ -38,8 +43,10 @@ const ContactPage = () => {
       title: "WhatsApp", 
       content: "Envíanos un mensaje",
       action: () => {
-        const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
-        window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me gustaría contactarlos')}`, '_blank');
+        const whatsappNumber = client?.whatsapp ? 
+          `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
+          '51987654321';
+        window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría contactarlos')}`, '_blank');
       },
       buttonText: "Escribir"
     },

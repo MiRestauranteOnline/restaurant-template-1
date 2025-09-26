@@ -22,7 +22,7 @@ const Contact = () => {
     {
       icon: Phone,
       title: "Teléfono",
-      details: client?.phone ? [client.phone] : ["+51 987 654 321"]
+      details: client?.phone ? [`${client.phone_country_code || '+51'} ${client.phone}`] : ["+51 987 654 321"]
     },
     {
       icon: Mail,
@@ -123,10 +123,12 @@ const Contact = () => {
                       <Button 
                         className="btn-primary w-full py-4 text-lg rounded-full"
                         onClick={() => {
-                          const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
+                          const whatsappNumber = client?.whatsapp ? 
+                            `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
+                            '51987654321';
                           const message = clientSettings?.whatsapp_messages?.reservation || 
                             'Hola, me gustaría hacer una reserva para [fecha] a las [hora] para [número de personas] personas.';
-                          window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+                          window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
                         }}
                       >
                         Reservar por WhatsApp
@@ -135,7 +137,12 @@ const Contact = () => {
                       <Button 
                         variant="outline"
                         className="w-full py-4 text-lg rounded-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
-                        onClick={() => window.open(`tel:${client?.phone || '+51987654321'}`, '_self')}
+                        onClick={() => {
+                          const phoneNumber = client?.phone ? 
+                            `${client.phone_country_code || '+51'}${client.phone}` : 
+                            '+51987654321';
+                          window.open(`tel:${phoneNumber}`, '_self');
+                        }}
                       >
                         Llamar Ahora
                       </Button>

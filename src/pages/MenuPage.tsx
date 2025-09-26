@@ -172,8 +172,10 @@ const MenuPage = () => {
             <button 
               className="btn-primary px-8 py-3 rounded-full text-lg"
               onClick={() => {
-                const whatsappNumber = client?.whatsapp || client?.phone || '51987654321';
-                window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me gustaría hacer un pedido')}`, '_blank');
+                const whatsappNumber = client?.whatsapp ? 
+                  `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
+                  '51987654321';
+                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer un pedido')}`, '_blank');
               }}
             >
               Hacer Pedido
@@ -181,7 +183,9 @@ const MenuPage = () => {
             <button 
               className="btn-ghost px-8 py-3 rounded-full text-lg"
               onClick={() => {
-                const phoneNumber = client?.phone || client?.whatsapp || '+51987654321';
+                const phoneNumber = client?.phone ? 
+                  `${client.phone_country_code || '+51'}${client.phone}` : 
+                  '+51987654321';
                 window.open(`tel:${phoneNumber}`, '_self');
               }}
             >
