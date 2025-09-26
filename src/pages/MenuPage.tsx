@@ -20,7 +20,8 @@ const MenuPage = () => {
   // Group menu items by category
   const groupedItems = menuCategories.reduce((acc, category) => {
     const categoryItems = menuItems.filter(item => 
-      item.category === category.name && item.is_active
+      (item.category_id === category.id || (!item.category_id && item.category === category.name))
+      && item.is_active
     );
     if (categoryItems.length > 0) {
       acc[category.name] = categoryItems;

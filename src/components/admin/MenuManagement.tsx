@@ -74,17 +74,34 @@ export const MenuManagement = () => {
 
   const handleCategoryRename = async (categoryId: string, newName: string) => {
     try {
-      // Update category name - menu items will automatically stay linked via category_id
+      const oldCategory = localCategories.find(cat => cat.id === categoryId);
+
+      // 1) Update category name
       await supabase
         .from('menu_categories')
         .update({ name: newName })
         .eq('id', categoryId);
 
-      // Also update the category name in menu items for backward compatibility
+      // 2) Update menu items linked by category_id
       await supabase
         .from('menu_items')
         .update({ category: newName })
         .eq('category_id', categoryId);
+
+      // 3) Backfill legacy items missing category_id that still match old name
+      if (oldCategory && client?.id) {
+        await supabase
+          .from('menu_items')
+          .update({ category: newName, category_id: categoryId })
+          .eq('client_id', client.id)
+          .eq('category', oldCategory.name)
+          .is('category_id', null);
+      }
+
+      // 4) Optimistically update local state so items don't "disappear" visually
+      setLocalCategories(prev => prev.map(cat =>
+        cat.id === categoryId ? { ...cat, name: newName } : cat
+      ));
 
       toast.success('Categoría renombrada exitosamente');
     } catch (error) {
