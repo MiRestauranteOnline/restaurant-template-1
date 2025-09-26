@@ -14,8 +14,8 @@ const Footer = () => {
       title: "Contacto",
       items: [
         ...(client?.phone || cachedClient?.phone ? [{ icon: Phone, text: client?.phone ? `${client.phone_country_code || '+51'} ${client.phone}` : "+51 987 654 321" }] : []),
-        { icon: Mail, text: client?.email || "info@savoria.com" },
-        { icon: MapPin, text: client?.address || "Av. Larco 123, Miraflores, Lima" }
+        ...(client?.email ? [{ icon: Mail, text: client.email }] : []),
+        ...(client?.address ? [{ icon: MapPin, text: client.address }] : [])
       ]
     },
     {

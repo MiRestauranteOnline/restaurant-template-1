@@ -24,16 +24,16 @@ const Contact = () => {
       title: "Teléfono",
       details: [`${client.phone_country_code || '+51'} ${client.phone}`]
     }] : []),
-    {
+    ...(client?.email ? [{
       icon: Mail,
       title: "Email",
-      details: client?.email ? [client.email] : ["info@savoria.com"]
-    },
-    {
+      details: [client.email]
+    }] : []),
+    ...(client?.address ? [{
       icon: MapPin,
       title: "Ubicación",
-      details: client?.address ? [client.address] : ["Av. Larco 123", "Miraflores, Lima"]
-    },
+      details: [client.address]
+    }] : []),
     {
       icon: Clock,
       title: "Horarios",
