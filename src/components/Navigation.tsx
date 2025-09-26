@@ -23,7 +23,7 @@ const Navigation = () => {
   const fastLoadData = getFastLoadCachedContent();
 
   // Prevent text-to-logo shift: prefer fast-load data, then cached, then live data
-  const logoUrl = fastLoadData?.header_logo_url || adminContent?.header_logo_url;
+  const logoUrl = adminContent?.header_logo_url; // Use only live database data
   const isLoadingAdmin = !logoUrl && loading;
 
   useEffect(() => {

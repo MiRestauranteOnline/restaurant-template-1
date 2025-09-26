@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { getFastLoadData, generateFastLoadData } from '@/utils/fastLoadData';
 import { ensureFastLoadDataExists } from '@/utils/triggerFastLoad';
+import '@/utils/clearAllCaches'; // Clear all caches on import
 
 // Utility function to convert hex to HSL
 const hexToHsl = (hex: string) => {
