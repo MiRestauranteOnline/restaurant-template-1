@@ -3,7 +3,7 @@ import { useClient } from '@/contexts/ClientContext';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
 
 const Footer = () => {
-  const { client } = useClient();
+  const { client, adminContent } = useClient();
 
   const restaurantInfo = [
     {
@@ -76,12 +76,19 @@ const Footer = () => {
           
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <h3 className="text-3xl font-heading font-bold text-gradient mb-4">
-              {client?.restaurant_name || 'Savoria'}
-            </h3>
+            {adminContent?.footer_logo_url ? (
+              <img 
+                src={adminContent.footer_logo_url} 
+                alt={`${client?.restaurant_name || 'Savoria'} Logo`}
+                className="h-12 mb-4"
+              />
+            ) : (
+              <h3 className="text-3xl font-heading font-bold text-gradient mb-4">
+                {client?.restaurant_name || 'Savoria'}
+              </h3>
+            )}
             <p className="text-foreground/70 mb-6 leading-relaxed">
-              Experimenta la excelencia culinaria en un ambiente de elegancia refinada. 
-              Cada comida está elaborada con pasión y los mejores ingredientes.
+              {adminContent?.footer_description || 'Experimenta la excelencia culinaria en un ambiente de elegancia refinada. Cada comida está elaborada con pasión y los mejores ingredientes.'}
             </p>
             
             {/* Social Links */}

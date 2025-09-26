@@ -319,6 +319,11 @@ export interface AdminContent {
   reviews_page_hero_description?: string;
   reviews_page_hero_background_url?: string;
   
+  // Footer and Logo fields
+  footer_description?: string;
+  header_logo_url?: string;
+  footer_logo_url?: string;
+  
   created_at: string;
   updated_at: string;
 }
