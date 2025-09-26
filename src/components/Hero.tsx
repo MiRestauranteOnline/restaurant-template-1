@@ -60,7 +60,10 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button className="btn-primary px-8 py-3 text-lg rounded-full">
+            <Button 
+              className="btn-primary px-8 py-3 text-lg rounded-full"
+              onClick={() => window.location.href = '/menu'}
+            >
               Ver Menú
             </Button>
             <Button 

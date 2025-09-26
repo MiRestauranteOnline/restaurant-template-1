@@ -148,7 +148,10 @@ const Menu = () => {
         </div>
 
         <div className="text-center fade-in">
-          <Button className="btn-primary px-8 py-3 text-lg rounded-full">
+          <Button 
+            className="btn-primary px-8 py-3 text-lg rounded-full"
+            onClick={() => window.location.href = '/menu'}
+          >
             Ver Menú Completo
           </Button>
         </div>
