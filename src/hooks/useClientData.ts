@@ -64,11 +64,11 @@ const applyDynamicColors = (primaryColor: string, textStyle?: 'bright' | 'dark')
 const CACHE_PREFIX = 'client_styles_';
 const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
 
-const getCacheKey = (subdomain: string) => `${CACHE_PREFIX}${subdomain}`;
+const getCacheKey = (domain: string) => `${CACHE_PREFIX}${domain}`;
 
-const loadCachedStyles = (subdomain: string) => {
+const loadCachedStyles = (domain: string) => {
   try {
-    const cacheKey = getCacheKey(subdomain);
+    const cacheKey = getCacheKey(domain);
     const cached = localStorage.getItem(cacheKey);
     if (!cached) return null;
     
@@ -87,9 +87,9 @@ const loadCachedStyles = (subdomain: string) => {
   }
 };
 
-const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, client: ClientData, adminContent?: AdminContent, reviews?: Review[], deliveryServices?: any[]) => {
+const saveCachedStyles = (domain: string, clientSettings: ClientSettings, client: ClientData, adminContent?: AdminContent, reviews?: Review[], deliveryServices?: any[]) => {
   try {
-    const cacheKey = getCacheKey(subdomain);
+    const cacheKey = getCacheKey(domain);
     const cacheData = {
       // Color and theme settings
       primary_color: clientSettings.primary_color || '#FFD700',
@@ -171,8 +171,8 @@ const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, cli
   }
 };
 
-const applyEarlyStyles = (subdomain: string) => {
-  const cachedData = loadCachedStyles(subdomain);
+const applyEarlyStyles = (domain: string) => {
+  const cachedData = loadCachedStyles(domain);
   if (cachedData) {
     // Apply cached primary color immediately with text style
     applyDynamicColors(cachedData.primary_color, cachedData.primary_button_text_style);
