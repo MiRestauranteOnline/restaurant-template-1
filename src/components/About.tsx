@@ -1,9 +1,7 @@
 import restaurantInterior from '@/assets/restaurant-interior.jpg';
 import { useClient } from '@/contexts/ClientContext';
 import { useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { getCachedAdminContent } from '@/utils/cachedContent';
-import { ImageSkeleton, Skeleton } from '@/components/ui/skeleton';
 
 const About = () => {
   const { client, adminContent } = useClient();
@@ -12,72 +10,71 @@ const About = () => {
   // Get cached content to prevent layout shifts
   const cachedAdminContent = getCachedAdminContent();
   
-  // Lock initial render to the first available content (cached or live)
-  const [stableAdmin, setStableAdmin] = useState<any>(
-    adminContent ?? cachedAdminContent ?? null
-  );
-
-  useEffect(() => {
-    if (!stableAdmin && (adminContent || cachedAdminContent)) {
-      setStableAdmin(adminContent ?? cachedAdminContent ?? null);
-    }
-    // Intentionally avoid updating after first stable assignment to prevent swaps
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [adminContent]);
-
-  const contentSource: any = stableAdmin ?? cachedAdminContent;
-  const hasStable = Boolean(stableAdmin || cachedAdminContent);
-  
   const sectionTitle = 
-    contentSource?.homepage_about_section_title ?? 
+    adminContent?.homepage_about_section_title ?? 
+    cachedAdminContent?.homepage_about_section_title ?? 
     "Nuestra Historia";
     
   const sectionDescription = 
-    contentSource?.homepage_about_section_description ?? undefined;
+    adminContent?.homepage_about_section_description ?? 
+    cachedAdminContent?.homepage_about_section_description;
   
-  // Use contentSource with cached fallbacks to prevent shifts
+  // Use admin content with cached fallbacks to prevent shifts
   const aboutTitleFirstLine = 
-    (contentSource as any)?.homepage_about_section_title_first_line ?? 
+    (adminContent as any)?.homepage_about_section_title_first_line ?? 
+    (cachedAdminContent as any)?.homepage_about_section_title_first_line ?? 
     "Donde la Tradición";
     
   const aboutTitleSecondLine = 
-    (contentSource as any)?.homepage_about_section_title_second_line ?? 
+    (adminContent as any)?.homepage_about_section_title_second_line ?? 
+    (cachedAdminContent as any)?.homepage_about_section_title_second_line ?? 
     "Se Encuentra con la Innovación";
   
   // Get image URL from database with cached fallbacks
   const isAboutPage = location.pathname === '/about';
   const aboutImageUrl = isAboutPage 
-    ? (contentSource as any)?.about_page_about_section_image_url ?? 
+    ? (adminContent as any)?.about_page_about_section_image_url ?? 
+      (cachedAdminContent as any)?.about_page_about_section_image_url ?? 
       restaurantInterior
-    : (contentSource as any)?.homepage_about_section_image_url ?? 
+    : (adminContent as any)?.homepage_about_section_image_url ?? 
+      (cachedAdminContent as any)?.homepage_about_section_image_url ?? 
       restaurantInterior;
   
   // Use separate content fields from database with cached fallbacks
   const aboutStory = 
-    (contentSource as any)?.about_story ?? 
+    (adminContent as any)?.about_story ?? 
+    (cachedAdminContent as any)?.about_story ?? 
     'Desde 2010, nuestro restaurante ha sido un faro de excelencia culinaria, combinando técnicas tradicionales con un toque contemporáneo. Nuestra pasión por ingredientes excepcionales y métodos de preparación innovadores crea una experiencia gastronómica inolvidable.';
     
   const aboutChefInfo = 
-    (contentSource as any)?.about_chef_info ?? 
+    (adminContent as any)?.about_chef_info ?? 
+    (cachedAdminContent as any)?.about_chef_info ?? 
     'Dirigido por el Chef Ejecutivo Carlos Mendoza, nuestro equipo selecciona los mejores ingredientes de temporada de granjas locales y productores artesanales, asegurando que cada plato cuente una historia de calidad y artesanía.';
     
   const aboutMission = 
-    (contentSource as any)?.about_mission ?? 
+    (adminContent as any)?.about_mission ?? 
+    (cachedAdminContent as any)?.about_mission ?? 
     'Desde cenas íntimas hasta grandes celebraciones, creamos momentos que perduran en la memoria mucho después del último bocado. Bienvenido a nuestro restaurante, donde cada comida es una obra maestra.';
   
   // Stats from database with cached fallbacks
   const stats = {
     experience: {
-      number: (contentSource as any)?.stats_experience_number ?? '15+',
-      label: (contentSource as any)?.stats_experience_label ?? 'Años de Experiencia'
+      number: (adminContent as any)?.stats_experience_number ?? 
+               (cachedAdminContent as any)?.stats_experience_number ?? '15+',
+      label: (adminContent as any)?.stats_experience_label ?? 
+             (cachedAdminContent as any)?.stats_experience_label ?? 'Años de Experiencia'
     },
     clients: {
-      number: (contentSource as any)?.stats_clients_number ?? '5K+',
-      label: (contentSource as any)?.stats_clients_label ?? 'Clientes Felices'
+      number: (adminContent as any)?.stats_clients_number ?? 
+               (cachedAdminContent as any)?.stats_clients_number ?? '5K+',
+      label: (adminContent as any)?.stats_clients_label ?? 
+             (cachedAdminContent as any)?.stats_clients_label ?? 'Clientes Felices'
     },
     awards: {
-      number: (contentSource as any)?.stats_awards_number ?? '10+',
-      label: (contentSource as any)?.stats_awards_label ?? 'Reconocimientos'
+      number: (adminContent as any)?.stats_awards_number ?? 
+               (cachedAdminContent as any)?.stats_awards_number ?? '10+',
+      label: (adminContent as any)?.stats_awards_label ?? 
+             (cachedAdminContent as any)?.stats_awards_label ?? 'Reconocimientos'
     }
   };
 
@@ -88,20 +85,16 @@ const About = () => {
           
           {/* Restaurant interior image */}
           <div className="fade-in">
-            {hasStable ? (
-              <div className="relative">
-                <img
-                  src={aboutImageUrl}
-                  alt="Elegant restaurant interior with warm ambient lighting"
-                  className="w-full h-[600px] object-cover rounded-2xl shadow-elegant"
-                  style={{ aspectRatio: '4/3' }}
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent rounded-2xl"></div>
-              </div>
-            ) : (
-              <ImageSkeleton className="w-full h-[600px] rounded-2xl" />
-            )}
+            <div className="relative">
+              <img
+                src={aboutImageUrl}
+                alt="Elegant restaurant interior with warm ambient lighting"
+                className="w-full h-[600px] object-cover rounded-2xl shadow-elegant"
+                style={{ aspectRatio: '4/3' }}
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent rounded-2xl"></div>
+            </div>
           </div>
 
           {/* Content */}
@@ -118,19 +111,11 @@ const About = () => {
               </h2>
             </div>
             
-            {hasStable ? (
-              <div className="space-y-6 text-foreground/80 text-lg leading-relaxed text-center">
-                <p>{aboutStory}</p>
-                <p>{aboutChefInfo}</p>
-                <p>{aboutMission}</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <Skeleton className="h-5 w-11/12 mx-auto" />
-                <Skeleton className="h-5 w-10/12 mx-auto" />
-                <Skeleton className="h-5 w-9/12 mx-auto" />
-              </div>
-            )}
+            <div className="space-y-6 text-foreground/80 text-lg leading-relaxed text-center">
+              <p>{aboutStory}</p>
+              <p>{aboutChefInfo}</p>
+              <p>{aboutMission}</p>
+            </div>
 
             <div className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-border">
               <div className="text-center">
