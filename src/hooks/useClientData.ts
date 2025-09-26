@@ -84,7 +84,7 @@ const loadCachedStyles = (subdomain: string) => {
   }
 };
 
-const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, client: ClientData) => {
+const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, client: ClientData, adminContent?: AdminContent) => {
   try {
     const cacheKey = getCacheKey(subdomain);
     const cacheData = {
@@ -109,7 +109,44 @@ const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, cli
       other_customizations: {
         ...client.other_customizations,
         ...clientSettings.other_customizations
-      }
+      },
+      
+      // Above-the-fold content from admin_content to prevent layout shifts
+      admin_content: adminContent ? {
+        // Hero backgrounds for all pages
+        homepage_hero_background_url: adminContent.homepage_hero_background_url,
+        about_page_hero_background_url: adminContent.about_page_hero_background_url,
+        contact_page_hero_background_url: adminContent.contact_page_hero_background_url,
+        menu_page_hero_background_url: adminContent.menu_page_hero_background_url,
+        reviews_page_hero_background_url: adminContent.reviews_page_hero_background_url,
+        
+        // Hero titles and descriptions for immediate rendering
+        homepage_hero_title_first_line: (adminContent as any).homepage_hero_title_first_line,
+        homepage_hero_title_second_line: (adminContent as any).homepage_hero_title_second_line,
+        homepage_hero_description: adminContent.homepage_hero_description,
+        
+        about_page_hero_title_first_line: (adminContent as any).about_page_hero_title_first_line,
+        about_page_hero_title_second_line: (adminContent as any).about_page_hero_title_second_line,
+        about_page_hero_description: adminContent.about_page_hero_description,
+        
+        contact_page_hero_title_first_line: (adminContent as any).contact_page_hero_title_first_line,
+        contact_page_hero_title_second_line: (adminContent as any).contact_page_hero_title_second_line,
+        contact_page_hero_description: adminContent.contact_page_hero_description,
+        
+        menu_page_hero_title_first_line: (adminContent as any).menu_page_hero_title_first_line,
+        menu_page_hero_title_second_line: (adminContent as any).menu_page_hero_title_second_line,
+        menu_page_hero_description: adminContent.menu_page_hero_description,
+        
+        reviews_page_hero_title_first_line: (adminContent as any).reviews_page_hero_title_first_line,
+        reviews_page_hero_title_second_line: (adminContent as any).reviews_page_hero_title_second_line,
+        reviews_page_hero_description: adminContent.reviews_page_hero_description,
+        
+        // Homepage section titles (above the fold)
+        homepage_menu_section_title_first_line: (adminContent as any).homepage_menu_section_title_first_line,
+        homepage_menu_section_title_second_line: (adminContent as any).homepage_menu_section_title_second_line,
+        homepage_about_section_title_first_line: (adminContent as any).homepage_about_section_title_first_line,
+        homepage_about_section_title_second_line: (adminContent as any).homepage_about_section_title_second_line,
+      } : null
     };
     
     localStorage.setItem(cacheKey, JSON.stringify({
@@ -146,6 +183,42 @@ const applyEarlyStyles = (subdomain: string) => {
         '--header-background-style', 
         cachedData.header_background_style
       );
+    }
+    
+    // Pre-cache hero background images to prevent layout shifts
+    if (cachedData.admin_content) {
+      const adminContent = cachedData.admin_content;
+      
+      // Preload hero background images
+      const heroBackgrounds = [
+        adminContent.homepage_hero_background_url,
+        adminContent.about_page_hero_background_url,
+        adminContent.contact_page_hero_background_url,
+        adminContent.menu_page_hero_background_url,
+        adminContent.reviews_page_hero_background_url
+      ].filter(Boolean);
+      
+      // Create image elements to preload backgrounds
+      heroBackgrounds.forEach(url => {
+        if (url) {
+          const img = new Image();
+          img.src = url;
+        }
+      });
+      
+      // Store admin content in CSS custom properties for immediate access
+      const adminProps = {
+        '--cached-homepage-hero-bg': adminContent.homepage_hero_background_url || '',
+        '--cached-about-hero-bg': adminContent.about_page_hero_background_url || '',
+        '--cached-contact-hero-bg': adminContent.contact_page_hero_background_url || '',
+        '--cached-menu-hero-bg': adminContent.menu_page_hero_background_url || '',
+        '--cached-reviews-hero-bg': adminContent.reviews_page_hero_background_url || '',
+        '--cached-restaurant-name': cachedData.restaurant_name || ''
+      };
+      
+      Object.entries(adminProps).forEach(([prop, value]) => {
+        document.documentElement.style.setProperty(prop, `"${value}"`);
+      });
     }
   }
 };
@@ -434,8 +507,8 @@ export const useClientData = (subdomain?: string) => {
             const textStyle = (settingsResponse.data as ClientSettings)?.primary_button_text_style || 'bright';
             applyDynamicColors(primaryColor, textStyle);
             
-            // Cache the styles for future visits
-            saveCachedStyles(detectedSubdomain, settingsResponse.data as ClientSettings, clientData as ClientData);
+            // Cache the styles for future visits including admin content
+            saveCachedStyles(detectedSubdomain, settingsResponse.data as ClientSettings, clientData as ClientData, adminContentResponse.data as AdminContent);
           }
         }
       } catch (err: any) {
