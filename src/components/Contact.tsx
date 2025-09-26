@@ -67,7 +67,7 @@ const Contact = () => {
               {contactInfo.map((info, index) => (
                 <Card key={index} className="bg-card border-border p-6">
                   <CardContent className="p-0">
-                    <div className="flex items-start space-x-4">
+                    <div className="flex flex-col items-center text-center space-y-4">
                       <div className="flex-shrink-0">
                         <div className="inline-flex items-center justify-center w-12 h-12 bg-accent/10 rounded-full">
                           <info.icon className="w-6 h-6 text-accent" />
