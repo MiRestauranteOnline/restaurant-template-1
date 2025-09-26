@@ -62,8 +62,12 @@ export const loadGoogleFonts = (fonts: FontSettings): void => {
   
   if (fontsToLoad.length === 0) return;
 
-// Check if fonts are already preloaded - extensive list to prevent loading
-  const preloadedFonts = ['Cormorant Garamond', 'Inter', 'Poppins', 'Montserrat', 'Playfair Display', 'Lato', 'Open Sans', 'Roboto', 'Merriweather', 'Lora'];
+// Check if fonts are already preloaded - comprehensive list to prevent loading
+  const preloadedFonts = [
+    'Cormorant Garamond', 'Inter', 'Poppins', 'Montserrat', 'Playfair Display', 'Lato', 
+    'Open Sans', 'Roboto', 'Merriweather', 'Lora', 'Raleway', 'Ubuntu', 'Oswald', 
+    'Source Sans Pro', 'Nunito', 'Work Sans'
+  ];
   const needsLoading = fontsToLoad.filter(font => !preloadedFonts.includes(font));
   
   if (needsLoading.length > 0) {
@@ -89,9 +93,12 @@ export const loadGoogleFonts = (fonts: FontSettings): void => {
   }
 };
 
-// Apply fonts to CSS custom properties
+// Apply fonts to CSS custom properties with smooth transition
 export const applyFonts = (fonts: FontSettings): void => {
   const root = document.documentElement;
+  
+  // Force a style calculation before changing fonts to prevent shifts
+  root.offsetHeight;
   
   if (fonts.titleFont) {
     // Get font category (serif/sans-serif) for fallback
@@ -109,10 +116,13 @@ export const applyFonts = (fonts: FontSettings): void => {
     root.style.setProperty('--font-body', `'${fonts.bodyFont}', ${fallback}`);
   }
   
-  // Apply title font weight
+  // Apply title font weight immediately and force recalculation
   if (fonts.titleFontWeight) {
     root.style.setProperty('--font-heading-weight', fonts.titleFontWeight);
   }
+  
+  // Force immediate style recalculation to prevent shifts
+  root.offsetHeight;
 };
 
 // Combined function to load and apply fonts with preload optimization
