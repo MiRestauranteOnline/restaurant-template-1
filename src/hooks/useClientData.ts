@@ -505,8 +505,12 @@ export const preloadAllClientData = async (domain?: string) => {
           .order('display_order', { ascending: true })
       ]);
 
-      // Store all data in global cache
-      globalDataCache.menuItems = menuResponse.data || [];
+      // Store all data in global cache with normalized category_id
+      const categoriesByName = new Map((categoriesResponse.data || []).map((c: any) => [c.name, c.id]));
+      const normalizedMenuItems = (menuResponse.data || []).map((item: any) =>
+        item.category_id ? item : { ...item, category_id: categoriesByName.get(item.category) || null }
+      );
+      globalDataCache.menuItems = normalizedMenuItems;
       globalDataCache.menuCategories = categoriesResponse.data || [];
       globalDataCache.teamMembers = teamResponse.data || [];
       globalDataCache.reviews = reviewsResponse.data || [];
@@ -662,11 +666,15 @@ export const useClientData = (domain?: string) => {
             .eq('is_active', true)
             .order('display_order', { ascending: true });
 
-          // Set menu data
+          // Set menu data (normalize category_id using category name if missing)
           if (menuResponse.error) {
             console.error('Error fetching menu items:', menuResponse.error);
           } else {
-            setMenuItems(menuResponse.data || []);
+            const categoriesByName = new Map((categoriesResponse.data || []).map((c: any) => [c.name, c.id]));
+            const normalizedMenuItems = (menuResponse.data || []).map((item: any) =>
+              item.category_id ? item : { ...item, category_id: categoriesByName.get(item.category) || null }
+            );
+            setMenuItems(normalizedMenuItems);
           }
 
           // Set categories data

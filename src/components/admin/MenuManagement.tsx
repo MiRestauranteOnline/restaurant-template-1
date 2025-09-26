@@ -77,30 +77,38 @@ export const MenuManagement = () => {
       const oldCategory = localCategories.find(cat => cat.id === categoryId);
 
       // 1) Update category name
-      await supabase
+      const { error: catErr } = await supabase
         .from('menu_categories')
         .update({ name: newName })
         .eq('id', categoryId);
+      if (catErr) console.error('DB error updating category name:', catErr);
 
       // 2) Update menu items linked by category_id
-      await supabase
+      const { error: updByIdErr } = await supabase
         .from('menu_items')
         .update({ category: newName })
         .eq('category_id', categoryId);
+      if (updByIdErr) console.warn('DB warning updating items by category_id:', updByIdErr);
 
       // 3) Backfill legacy items missing category_id that still match old name
       if (oldCategory && client?.id) {
-        await supabase
+        const { error: backfillErr } = await supabase
           .from('menu_items')
           .update({ category: newName, category_id: categoryId })
           .eq('client_id', client.id)
           .eq('category', oldCategory.name)
           .is('category_id', null);
+        if (backfillErr) console.warn('DB warning backfilling legacy items:', backfillErr);
       }
 
       // 4) Optimistically update local state so items don't "disappear" visually
       setLocalCategories(prev => prev.map(cat =>
         cat.id === categoryId ? { ...cat, name: newName } : cat
+      ));
+      setLocalMenuItems(prev => prev.map(item =>
+        (item.category_id === categoryId) || (!item.category_id && oldCategory && item.category === oldCategory.name)
+          ? { ...item, category: newName, category_id: categoryId }
+          : item
       ));
 
       toast.success('Categoría renombrada exitosamente');
