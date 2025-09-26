@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { getFastLoadData, generateFastLoadData } from '@/utils/fastLoadData';
+import { ensureFastLoadDataExists } from '@/utils/triggerFastLoad';
 
 // Utility function to convert hex to HSL
 const hexToHsl = (hex: string) => {
@@ -413,7 +415,69 @@ export const useClientData = (subdomain?: string) => {
         setLoading(true);
         setError(null);
 
-        // Fetch client data
+        // Ensure fast-load data exists (generate if missing)
+        await ensureFastLoadDataExists();
+
+        // First try to get fast-load data
+        const fastLoadData = await getFastLoadData();
+        
+        if (fastLoadData) {
+          // Use fast-load data for immediate rendering
+          const clientData: ClientData = {
+            id: '', // We'll get this from the database call
+            subdomain: fastLoadData.subdomain,
+            restaurant_name: fastLoadData.restaurant_name,
+            phone: fastLoadData.phone || '',
+            email: '',
+            whatsapp: fastLoadData.whatsapp || '',
+            address: '',
+            coordinates: null,
+            opening_hours: {},
+            social_media_links: {},
+            brand_colors: {},
+            created_at: '',
+            updated_at: '',
+            other_customizations: {},
+            delivery: {},
+            opening_hours_ordered: [],
+            theme: 'dark'
+          };
+
+          const adminContentData: AdminContent = {
+            id: '',
+            client_id: '',
+            homepage_hero_title: fastLoadData.homepage_hero_title || '',
+            homepage_hero_description: fastLoadData.homepage_hero_description || '',
+            homepage_hero_background_url: fastLoadData.homepage_hero_background_url || '',
+            header_logo_url: fastLoadData.header_logo_url || '',
+            footer_logo_url: fastLoadData.footer_logo_url || '',
+            footer_description: fastLoadData.footer_description || '',
+            created_at: '',
+            updated_at: ''
+          };
+
+          const clientSettingsData: ClientSettings = {
+            id: '',
+            client_id: '',
+            primary_color: fastLoadData.primary_color || '#FFD700',
+            primary_button_text_style: (fastLoadData.primary_button_text_style as 'bright' | 'dark') || 'bright',
+            header_background_enabled: fastLoadData.header_background_enabled || false,
+            header_background_style: (fastLoadData.header_background_style as 'bright' | 'dark') || 'dark',
+            created_at: '',
+            updated_at: ''
+          };
+
+          // Set initial state with fast-load data
+          setClient(clientData);
+          setAdminContent(adminContentData);
+          setClientSettings(clientSettingsData);
+
+          // Set delivery services from fast-load data
+          const deliveryServices = fastLoadData.delivery_services || [];
+          // We'll handle this in a background fetch for full data
+        }
+
+        // Always fetch complete data from database (for missing fields and real-time updates)
         const { data: clientData, error: clientError } = await supabase
           .from('clients')
           .select('*')
@@ -421,9 +485,15 @@ export const useClientData = (subdomain?: string) => {
           .single();
 
         if (clientError) {
+          // If no fast-load data and no database data, generate fast-load for next time
+          if (!fastLoadData) {
+            console.log('No client data found, attempting to generate fast-load data...');
+            await generateFastLoadData(detectedSubdomain);
+          }
           throw clientError;
         }
 
+        // Update with complete client data from database
         setClient(clientData as ClientData);
 
         if (clientData?.id) {
