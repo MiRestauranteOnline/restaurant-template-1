@@ -1,1 +1,4 @@
 project_id = "ptzcetvcccnojdbzzlyt"
+
+[functions.prebuild-client-data]
+verify_jwt = false
