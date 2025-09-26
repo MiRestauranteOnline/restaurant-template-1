@@ -7,7 +7,9 @@ import { useClient } from '@/contexts/ClientContext';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
 
 const ContactPage = () => {
-  const { client } = useClient();
+  const { client, adminContent } = useClient();
+  
+  const contactHeroBackground = (adminContent as any)?.contact_page_hero_background_url || '/src/assets/grilled-steak.jpg';
 
   const formatHoursForContactPage = (hours: any) => {
     const formattedHours = formatOpeningHours(hours);
@@ -62,7 +64,7 @@ const ContactPage = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('/src/assets/grilled-steak.jpg')`,
+            backgroundImage: `url('${contactHeroBackground}')`,
           }}
         />
         <div className="absolute inset-0 hero-overlay" />

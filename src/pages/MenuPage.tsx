@@ -5,7 +5,9 @@ import { useClient } from '@/contexts/ClientContext';
 import heroPasta from '@/assets/hero-pasta.jpg';
 
 const MenuPage = () => {
-  const { menuItems, menuCategories, client } = useClient();
+  const { menuItems, menuCategories, client, adminContent } = useClient();
+  
+  const menuHeroBackground = (adminContent as any)?.menu_page_hero_background_url || heroPasta;
   
   const currency = client?.other_customizations?.currency || 'S/';
 
@@ -73,7 +75,7 @@ const MenuPage = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('${heroPasta}')`,
+            backgroundImage: `url('${menuHeroBackground}')`,
           }}
         />
         <div className="absolute inset-0 hero-overlay" />

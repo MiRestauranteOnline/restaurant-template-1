@@ -13,6 +13,7 @@ const AboutPage = () => {
   const aboutHeroTitleFirst = (adminContent as any)?.about_page_hero_title_first_line || 'Sobre';
   const aboutHeroTitleSecond = (adminContent as any)?.about_page_hero_title_second_line || 'Nosotros';
   const aboutHeroDescription = (adminContent as any)?.about_page_hero_description || 'Conoce la historia detrás de nuestro restaurante y nuestro compromiso con la excelencia culinaria.';
+  const aboutHeroBackground = (adminContent as any)?.about_page_hero_background_url || '/src/assets/restaurant-interior.jpg';
   
   const teamTitleFirst = (adminContent as any)?.about_team_section_title_first_line || 'Nuestro';
   const teamTitleSecond = (adminContent as any)?.about_team_section_title_second_line || 'Equipo';
@@ -63,7 +64,7 @@ const AboutPage = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('/src/assets/restaurant-interior.jpg')`,
+            backgroundImage: `url('${aboutHeroBackground}')`,
           }}
         />
         <div className="absolute inset-0 hero-overlay" />

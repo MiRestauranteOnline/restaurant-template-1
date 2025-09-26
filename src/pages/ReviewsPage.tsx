@@ -4,7 +4,9 @@ import Reviews from '@/components/Reviews';
 import { useClient } from '@/contexts/ClientContext';
 
 const ReviewsPage = () => {
-  const { reviews } = useClient();
+  const { reviews, adminContent } = useClient();
+  
+  const reviewsHeroBackground = (adminContent as any)?.reviews_page_hero_background_url || '/src/assets/chocolate-dessert.jpg';
 
   // If no reviews exist, show a message instead
   if (!reviews || reviews.length === 0) {
@@ -17,7 +19,7 @@ const ReviewsPage = () => {
           <div 
             className="absolute inset-0 bg-cover bg-center"
             style={{
-              backgroundImage: `url('/src/assets/chocolate-dessert.jpg')`,
+              backgroundImage: `url('${reviewsHeroBackground}')`,
             }}
           />
           <div className="absolute inset-0 hero-overlay" />
@@ -49,7 +51,7 @@ const ReviewsPage = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('/src/assets/chocolate-dessert.jpg')`,
+            backgroundImage: `url('${reviewsHeroBackground}')`,
           }}
         />
         <div className="absolute inset-0 hero-overlay" />
