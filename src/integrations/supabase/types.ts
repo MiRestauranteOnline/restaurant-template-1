@@ -682,6 +682,42 @@ export type Database = {
           },
         ]
       }
+      reviews: {
+        Row: {
+          client_id: string
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          review_text: string
+          reviewer_name: string
+          star_rating: number
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          review_text: string
+          reviewer_name: string
+          star_rating: number
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          review_text?: string
+          reviewer_name?: string
+          star_rating?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       target_keywords: {
         Row: {
           category: string
@@ -728,6 +764,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      team_members: {
+        Row: {
+          bio: string | null
+          client_id: string
+          created_at: string
+          display_order: number
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          client_id: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          client_id?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_clients: {
         Row: {
