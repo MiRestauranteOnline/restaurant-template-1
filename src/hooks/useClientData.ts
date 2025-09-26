@@ -490,7 +490,36 @@ export const useClientData = (subdomain?: string) => {
           if (reviewsResponse.error) {
             console.error('Error fetching reviews:', reviewsResponse.error);
           } else {
-            setReviews(reviewsResponse.data as Review[] || []);
+            const fetchedReviews = (reviewsResponse.data as Review[]) || [];
+            setReviews(fetchedReviews);
+
+            // Early cache update to prevent nav layout shift (before settings/admin content loaded)
+            try {
+              const prelimDelivery: any[] = [];
+              const cDel = (clientData as any)?.delivery || {};
+              if (cDel?.rappi) prelimDelivery.push({ name: 'Rappi', url: cDel.rappi, show: true });
+              if (cDel?.pedidos_ya) prelimDelivery.push({ name: 'PedidosYa', url: cDel.pedidos_ya, show: true });
+              if (cDel?.didi_food) prelimDelivery.push({ name: 'DiDi Food', url: cDel.didi_food, show: true });
+
+              // Minimal settings placeholder for early cache write
+              const minimalSettings: any = {
+                primary_color: '#FFD700',
+                primary_button_text_style: 'bright',
+                header_background_enabled: false,
+                header_background_style: 'dark',
+              };
+
+              saveCachedStyles(
+                detectedSubdomain,
+                minimalSettings as ClientSettings,
+                clientData as ClientData,
+                undefined,
+                fetchedReviews,
+                prelimDelivery
+              );
+            } catch (e) {
+              console.warn('Early cache update failed:', e);
+            }
           }
 
           // Set admin content

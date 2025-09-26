@@ -37,8 +37,8 @@ const Navigation = () => {
     { label: 'Contacto', href: '/contact' },
   ];
 
-  // Filter out Reviews if no reviews exist - use cached data as fallback
-  const hasReviews = reviews ? reviews.length > 0 : cachedNavData?.has_reviews ?? false;
+  // Filter out Reviews if no reviews exist - use cached data as fallback (default to true to avoid shift on first load)
+  const hasReviews = reviews ? reviews.length > 0 : (cachedNavData?.has_reviews ?? true);
   const navItems = baseNavItems.filter(item => {
     if (item.href === '/reviews') {
       return hasReviews;
