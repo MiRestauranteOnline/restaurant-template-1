@@ -5,7 +5,7 @@ import { useClient } from '@/contexts/ClientContext';
 import { getCachedAdminContent } from '@/utils/cachedContent';
 
 const ReviewsPage = () => {
-  const { reviews, adminContent } = useClient();
+  const { reviews, adminContent, loading } = useClient();
   
   // Get cached content to prevent layout shifts
   const cachedAdminContent = getCachedAdminContent();
@@ -13,6 +13,42 @@ const ReviewsPage = () => {
   const reviewsHeroBackground = 
     (adminContent as any)?.reviews_page_hero_background_url ?? 
     cachedAdminContent?.reviews_page_hero_background_url ?? '/src/assets/chocolate-dessert.jpg';
+
+  // If loading, render page shell with skeleton grid to avoid shifts
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <section className="relative pt-20 h-[40vh] flex items-center justify-center overflow-hidden">
+          <div 
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url('${reviewsHeroBackground}')` }}
+          />
+          <div className="absolute inset-0 hero-overlay" />
+          <div className="relative z-10 container mx-auto px-4">
+            <div className="text-center">
+              <div className="h-12 w-80 bg-foreground/10 rounded mx-auto animate-pulse" />
+            </div>
+          </div>
+        </section>
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {Array(3).fill(0).map((_, i) => (
+                <div key={`revp-skel-${i}`} className="bg-card border border-border rounded-lg p-6 space-y-4">
+                  <div className="h-4 w-32 bg-foreground/10 rounded animate-pulse" />
+                  <div className="h-4 w-full bg-foreground/10 rounded animate-pulse" />
+                  <div className="h-4 w-5/6 bg-foreground/10 rounded animate-pulse" />
+                  <div className="h-4 w-3/4 bg-foreground/10 rounded animate-pulse" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+        <Footer />
+      </div>
+    );
+  }
 
   // If no reviews exist, show a message instead
   if (!reviews || reviews.length === 0) {

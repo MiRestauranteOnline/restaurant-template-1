@@ -65,7 +65,7 @@ const Menu = () => {
   ];
 
   // Use database items if they exist, otherwise fallback
-  const displayMenuItems = menuItems.length > 0 ? homepageItems : fallbackMenuItems;
+  const displayMenuItems = menuItems.length > 0 ? homepageItems : (!loading ? fallbackMenuItems : []);
   const currency = client?.other_customizations?.currency || 'S/';
 
   return (

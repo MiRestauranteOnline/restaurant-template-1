@@ -3,13 +3,38 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useClient } from '@/contexts/ClientContext';
 
 const Reviews = () => {
-  const { adminContent, reviews } = useClient();
+  const { adminContent, reviews, loading } = useClient();
   
   // Use separate title fields from database
   const reviewsTitleFirstLine = (adminContent as any)?.reviews_section_title_first_line || "Lo Que Dicen";
   const reviewsTitleSecondLine = (adminContent as any)?.reviews_section_title_second_line || "Nuestros Clientes";
   
-  // If no reviews, don't render the section
+  // Show skeletons while loading to avoid layout shifts
+  if (loading) {
+    return (
+      <section id="reviews" className="py-20 lg:py-32 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <div className="h-10 w-72 bg-foreground/10 rounded mx-auto animate-pulse" />
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {Array(3).fill(0).map((_, i) => (
+              <Card key={`rev-skel-${i}`} className="bg-card border-border">
+                <CardContent className="p-6 space-y-4">
+                  <div className="h-4 w-32 bg-foreground/10 rounded animate-pulse" />
+                  <div className="h-4 w-full bg-foreground/10 rounded animate-pulse" />
+                  <div className="h-4 w-5/6 bg-foreground/10 rounded animate-pulse" />
+                  <div className="h-4 w-3/4 bg-foreground/10 rounded animate-pulse" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+  
+  // If no reviews, don't render the section (homepage)
   if (!reviews || reviews.length === 0) {
     return null;
   }
