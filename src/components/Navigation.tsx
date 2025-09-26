@@ -3,7 +3,7 @@ import { Menu, X, Phone, ChevronDown, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'react-router-dom';
 import { useClient } from '@/contexts/ClientContext';
-import { getCachedClientSettings } from '@/utils/cachedContent';
+import { getCachedClientSettings, getCachedNavigationData } from '@/utils/cachedContent';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,8 +17,9 @@ const Navigation = () => {
   const { client, clientSettings, reviews } = useClient();
   const location = useLocation();
 
-  // Get cached settings to prevent layout shifts
+  // Get cached settings and navigation data to prevent layout shifts
   const cachedSettings = getCachedClientSettings();
+  const cachedNavData = getCachedNavigationData();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,10 +37,11 @@ const Navigation = () => {
     { label: 'Contacto', href: '/contact' },
   ];
 
-  // Filter out Reviews if no reviews exist
+  // Filter out Reviews if no reviews exist - use cached data as fallback
+  const hasReviews = reviews ? reviews.length > 0 : cachedNavData?.has_reviews ?? false;
   const navItems = baseNavItems.filter(item => {
     if (item.href === '/reviews') {
-      return reviews && reviews.length > 0;
+      return hasReviews;
     }
     return true;
   });
@@ -55,10 +57,17 @@ const Navigation = () => {
   // Clients can configure delivery URLs and navigation visibility through admin panel
   
   const getDeliveryServices = () => {
+    // First try to use cached delivery services to prevent layout shifts
+    if (cachedNavData?.delivery_services && cachedNavData.delivery_services.length > 0 && (!client || !clientSettings)) {
+      return cachedNavData.delivery_services;
+    }
+    
     const clientDelivery = (client as any)?.delivery;
     const settingsDelivery = (clientSettings as any)?.delivery_info;
 
-    if (!clientDelivery && !settingsDelivery) return [];
+    if (!clientDelivery && !settingsDelivery) {
+      return cachedNavData?.delivery_services || [];
+    }
 
     const fromClient = !!clientDelivery;
 

@@ -69,3 +69,13 @@ export const getCachedClientData = () => {
     theme: cached.theme,
   };
 };
+
+export const getCachedNavigationData = () => {
+  const cached = getCachedContent();
+  if (!cached) return null;
+  
+  return {
+    has_reviews: cached.has_reviews || false,
+    delivery_services: cached.delivery_services || [],
+  };
+};

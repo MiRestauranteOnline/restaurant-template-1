@@ -84,7 +84,7 @@ const loadCachedStyles = (subdomain: string) => {
   }
 };
 
-const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, client: ClientData, adminContent?: AdminContent) => {
+const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, client: ClientData, adminContent?: AdminContent, reviews?: Review[], deliveryServices?: any[]) => {
   try {
     const cacheKey = getCacheKey(subdomain);
     const cacheData = {
@@ -104,6 +104,10 @@ const saveCachedStyles = (subdomain: string, clientSettings: ClientSettings, cli
       
       // Delivery services info
       delivery: client.delivery || {},
+      
+      // Navigation-related data to prevent layout shifts
+      has_reviews: reviews ? reviews.length > 0 : false,
+      delivery_services: deliveryServices || [],
       
       // Other customizations that might affect layout
       other_customizations: {
@@ -507,8 +511,42 @@ export const useClientData = (subdomain?: string) => {
             const textStyle = (settingsResponse.data as ClientSettings)?.primary_button_text_style || 'bright';
             applyDynamicColors(primaryColor, textStyle);
             
-            // Cache the styles for future visits including admin content
-            saveCachedStyles(detectedSubdomain, settingsResponse.data as ClientSettings, clientData as ClientData, adminContentResponse.data as AdminContent);
+            // Get delivery services for caching
+            const clientDelivery = (clientData as any)?.delivery;
+            const settingsDelivery = ((settingsResponse.data as ClientSettings) as any)?.delivery_info;
+            let deliveryServices: any[] = [];
+
+            if (clientDelivery || settingsDelivery) {
+              const fromClient = !!clientDelivery;
+              const services = [
+                {
+                  name: 'Rappi',
+                  url: fromClient ? clientDelivery?.rappi : settingsDelivery?.rappi?.url,
+                  show: fromClient ? true : settingsDelivery?.rappi?.show_in_nav !== false,
+                },
+                {
+                  name: 'PedidosYa',
+                  url: fromClient ? clientDelivery?.pedidos_ya : settingsDelivery?.pedidosya?.url,
+                  show: fromClient ? true : settingsDelivery?.pedidosya?.show_in_nav !== false,
+                },
+                {
+                  name: 'DiDi Food',
+                  url: fromClient ? clientDelivery?.didi_food : settingsDelivery?.didi?.url,
+                  show: fromClient ? true : settingsDelivery?.didi?.show_in_nav !== false,
+                },
+              ];
+              deliveryServices = services.filter((service) => service.url && service.show);
+            }
+            
+            // Cache the styles for future visits including admin content, reviews, and delivery
+            saveCachedStyles(
+              detectedSubdomain, 
+              settingsResponse.data as ClientSettings, 
+              clientData as ClientData, 
+              adminContentResponse.data as AdminContent, 
+              reviewsResponse.data as Review[], 
+              deliveryServices
+            );
           }
         }
       } catch (err: any) {
