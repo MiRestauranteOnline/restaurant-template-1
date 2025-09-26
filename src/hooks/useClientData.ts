@@ -247,7 +247,7 @@ const applyEarlyStyles = (domain: string) => {
 
 export interface ClientData {
   id: string;
-  domain: string;
+  subdomain: string;
   restaurant_name: string;
   phone?: string;
   email?: string;
@@ -450,7 +450,7 @@ export const preloadAllClientData = async (domain?: string) => {
     const { data: clientData, error: clientError } = await supabase
       .from('clients')
       .select('*')
-      .eq('domain', detectedDomain)
+      .eq('subdomain', detectedDomain)
       .single();
 
     if (clientError) {
@@ -605,7 +605,7 @@ export const useClientData = (domain?: string) => {
         const { data: clientData, error: clientError } = await supabase
           .from('clients')
           .select('*')
-          .eq('domain', detectedDomain)
+          .eq('subdomain', detectedDomain)
           .single();
 
         if (clientError) {
