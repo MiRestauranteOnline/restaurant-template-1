@@ -2,7 +2,7 @@ import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { useClient } from '@/contexts/ClientContext';
-import { getCachedAdminContent } from '@/utils/cachedContent';
+import { getCachedAdminContent, getCachedClientData } from '@/utils/cachedContent';
 import heroPasta from '@/assets/hero-pasta.jpg';
 
 const MenuPage = () => {
@@ -10,6 +10,7 @@ const MenuPage = () => {
   
   // Get cached content to prevent layout shifts
   const cachedAdminContent = getCachedAdminContent();
+  const cachedClient = getCachedClientData();
   
   const menuHeroBackground = 
     (adminContent as any)?.menu_page_hero_background_url ?? 
@@ -163,37 +164,43 @@ const MenuPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-card">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-heading font-semibold mb-6 text-foreground">
-            ¿Listo para probar nuestros platos?
-          </h2>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button 
-              className="btn-primary px-8 py-3 rounded-full text-lg"
-              onClick={() => {
-                const whatsappNumber = client?.whatsapp ? 
-                  `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
-                  '51987654321';
-                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer un pedido')}`, '_blank');
-              }}
-            >
-              Hacer Pedido
-            </button>
-            <button 
-              className="btn-ghost px-8 py-3 rounded-full text-lg"
-              onClick={() => {
-                const phoneNumber = client?.phone ? 
-                  `${client.phone_country_code || '+51'}${client.phone}` : 
-                  '+51987654321';
-                window.open(`tel:${phoneNumber}`, '_self');
-              }}
-            >
-              Llamar
-            </button>
+      {(client?.whatsapp || client?.phone || cachedClient?.whatsapp || cachedClient?.phone) && (
+        <section className="py-16 bg-card">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl font-heading font-semibold mb-6 text-foreground">
+              ¿Listo para probar nuestros platos?
+            </h2>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {(client?.whatsapp || cachedClient?.whatsapp) && (
+                <button 
+                  className="btn-primary px-8 py-3 rounded-full text-lg"
+                  onClick={() => {
+                    const whatsappNumber = client?.whatsapp ? 
+                      `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
+                      '51987654321';
+                    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer un pedido')}`, '_blank');
+                  }}
+                >
+                  Hacer Pedido
+                </button>
+              )}
+              {(client?.phone || cachedClient?.phone) && (
+                <button 
+                  className="btn-ghost px-8 py-3 rounded-full text-lg"
+                  onClick={() => {
+                    const phoneNumber = client?.phone ? 
+                      `${client.phone_country_code || '+51'}${client.phone}` : 
+                      '+51987654321';
+                    window.open(`tel:${phoneNumber}`, '_self');
+                  }}
+                >
+                  Llamar
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <Footer />
     </div>

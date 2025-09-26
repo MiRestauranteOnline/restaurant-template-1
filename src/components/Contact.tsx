@@ -19,11 +19,11 @@ const Contact = () => {
   
 
   const contactInfo = [
-    {
+    ...(client?.phone ? [{
       icon: Phone,
       title: "Teléfono",
-      details: client?.phone ? [`${client.phone_country_code || '+51'} ${client.phone}`] : ["+51 987 654 321"]
-    },
+      details: [`${client.phone_country_code || '+51'} ${client.phone}`]
+    }] : []),
     {
       icon: Mail,
       title: "Email",
@@ -120,32 +120,36 @@ const Contact = () => {
                     </p>
                     
                     <div className="grid gap-4">
-                      <Button 
-                        className="btn-primary w-full py-4 text-lg rounded-full"
-                        onClick={() => {
-                          const whatsappNumber = client?.whatsapp ? 
-                            `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
-                            '51987654321';
-                          const message = clientSettings?.whatsapp_messages?.reservation || 
-                            'Hola, me gustaría hacer una reserva para [fecha] a las [hora] para [número de personas] personas.';
-                          window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
-                        }}
-                      >
-                        Reservar por WhatsApp
-                      </Button>
+                      {client?.whatsapp && (
+                        <Button 
+                          className="btn-primary w-full py-4 text-lg rounded-full"
+                          onClick={() => {
+                            const whatsappNumber = client?.whatsapp ? 
+                              `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
+                              '51987654321';
+                            const message = clientSettings?.whatsapp_messages?.reservation || 
+                              'Hola, me gustaría hacer una reserva para [fecha] a las [hora] para [número de personas] personas.';
+                            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+                          }}
+                        >
+                          Reservar por WhatsApp
+                        </Button>
+                      )}
                       
-                      <Button 
-                        variant="outline"
-                        className="w-full py-4 text-lg rounded-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
-                        onClick={() => {
-                          const phoneNumber = client?.phone ? 
-                            `${client.phone_country_code || '+51'}${client.phone}` : 
-                            '+51987654321';
-                          window.open(`tel:${phoneNumber}`, '_self');
-                        }}
-                      >
-                        Llamar Ahora
-                      </Button>
+                      {client?.phone && (
+                        <Button 
+                          variant="outline"
+                          className="w-full py-4 text-lg rounded-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                          onClick={() => {
+                            const phoneNumber = client?.phone ? 
+                              `${client.phone_country_code || '+51'}${client.phone}` : 
+                              '+51987654321';
+                            window.open(`tel:${phoneNumber}`, '_self');
+                          }}
+                        >
+                          Llamar Ahora
+                        </Button>
+                      )}
                     </div>
                     
                   </div>

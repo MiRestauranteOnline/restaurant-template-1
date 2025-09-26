@@ -4,7 +4,7 @@ import Contact from '@/components/Contact';
 import { Card, CardContent } from '@/components/ui/card';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
-import { getCachedAdminContent } from '@/utils/cachedContent';
+import { getCachedAdminContent, getCachedClientData } from '@/utils/cachedContent';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
 
 const ContactPage = () => {
@@ -12,6 +12,7 @@ const ContactPage = () => {
   
   // Get cached content to prevent layout shifts
   const cachedAdminContent = getCachedAdminContent();
+  const cachedClient = getCachedClientData();
   
   const contactHeroBackground = 
     (adminContent as any)?.contact_page_hero_background_url ?? 
@@ -26,7 +27,7 @@ const ContactPage = () => {
   };
 
   const contactMethods = [
-    {
+    ...(client?.phone || cachedClient?.phone ? [{
       icon: Phone,
       title: "Llámanos",
       content: client?.phone ? `${client.phone_country_code || '+51'} ${client.phone}` : "+51 987 654 321",
@@ -37,8 +38,8 @@ const ContactPage = () => {
         window.open(`tel:${phoneNumber}`, '_self');
       },
       buttonText: "Llamar Ahora"
-    },
-    {
+    }] : []),
+    ...(client?.whatsapp || cachedClient?.whatsapp ? [{
       icon: Mail,
       title: "WhatsApp", 
       content: "Envíanos un mensaje",
@@ -49,7 +50,7 @@ const ContactPage = () => {
         window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría contactarlos')}`, '_blank');
       },
       buttonText: "Escribir"
-    },
+    }] : []),
     {
       icon: MapPin,
       title: "Visítanos",

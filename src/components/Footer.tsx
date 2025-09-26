@@ -1,15 +1,19 @@
 import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Linkedin } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
+import { getCachedClientData } from '@/utils/cachedContent';
 
 const Footer = () => {
   const { client, adminContent } = useClient();
+  
+  // Get cached client data to prevent layout shifts
+  const cachedClient = getCachedClientData();
 
   const restaurantInfo = [
     {
       title: "Contacto",
       items: [
-        { icon: Phone, text: client?.phone ? `${client.phone_country_code || '+51'} ${client.phone}` : "+51 987 654 321" },
+        ...(client?.phone || cachedClient?.phone ? [{ icon: Phone, text: client?.phone ? `${client.phone_country_code || '+51'} ${client.phone}` : "+51 987 654 321" }] : []),
         { icon: Mail, text: client?.email || "info@savoria.com" },
         { icon: MapPin, text: client?.address || "Av. Larco 123, Miraflores, Lima" }
       ]
@@ -145,40 +149,46 @@ const Footer = () => {
         </div>
 
         {/* Contact Actions */}
-        <div className="bg-secondary/20 rounded-2xl p-8 mb-8">
-          <div className="text-center">
-            <h4 className="text-2xl font-heading font-semibold mb-3 text-foreground">
-              ¿Listo para una experiencia culinaria única?
-            </h4>
-            <p className="text-foreground/70 mb-6">
-              Contáctanos ahora para hacer tu reserva o conocer más sobre nuestro menú.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-              <button 
-                className="btn-primary px-6 py-3 rounded-full"
-                onClick={() => {
-                  const whatsappNumber = client?.whatsapp ? 
-                    `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
-                    '51987654321';
-                  window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
-                }}
-              >
-                WhatsApp
-              </button>
-              <button 
-                className="btn-ghost px-6 py-3 rounded-full"
-                onClick={() => {
-                  const phoneNumber = client?.phone ? 
-                    `${client.phone_country_code || '+51'}${client.phone}` : 
-                    '+51987654321';
-                  window.open(`tel:${phoneNumber}`, '_self');
-                }}
-              >
-                Llamar
-              </button>
+        {(client?.whatsapp || client?.phone || cachedClient?.whatsapp || cachedClient?.phone) && (
+          <div className="bg-secondary/20 rounded-2xl p-8 mb-8">
+            <div className="text-center">
+              <h4 className="text-2xl font-heading font-semibold mb-3 text-foreground">
+                ¿Listo para una experiencia culinaria única?
+              </h4>
+              <p className="text-foreground/70 mb-6">
+                Contáctanos ahora para hacer tu reserva o conocer más sobre nuestro menú.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+                {(client?.whatsapp || cachedClient?.whatsapp) && (
+                  <button 
+                    className="btn-primary px-6 py-3 rounded-full"
+                    onClick={() => {
+                      const whatsappNumber = client?.whatsapp ? 
+                        `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
+                        '51987654321';
+                      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
+                    }}
+                  >
+                    WhatsApp
+                  </button>
+                )}
+                {(client?.phone || cachedClient?.phone) && (
+                  <button 
+                    className="btn-ghost px-6 py-3 rounded-full"
+                    onClick={() => {
+                      const phoneNumber = client?.phone ? 
+                        `${client.phone_country_code || '+51'}${client.phone}` : 
+                        '+51987654321';
+                      window.open(`tel:${phoneNumber}`, '_self');
+                    }}
+                  >
+                    Llamar
+                  </button>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Bottom Section */}
         <div className="border-t border-border pt-8">
