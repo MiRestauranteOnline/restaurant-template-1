@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { MenuItemSkeleton } from '@/components/ui/skeleton';
 import { useClient } from '@/contexts/ClientContext';
 import grilledSteak from '@/assets/grilled-steak.jpg';
 import seafoodPlatter from '@/assets/seafood-platter.jpg';
@@ -7,7 +8,7 @@ import chocolateDessert from '@/assets/chocolate-dessert.jpg';
 import heroPasta from '@/assets/hero-pasta.jpg';
 
 const Menu = () => {
-  const { menuItems, client, adminContent } = useClient();
+  const { menuItems, client, adminContent, loading } = useClient();
 
   const sectionTitle = adminContent?.homepage_menu_section_title || "Nuestro Menú";
   const sectionDescription = adminContent?.homepage_menu_section_description || "Descubre nuestra selección de platos cuidadosamente elaborados";
@@ -86,48 +87,61 @@ const Menu = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          {displayMenuItems.map((item, index) => (
-            <Card 
-              key={item.id} 
-              className="card-hover bg-card border-border overflow-hidden group"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="relative h-64 overflow-hidden">
-                {(item.image_url || (typeof item.image === 'string' && item.show_image_home !== false)) && (
-                  <img
-                    src={item.image_url || (typeof item.image === 'string' ? item.image : heroPasta)}
-                    alt={item.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                )}
-                {!item.image_url && !item.image && (
-                  <div className="w-full h-full bg-gradient-to-br from-accent/10 to-accent/30 flex items-center justify-center">
-                    <span className="text-accent text-lg font-heading">{item.category}</span>
+          {loading && menuItems.length === 0 ? (
+            // Show skeleton loading states to prevent layout shift
+            Array(4).fill(0).map((_, index) => (
+              <Card key={`skeleton-${index}`} className="bg-card border-border overflow-hidden">
+                <div className="h-64 bg-muted animate-pulse" />
+                <CardContent className="p-4">
+                  <MenuItemSkeleton />
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            displayMenuItems.map((item, index) => (
+              <Card 
+                key={item.id} 
+                className="card-hover bg-card border-border overflow-hidden group"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="relative h-64 overflow-hidden">
+                  {(item.image_url || (typeof item.image === 'string' && item.show_image_home !== false)) && (
+                    <img
+                      src={item.image_url || (typeof item.image === 'string' ? item.image : heroPasta)}
+                      alt={item.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy" // Optimize image loading
+                    />
+                  )}
+                  {!item.image_url && !item.image && (
+                    <div className="w-full h-full bg-gradient-to-br from-accent/10 to-accent/30 flex items-center justify-center">
+                      <span className="text-accent text-lg font-heading">{item.category}</span>
+                    </div>
+                  )}
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-accent text-accent-foreground px-3 py-1 rounded-full text-xs font-medium">
+                      {item.category}
+                    </span>
                   </div>
-                )}
-                <div className="absolute top-4 left-4">
-                  <span className="bg-accent text-accent-foreground px-3 py-1 rounded-full text-xs font-medium">
-                    {item.category}
-                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              </div>
-              
-              <CardContent className="p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-lg font-heading font-semibold text-foreground group-hover:text-accent transition-colors">
-                    {item.name}
-                  </h3>
-                  <span className="text-xl font-heading font-bold text-accent">
-                    {currency} {typeof item.price === 'number' ? item.price : item.price}
-                  </span>
-                </div>
-                <p className="text-foreground/70 text-sm leading-relaxed">
-                  {item.description}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+                
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-lg font-heading font-semibold text-foreground group-hover:text-accent transition-colors">
+                      {item.name}
+                    </h3>
+                    <span className="text-xl font-heading font-bold text-accent">
+                      {currency} {typeof item.price === 'number' ? item.price : item.price}
+                    </span>
+                  </div>
+                  <p className="text-foreground/70 text-sm leading-relaxed">
+                    {item.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
 
         <div className="text-center fade-in">

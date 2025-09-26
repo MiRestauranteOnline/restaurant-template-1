@@ -76,17 +76,20 @@ const Footer = () => {
           
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            {adminContent?.footer_logo_url ? (
-              <img 
-                src={adminContent.footer_logo_url} 
-                alt={`${client?.restaurant_name || 'Savoria'} Logo`}
-                className="h-12 mb-4"
-              />
-            ) : (
-              <h3 className="text-3xl font-heading font-bold text-gradient mb-4">
-                {client?.restaurant_name || 'Savoria'}
-              </h3>
-            )}
+            {/* Logo Section - Fixed height to prevent layout shift */}
+            <div className="h-12 mb-4 flex items-center"> {/* Fixed height container */}
+              {adminContent?.footer_logo_url ? (
+                <img 
+                  src={adminContent.footer_logo_url} 
+                  alt={`${client?.restaurant_name || 'Restaurant'} Logo`}
+                  className="h-full w-auto object-contain max-w-[200px]"
+                />
+              ) : (
+                <h3 className="text-3xl font-heading font-bold text-gradient">
+                  {client?.restaurant_name || 'Restaurant'}
+                </h3>
+              )}
+            </div>
             <p className="text-foreground/70 mb-6 leading-relaxed">
               {adminContent?.footer_description || 'Experimenta la excelencia culinaria en un ambiente de elegancia refinada. Cada comida está elaborada con pasión y los mejores ingredientes.'}
             </p>

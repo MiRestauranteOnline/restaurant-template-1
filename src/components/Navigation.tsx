@@ -134,19 +134,20 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* 🔒 PROTECTED: Dynamic restaurant name from Supabase - DO NOT MODIFY LOGIC */}
-          <div className="flex-shrink-0">
-            <a href="/" className="block" aria-label="Ir al inicio">
+          {/* Fixed height container to prevent layout shift */}
+          <div className="flex-shrink-0 h-10 md:h-12 flex items-center">
+            <a href="/" className="block h-full" aria-label="Ir al inicio">
               {logoUrl ? (
                 <img
                   src={logoUrl}
-                  alt={`${client?.restaurant_name || 'Savoria'} Logo`}
-                  className="h-10 md:h-12 w-auto max-w-none object-contain"
+                  alt={`${client?.restaurant_name || 'Restaurant'} Logo`}
+                  className="h-full w-auto max-w-[200px] object-contain"
                 />
               ) : isLoadingAdmin ? (
-                <div className="h-10 md:h-12 w-32 bg-foreground/10 rounded animate-pulse" />
+                <div className="h-full w-32 bg-foreground/10 rounded animate-pulse" />
               ) : (
-                <h1 className="text-2xl md:text-3xl font-heading font-bold text-gradient">
-                  {client?.restaurant_name || 'Savoria'}
+                <h1 className="text-xl md:text-2xl font-heading font-bold text-gradient h-full flex items-center">
+                  {client?.restaurant_name || 'Restaurant'}
                 </h1>
               )}
             </a>
