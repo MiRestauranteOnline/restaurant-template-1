@@ -440,8 +440,20 @@ function getDomainFromUrl(): string {
   }
   
   const hostname = window.location.hostname;
-  const parts = hostname.split('.');
-  return parts.length > 2 ? parts[0] : 'demo';
+  
+  // Check if it's our subdomain (contains lovable/lovableproject or has multiple dots)
+  const isOurSubdomain = hostname.includes('lovable') || 
+                         hostname.includes('lovableproject.com') ||
+                         hostname.split('.').length > 2;
+  
+  if (isOurSubdomain) {
+    // Extract subdomain part (e.g., 'client1' from 'client1.mirestaurante.online')
+    const parts = hostname.split('.');
+    return parts.length > 2 ? parts[0] : 'demo';
+  } else {
+    // Return full domain for custom domains (e.g., 'restaurantname.com')
+    return hostname;
+  }
 }
 
 // Preload all data immediately
@@ -463,12 +475,30 @@ export const preloadAllClientData = async (domain?: string) => {
     // Apply cached styles immediately
     applyEarlyStyles(detectedDomain);
 
-    // Fetch client data first
-    const { data: clientData, error: clientError } = await supabase
-      .from('clients')
-      .select('*')
-      .eq('subdomain', detectedDomain)
-      .single();
+    // Fetch client data first - check both subdomain and domain fields
+    const hostname = window.location.hostname;
+    const isOurSubdomain = hostname.includes('lovable') || 
+                           hostname.includes('lovableproject.com') ||
+                           hostname.split('.').length > 2;
+    
+    let clientQuery;
+    if (isOurSubdomain) {
+      // Query by subdomain for our platform subdomains
+      clientQuery = supabase
+        .from('clients')
+        .select('*')
+        .eq('subdomain', detectedDomain)
+        .single();
+    } else {
+      // Query by domain for custom domains
+      clientQuery = supabase
+        .from('clients')
+        .select('*')
+        .eq('domain', detectedDomain)
+        .single();
+    }
+    
+    const { data: clientData, error: clientError } = await clientQuery;
 
     if (clientError) {
       console.error('Error fetching client:', clientError);

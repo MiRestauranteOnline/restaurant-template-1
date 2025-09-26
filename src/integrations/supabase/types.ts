@@ -418,6 +418,7 @@ export type Database = {
           coordinates: Json | null
           created_at: string
           delivery: Json | null
+          domain: string | null
           email: string | null
           id: string
           opening_hours: Json | null
@@ -439,6 +440,7 @@ export type Database = {
           coordinates?: Json | null
           created_at?: string
           delivery?: Json | null
+          domain?: string | null
           email?: string | null
           id?: string
           opening_hours?: Json | null
@@ -460,6 +462,7 @@ export type Database = {
           coordinates?: Json | null
           created_at?: string
           delivery?: Json | null
+          domain?: string | null
           email?: string | null
           id?: string
           opening_hours?: Json | null

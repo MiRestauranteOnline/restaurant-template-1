@@ -28,11 +28,27 @@ serve(async (req) => {
     }
 
     // Fetch all critical above-the-fold data
-    const { data: client } = await supabaseClient
-      .from('clients')
-      .select('*')
-      .eq('domain', domain)
-      .single()
+    // Handle both subdomain and custom domain queries
+    const isSubdomain = domain.length < 20 && !domain.includes('.'); // Simple heuristic
+    
+    let clientQuery;
+    if (isSubdomain) {
+      // Query by subdomain for platform subdomains
+      clientQuery = supabaseClient
+        .from('clients')
+        .select('*')
+        .eq('subdomain', domain)
+        .single();
+    } else {
+      // Query by domain for custom domains
+      clientQuery = supabaseClient
+        .from('clients')
+        .select('*')
+        .eq('domain', domain)
+        .single();
+    }
+    
+    const { data: client } = await clientQuery;
 
     if (!client) {
       return new Response(

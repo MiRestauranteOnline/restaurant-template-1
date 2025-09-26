@@ -48,8 +48,20 @@ const getDomainFromUrl = (): string => {
   }
   
   const hostname = window.location.hostname;
-  const parts = hostname.split('.');
-  return parts.length > 2 ? parts[0] : 'demo';
+  
+  // Check if it's our subdomain (contains mirestaurante.online or similar pattern)
+  const isOurSubdomain = hostname.includes('lovable') || 
+                         hostname.includes('lovableproject.com') ||
+                         hostname.split('.').length > 2;
+  
+  if (isOurSubdomain) {
+    // Extract subdomain part (e.g., 'client1' from 'client1.mirestaurante.online')
+    const parts = hostname.split('.');
+    return parts.length > 2 ? parts[0] : 'demo';
+  } else {
+    // Return full domain for custom domains (e.g., 'restaurantname.com')
+    return hostname;
+  }
 };
 
 export const getFastLoadData = async (): Promise<FastLoadData | null> => {
