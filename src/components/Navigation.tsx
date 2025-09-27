@@ -225,7 +225,8 @@ const Navigation = () => {
                     const whatsappNumber = client?.whatsapp ? 
                       `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
                       `${cachedClient?.whatsapp_country_code?.replace('+', '') || '51'}${cachedClient?.whatsapp}`;
-                    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
+                    const message = adminContent?.whatsapp_general_message || 'Hola, me gustaría hacer una reserva';
+                    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
                   }}
                 >
                   WhatsApp
@@ -331,7 +332,8 @@ const Navigation = () => {
                       const whatsappNumber = client?.whatsapp ? 
                         `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
                         `${cachedClient?.whatsapp_country_code?.replace('+', '') || '51'}${cachedClient?.whatsapp}`;
-                      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
+                      const message = adminContent?.whatsapp_general_message || 'Hola, me gustaría hacer una reserva';
+                      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
                     }}
                   >
                     WhatsApp

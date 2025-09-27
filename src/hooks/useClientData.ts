@@ -330,6 +330,22 @@ export interface AdminContent {
   homepage_services_section_title?: string;
   homepage_services_section_description?: string;
   
+  // CTA content
+  homepage_cta_title?: string;
+  homepage_cta_description?: string;
+  homepage_cta_button1_text?: string;
+  homepage_cta_button1_link?: string;
+  homepage_cta_button2_text?: string;
+  homepage_cta_button2_link?: string;
+  
+  // Contact content
+  contact_reservation_title?: string;
+  contact_reservation_description?: string;
+  
+  // WhatsApp messages
+  whatsapp_reservation_message?: string;
+  whatsapp_general_message?: string;
+  
   // Page content
   about_page_hero_title?: string;
   about_page_hero_description?: string;

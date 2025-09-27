@@ -110,13 +110,12 @@ const Contact = () => {
               <Card className="bg-card border-border">
                 <CardContent className="p-8">
                   <h3 className="text-2xl font-heading font-semibold mb-6 text-foreground">
-                    Reserva Tu Mesa
+                    {adminContent?.contact_reservation_title || 'Reserva Tu Mesa'}
                   </h3>
                   
                   <div className="space-y-6">
                     <p className="text-foreground/80 leading-relaxed">
-                      ¿Listo para disfrutar de una experiencia culinaria excepcional? 
-                      Contáctanos directamente para hacer tu reserva o resolver cualquier consulta.
+                      {adminContent?.contact_reservation_description || '¿Listo para disfrutar de una experiencia culinaria excepcional? Contáctanos directamente para hacer tu reserva o resolver cualquier consulta.'}
                     </p>
                     
                     <div className="grid gap-4">
@@ -127,7 +126,8 @@ const Contact = () => {
                             const whatsappNumber = client?.whatsapp ? 
                               `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
                               '51987654321';
-                            const message = clientSettings?.whatsapp_messages?.reservation || 
+                            const message = adminContent?.whatsapp_reservation_message || 
+                              clientSettings?.whatsapp_messages?.reservation || 
                               'Hola, me gustaría hacer una reserva para [fecha] a las [hora] para [número de personas] personas.';
                             window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
                           }}

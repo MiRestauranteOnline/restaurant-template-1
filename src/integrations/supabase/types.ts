@@ -35,6 +35,8 @@ export type Database = {
           contact_page_hero_title: string | null
           contact_page_hero_title_first_line: string | null
           contact_page_hero_title_second_line: string | null
+          contact_reservation_description: string | null
+          contact_reservation_title: string | null
           created_at: string
           downloadable_menu_url: string | null
           footer_description: string | null
@@ -50,6 +52,12 @@ export type Database = {
           homepage_contact_section_title: string | null
           homepage_contact_section_title_first_line: string | null
           homepage_contact_section_title_second_line: string | null
+          homepage_cta_button1_link: string | null
+          homepage_cta_button1_text: string | null
+          homepage_cta_button2_link: string | null
+          homepage_cta_button2_text: string | null
+          homepage_cta_description: string | null
+          homepage_cta_title: string | null
           homepage_delivery_section_description: string | null
           homepage_delivery_section_title: string | null
           homepage_hero_background_url: string | null
@@ -117,6 +125,8 @@ export type Database = {
           stats_item3_label: string | null
           stats_item3_number: string | null
           updated_at: string
+          whatsapp_general_message: string | null
+          whatsapp_reservation_message: string | null
         }
         Insert: {
           about_chef_info?: string | null
@@ -138,6 +148,8 @@ export type Database = {
           contact_page_hero_title?: string | null
           contact_page_hero_title_first_line?: string | null
           contact_page_hero_title_second_line?: string | null
+          contact_reservation_description?: string | null
+          contact_reservation_title?: string | null
           created_at?: string
           downloadable_menu_url?: string | null
           footer_description?: string | null
@@ -153,6 +165,12 @@ export type Database = {
           homepage_contact_section_title?: string | null
           homepage_contact_section_title_first_line?: string | null
           homepage_contact_section_title_second_line?: string | null
+          homepage_cta_button1_link?: string | null
+          homepage_cta_button1_text?: string | null
+          homepage_cta_button2_link?: string | null
+          homepage_cta_button2_text?: string | null
+          homepage_cta_description?: string | null
+          homepage_cta_title?: string | null
           homepage_delivery_section_description?: string | null
           homepage_delivery_section_title?: string | null
           homepage_hero_background_url?: string | null
@@ -220,6 +238,8 @@ export type Database = {
           stats_item3_label?: string | null
           stats_item3_number?: string | null
           updated_at?: string
+          whatsapp_general_message?: string | null
+          whatsapp_reservation_message?: string | null
         }
         Update: {
           about_chef_info?: string | null
@@ -241,6 +261,8 @@ export type Database = {
           contact_page_hero_title?: string | null
           contact_page_hero_title_first_line?: string | null
           contact_page_hero_title_second_line?: string | null
+          contact_reservation_description?: string | null
+          contact_reservation_title?: string | null
           created_at?: string
           downloadable_menu_url?: string | null
           footer_description?: string | null
@@ -256,6 +278,12 @@ export type Database = {
           homepage_contact_section_title?: string | null
           homepage_contact_section_title_first_line?: string | null
           homepage_contact_section_title_second_line?: string | null
+          homepage_cta_button1_link?: string | null
+          homepage_cta_button1_text?: string | null
+          homepage_cta_button2_link?: string | null
+          homepage_cta_button2_text?: string | null
+          homepage_cta_description?: string | null
+          homepage_cta_title?: string | null
           homepage_delivery_section_description?: string | null
           homepage_delivery_section_title?: string | null
           homepage_hero_background_url?: string | null
@@ -323,6 +351,8 @@ export type Database = {
           stats_item3_label?: string | null
           stats_item3_number?: string | null
           updated_at?: string
+          whatsapp_general_message?: string | null
+          whatsapp_reservation_message?: string | null
         }
         Relationships: [
           {

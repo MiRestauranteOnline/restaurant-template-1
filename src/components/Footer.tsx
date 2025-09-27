@@ -148,47 +148,75 @@ const Footer = () => {
           ))}
         </div>
 
-        {/* Contact Actions */}
-        {(client?.whatsapp || client?.phone || cachedClient?.whatsapp || cachedClient?.phone) && (
-          <div className="bg-secondary/20 rounded-2xl p-8 mb-8">
-            <div className="text-center">
-              <h4 className="text-2xl font-heading font-semibold mb-3 text-foreground">
-                ¿Listo para una experiencia culinaria única?
-              </h4>
-              <p className="text-foreground/70 mb-6">
-                Contáctanos ahora para hacer tu reserva o conocer más sobre nuestro menú.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-                {(client?.whatsapp || cachedClient?.whatsapp) && (
-                  <button 
-                    className="btn-primary px-6 py-3 rounded-full"
-                    onClick={() => {
-                      const whatsappNumber = client?.whatsapp ? 
-                        `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
-                        '51987654321';
-                      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola, me gustaría hacer una reserva')}`, '_blank');
-                    }}
-                  >
-                    WhatsApp
-                  </button>
+        {/* Contact Actions - CTA Section */}
+        {(() => {
+          const ctaTitle = adminContent?.homepage_cta_title;
+          const ctaDescription = adminContent?.homepage_cta_description;
+          const button1Text = adminContent?.homepage_cta_button1_text;
+          const button1Link = adminContent?.homepage_cta_button1_link;
+          const button2Text = adminContent?.homepage_cta_button2_text;
+          const button2Link = adminContent?.homepage_cta_button2_link;
+          const whatsappMessage = adminContent?.whatsapp_general_message || 'Hola, me gustaría hacer una reserva';
+          
+          const showButton1 = button1Text && (button1Link || client?.whatsapp || cachedClient?.whatsapp);
+          const showButton2 = button2Text && (button2Link || client?.phone || cachedClient?.phone);
+          
+          // Don't show section if no buttons would be shown
+          if (!showButton1 && !showButton2) return null;
+          
+          return (
+            <div className="bg-secondary/20 rounded-2xl p-8 mb-8">
+              <div className="text-center">
+                {ctaTitle && (
+                  <h4 className="text-2xl font-heading font-semibold mb-3 text-foreground">
+                    {ctaTitle}
+                  </h4>
                 )}
-                {(client?.phone || cachedClient?.phone) && (
-                  <button 
-                    className="btn-ghost px-6 py-3 rounded-full"
-                    onClick={() => {
-                      const phoneNumber = client?.phone ? 
-                        `${client.phone_country_code || '+51'}${client.phone}` : 
-                        '+51987654321';
-                      window.open(`tel:${phoneNumber}`, '_self');
-                    }}
-                  >
-                    Llamar
-                  </button>
+                {ctaDescription && (
+                  <p className="text-foreground/70 mb-6">
+                    {ctaDescription}
+                  </p>
                 )}
+                <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+                  {showButton1 && (
+                    <button 
+                      className="btn-primary px-6 py-3 rounded-full"
+                      onClick={() => {
+                        if (button1Link) {
+                          window.open(button1Link, '_blank');
+                        } else {
+                          const whatsappNumber = client?.whatsapp ? 
+                            `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
+                            '51987654321';
+                          window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+                        }
+                      }}
+                    >
+                      {button1Text}
+                    </button>
+                  )}
+                  {showButton2 && (
+                    <button 
+                      className="btn-ghost px-6 py-3 rounded-full"
+                      onClick={() => {
+                        if (button2Link) {
+                          window.open(button2Link, '_blank');
+                        } else {
+                          const phoneNumber = client?.phone ? 
+                            `${client.phone_country_code || '+51'}${client.phone}` : 
+                            '+51987654321';
+                          window.open(`tel:${phoneNumber}`, '_self');
+                        }
+                      }}
+                    >
+                      {button2Text}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Bottom Section */}
         <div className="border-t border-border pt-8">
