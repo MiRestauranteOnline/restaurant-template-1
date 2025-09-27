@@ -380,6 +380,7 @@ export interface Review {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  review_date: string;
 }
 
 export interface ClientSettings {

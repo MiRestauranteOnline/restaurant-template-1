@@ -78,7 +78,7 @@ const Reviews = () => {
                     {renderStars(review.star_rating)}
                   </div>
                   <span className="text-sm text-foreground/60">
-                    {new Date(review.created_at).toLocaleDateString('es-ES', { 
+                    {new Date(review.review_date).toLocaleDateString('es-ES', { 
                       month: 'long',
                       day: 'numeric'
                     })}
