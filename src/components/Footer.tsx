@@ -1,13 +1,14 @@
 import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Linkedin } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
-import { getCachedClientData } from '@/utils/cachedContent';
+import { getCachedClientData, getCachedAdminContent } from '@/utils/cachedContent';
 
 const Footer = () => {
   const { client, adminContent } = useClient();
   
   // Get cached client data to prevent layout shifts
   const cachedClient = getCachedClientData();
+  const cachedAdminContent = getCachedAdminContent();
 
   const restaurantInfo = [
     {
