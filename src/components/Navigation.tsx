@@ -36,11 +36,11 @@ const Navigation = () => {
   }, []);
 
   const baseNavItems = [
-    { label: (adminContent as any)?.navigation_home_label || 'Inicio', href: '/' },
-    { label: (adminContent as any)?.navigation_about_label || 'Sobre Nosotros', href: '/about' },
-    { label: (adminContent as any)?.navigation_menu_label || 'Menú', href: '/menu' },
-    { label: (adminContent as any)?.navigation_reviews_label || 'Reseñas', href: '/reviews' },
-    { label: (adminContent as any)?.navigation_contact_label || 'Contacto', href: '/contact' },
+    { label: 'Inicio', href: '/' },
+    { label: 'Sobre Nosotros', href: '/about' },
+    { label: 'Menú', href: '/menu' },
+    { label: 'Reseñas', href: '/reviews' },
+    { label: 'Contacto', href: '/contact' },
   ];
 
   // Determine if Reviews link should be visible - prioritize cached/explicit config to prevent shifts
@@ -215,7 +215,7 @@ const Navigation = () => {
                     window.open(`tel:${phoneNumber}`, '_self');
                   }}
                 >
-                  {(adminContent as any)?.call_button_label || 'Llamar'}
+                  Llamar
                 </Button>
               )}
               {(client?.whatsapp || cachedClient?.whatsapp) && !(clientSettings?.hide_whatsapp_button_menu ?? cachedSettings?.hide_whatsapp_button_menu ?? false) && (
@@ -229,7 +229,7 @@ const Navigation = () => {
                     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
                   }}
                 >
-                  {(adminContent as any)?.whatsapp_button_label || 'WhatsApp'}
+                  WhatsApp
                 </Button>
               )}
               {(clientSettings?.custom_cta_button_link || cachedSettings?.custom_cta_button_link) && (
@@ -322,7 +322,7 @@ const Navigation = () => {
                       window.open(`tel:${phoneNumber}`, '_self');
                     }}
                 >
-                  {(adminContent as any)?.call_button_label || 'Llamar'}
+                  Llamar
                 </Button>
                 )}
                 {(client?.whatsapp || cachedClient?.whatsapp) && !(clientSettings?.hide_whatsapp_button_menu ?? cachedSettings?.hide_whatsapp_button_menu ?? false) && (
@@ -336,7 +336,7 @@ const Navigation = () => {
                       window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
                     }}
                 >
-                  {(adminContent as any)?.whatsapp_button_label || 'WhatsApp'}
+                  WhatsApp
                 </Button>
                 )}
                 {(clientSettings?.custom_cta_button_link || cachedSettings?.custom_cta_button_link) && (

@@ -12,7 +12,7 @@ const Footer = () => {
 
   const restaurantInfo = [
     {
-      title: (adminContent as any)?.contact_info_label || cachedAdminContent?.contact_info_label || "Contacto",
+      title: "Contacto",
       items: [
         ...(client?.phone || cachedClient?.phone ? [{ icon: Phone, text: client?.phone ? `${client.phone_country_code || '+51'} ${client.phone}` : "+51 987 654 321" }] : []),
         ...(client?.email ? [{ icon: Mail, text: client.email }] : []),
@@ -20,16 +20,16 @@ const Footer = () => {
       ]
     },
     {
-      title: (adminContent as any)?.opening_hours_label || cachedAdminContent?.opening_hours_label || "Horarios",
+      title: "Horarios",
       items: formatOpeningHours(client?.opening_hours_ordered || client?.opening_hours)
     },
     {
-      title: (adminContent as any)?.quick_links_label || cachedAdminContent?.quick_links_label || "Enlaces",
+      title: "Enlaces",
       items: [
-        { label: (adminContent as any)?.navigation_menu_label || cachedAdminContent?.navigation_menu_label || "Menú", href: "/menu" },
-        { label: (adminContent as any)?.navigation_about_label || cachedAdminContent?.navigation_about_label || "Sobre Nosotros", href: "/about" },
-        { label: (adminContent as any)?.navigation_reviews_label || cachedAdminContent?.navigation_reviews_label || "Reseñas", href: "/reviews" },
-        { label: (adminContent as any)?.navigation_contact_label || cachedAdminContent?.navigation_contact_label || "Contacto", href: "/contact" }
+        { label: "Menú", href: "/menu" },
+        { label: "Sobre Nosotros", href: "/about" },
+        { label: "Reseñas", href: "/reviews" },
+        { label: "Contacto", href: "/contact" }
       ]
     }
   ];

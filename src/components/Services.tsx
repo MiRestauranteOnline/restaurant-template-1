@@ -16,21 +16,21 @@ const Services = () => {
       icon: getIcon((adminContent as any)?.services_card1_icon || 'Utensils'),
       title: (adminContent as any)?.services_card1_title || "Comida en el Local",
       description: (adminContent as any)?.services_card1_description || "Disfruta de nuestros platos únicos en un ambiente acogedor y familiar.",
-      buttonText: (adminContent as any)?.services_card1_button_text || (adminContent as any)?.more_info_button_label || "Más Info",
+      buttonText: (adminContent as any)?.services_card1_button_text || "Más Info",
       buttonLink: (adminContent as any)?.services_card1_button_link || 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre comida en el local'
     },
     {
       icon: getIcon((adminContent as any)?.services_card2_icon || 'Truck'),
       title: (adminContent as any)?.services_card2_title || "Delivery",
       description: (adminContent as any)?.services_card2_description || "Lleva los sabores de nuestro restaurante a tu hogar con nuestro servicio de delivery.",
-      buttonText: (adminContent as any)?.services_card2_button_text || (adminContent as any)?.more_info_button_label || "Más Info",
+      buttonText: (adminContent as any)?.services_card2_button_text || "Más Info",
       buttonLink: (adminContent as any)?.services_card2_button_link || 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre delivery'
     },
     {
       icon: getIcon((adminContent as any)?.services_card3_icon || 'Users'),
       title: (adminContent as any)?.services_card3_title || "Eventos Pequeños",
       description: (adminContent as any)?.services_card3_description || "Celebra tus momentos especiales con nosotros, perfecto para reuniones íntimas.",
-      buttonText: (adminContent as any)?.services_card3_button_text || (adminContent as any)?.more_info_button_label || "Más Info",
+      buttonText: (adminContent as any)?.services_card3_button_text || "Más Info",
       buttonLink: (adminContent as any)?.services_card3_button_link || 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre eventos'
     }
   ];

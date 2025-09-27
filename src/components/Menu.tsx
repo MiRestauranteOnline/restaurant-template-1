@@ -152,7 +152,7 @@ const Menu = () => {
             className="btn-primary px-8 py-3 text-lg rounded-full"
             onClick={() => window.location.href = '/menu'}
           >
-            {(adminContent as any)?.view_full_menu_button_label || 'Ver Menú Completo'}
+            Ver Menú Completo
           </Button>
         </div>
       </div>

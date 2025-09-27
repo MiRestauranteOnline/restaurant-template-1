@@ -21,12 +21,12 @@ const Contact = () => {
   const contactInfo = [
     ...(client?.phone ? [{
       icon: Phone,
-      title: (adminContent as any)?.phone_field_label || "Teléfono",
+      title: "Teléfono",
       details: [`${client.phone_country_code || '+51'} ${client.phone}`]
     }] : []),
     ...(client?.email ? [{
       icon: Mail,
-      title: (adminContent as any)?.email_field_label || "Email",
+      title: "Email",
       details: [client.email]
     }] : []),
     ...(client?.address ? [{
@@ -36,7 +36,7 @@ const Contact = () => {
     }] : []),
     {
       icon: Clock,
-      title: (adminContent as any)?.opening_hours_label || "Horarios",
+      title: "Horarios",
       details: formatOpeningHours(client?.opening_hours_ordered || client?.opening_hours)
     }
   ];
@@ -132,7 +132,7 @@ const Contact = () => {
                             window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
                           }}
                         >
-                          {(adminContent as any)?.whatsapp_button_label || 'Reservar por WhatsApp'}
+                          Reservar por WhatsApp
                         </Button>
                       )}
                       
@@ -147,7 +147,7 @@ const Contact = () => {
                             window.open(`tel:${phoneNumber}`, '_self');
                           }}
                         >
-                          {(adminContent as any)?.call_button_label || 'Llamar Ahora'}
+                          Llamar Ahora
                         </Button>
                       )}
                     </div>
