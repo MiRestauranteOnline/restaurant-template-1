@@ -34,7 +34,7 @@ const HomepageReviews = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 fade-in">
           <span className="text-accent font-medium tracking-wider uppercase text-sm">
-            Testimonios
+            {(adminContent as any)?.testimonials_label || 'Testimonios'}
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading mt-2 mb-6">
             <span>{reviewsTitleFirstLine}</span>

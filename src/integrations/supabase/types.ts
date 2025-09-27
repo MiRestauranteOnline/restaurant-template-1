@@ -29,7 +29,12 @@ export type Database = {
           about_team_section_description: string | null
           about_team_section_title_first_line: string | null
           about_team_section_title_second_line: string | null
+          about_us_label: string | null
+          back_to_home_button_label: string | null
+          call_button_label: string | null
+          categories_label: string | null
           client_id: string
+          contact_info_label: string | null
           contact_page_hero_background_url: string | null
           contact_page_hero_description: string | null
           contact_page_hero_title: string | null
@@ -37,8 +42,15 @@ export type Database = {
           contact_page_hero_title_second_line: string | null
           contact_reservation_description: string | null
           contact_reservation_title: string | null
+          contact_us_label: string | null
           created_at: string
+          culinary_masterpieces_label: string | null
+          customer_reviews_label: string | null
+          description_label: string | null
           downloadable_menu_url: string | null
+          email_field_label: string | null
+          error_label: string | null
+          follow_us_label: string | null
           footer_description: string | null
           footer_logo_url: string | null
           header_logo_url: string | null
@@ -76,11 +88,32 @@ export type Database = {
           homepage_services_section_title_first_line: string | null
           homepage_services_section_title_second_line: string | null
           id: string
+          loading_label: string | null
           menu_page_hero_background_url: string | null
           menu_page_hero_description: string | null
           menu_page_hero_title: string | null
           menu_page_hero_title_first_line: string | null
           menu_page_hero_title_second_line: string | null
+          message_field_label: string | null
+          more_info_button_label: string | null
+          name_field_label: string | null
+          navigation_about_label: string | null
+          navigation_contact_label: string | null
+          navigation_home_label: string | null
+          navigation_menu_label: string | null
+          navigation_reviews_label: string | null
+          opening_hours_label: string | null
+          our_menu_label: string | null
+          our_services_label: string | null
+          our_story_label: string | null
+          our_team_label: string | null
+          page_not_found_label: string | null
+          phone_field_label: string | null
+          price_label: string | null
+          quick_links_label: string | null
+          rating_label: string | null
+          reserve_table_button_label: string | null
+          review_date_label: string | null
           reviews_page_hero_background_url: string | null
           reviews_page_hero_description: string | null
           reviews_page_hero_title: string | null
@@ -88,6 +121,7 @@ export type Database = {
           reviews_page_hero_title_second_line: string | null
           reviews_section_title_first_line: string | null
           reviews_section_title_second_line: string | null
+          send_message_button_label: string | null
           services_card1_button_link: string | null
           services_card1_button_text: string | null
           services_card1_description: string | null
@@ -124,7 +158,11 @@ export type Database = {
           stats_item3_icon: string | null
           stats_item3_label: string | null
           stats_item3_number: string | null
+          testimonials_label: string | null
+          try_again_label: string | null
           updated_at: string
+          view_full_menu_button_label: string | null
+          whatsapp_button_label: string | null
           whatsapp_general_message: string | null
           whatsapp_reservation_message: string | null
         }
@@ -142,7 +180,12 @@ export type Database = {
           about_team_section_description?: string | null
           about_team_section_title_first_line?: string | null
           about_team_section_title_second_line?: string | null
+          about_us_label?: string | null
+          back_to_home_button_label?: string | null
+          call_button_label?: string | null
+          categories_label?: string | null
           client_id: string
+          contact_info_label?: string | null
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
@@ -150,8 +193,15 @@ export type Database = {
           contact_page_hero_title_second_line?: string | null
           contact_reservation_description?: string | null
           contact_reservation_title?: string | null
+          contact_us_label?: string | null
           created_at?: string
+          culinary_masterpieces_label?: string | null
+          customer_reviews_label?: string | null
+          description_label?: string | null
           downloadable_menu_url?: string | null
+          email_field_label?: string | null
+          error_label?: string | null
+          follow_us_label?: string | null
           footer_description?: string | null
           footer_logo_url?: string | null
           header_logo_url?: string | null
@@ -189,11 +239,32 @@ export type Database = {
           homepage_services_section_title_first_line?: string | null
           homepage_services_section_title_second_line?: string | null
           id?: string
+          loading_label?: string | null
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
           menu_page_hero_title?: string | null
           menu_page_hero_title_first_line?: string | null
           menu_page_hero_title_second_line?: string | null
+          message_field_label?: string | null
+          more_info_button_label?: string | null
+          name_field_label?: string | null
+          navigation_about_label?: string | null
+          navigation_contact_label?: string | null
+          navigation_home_label?: string | null
+          navigation_menu_label?: string | null
+          navigation_reviews_label?: string | null
+          opening_hours_label?: string | null
+          our_menu_label?: string | null
+          our_services_label?: string | null
+          our_story_label?: string | null
+          our_team_label?: string | null
+          page_not_found_label?: string | null
+          phone_field_label?: string | null
+          price_label?: string | null
+          quick_links_label?: string | null
+          rating_label?: string | null
+          reserve_table_button_label?: string | null
+          review_date_label?: string | null
           reviews_page_hero_background_url?: string | null
           reviews_page_hero_description?: string | null
           reviews_page_hero_title?: string | null
@@ -201,6 +272,7 @@ export type Database = {
           reviews_page_hero_title_second_line?: string | null
           reviews_section_title_first_line?: string | null
           reviews_section_title_second_line?: string | null
+          send_message_button_label?: string | null
           services_card1_button_link?: string | null
           services_card1_button_text?: string | null
           services_card1_description?: string | null
@@ -237,7 +309,11 @@ export type Database = {
           stats_item3_icon?: string | null
           stats_item3_label?: string | null
           stats_item3_number?: string | null
+          testimonials_label?: string | null
+          try_again_label?: string | null
           updated_at?: string
+          view_full_menu_button_label?: string | null
+          whatsapp_button_label?: string | null
           whatsapp_general_message?: string | null
           whatsapp_reservation_message?: string | null
         }
@@ -255,7 +331,12 @@ export type Database = {
           about_team_section_description?: string | null
           about_team_section_title_first_line?: string | null
           about_team_section_title_second_line?: string | null
+          about_us_label?: string | null
+          back_to_home_button_label?: string | null
+          call_button_label?: string | null
+          categories_label?: string | null
           client_id?: string
+          contact_info_label?: string | null
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
@@ -263,8 +344,15 @@ export type Database = {
           contact_page_hero_title_second_line?: string | null
           contact_reservation_description?: string | null
           contact_reservation_title?: string | null
+          contact_us_label?: string | null
           created_at?: string
+          culinary_masterpieces_label?: string | null
+          customer_reviews_label?: string | null
+          description_label?: string | null
           downloadable_menu_url?: string | null
+          email_field_label?: string | null
+          error_label?: string | null
+          follow_us_label?: string | null
           footer_description?: string | null
           footer_logo_url?: string | null
           header_logo_url?: string | null
@@ -302,11 +390,32 @@ export type Database = {
           homepage_services_section_title_first_line?: string | null
           homepage_services_section_title_second_line?: string | null
           id?: string
+          loading_label?: string | null
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
           menu_page_hero_title?: string | null
           menu_page_hero_title_first_line?: string | null
           menu_page_hero_title_second_line?: string | null
+          message_field_label?: string | null
+          more_info_button_label?: string | null
+          name_field_label?: string | null
+          navigation_about_label?: string | null
+          navigation_contact_label?: string | null
+          navigation_home_label?: string | null
+          navigation_menu_label?: string | null
+          navigation_reviews_label?: string | null
+          opening_hours_label?: string | null
+          our_menu_label?: string | null
+          our_services_label?: string | null
+          our_story_label?: string | null
+          our_team_label?: string | null
+          page_not_found_label?: string | null
+          phone_field_label?: string | null
+          price_label?: string | null
+          quick_links_label?: string | null
+          rating_label?: string | null
+          reserve_table_button_label?: string | null
+          review_date_label?: string | null
           reviews_page_hero_background_url?: string | null
           reviews_page_hero_description?: string | null
           reviews_page_hero_title?: string | null
@@ -314,6 +423,7 @@ export type Database = {
           reviews_page_hero_title_second_line?: string | null
           reviews_section_title_first_line?: string | null
           reviews_section_title_second_line?: string | null
+          send_message_button_label?: string | null
           services_card1_button_link?: string | null
           services_card1_button_text?: string | null
           services_card1_description?: string | null
@@ -350,7 +460,11 @@ export type Database = {
           stats_item3_icon?: string | null
           stats_item3_label?: string | null
           stats_item3_number?: string | null
+          testimonials_label?: string | null
+          try_again_label?: string | null
           updated_at?: string
+          view_full_menu_button_label?: string | null
+          whatsapp_button_label?: string | null
           whatsapp_general_message?: string | null
           whatsapp_reservation_message?: string | null
         }

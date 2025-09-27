@@ -73,7 +73,7 @@ const Menu = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 fade-in">
           <span className="text-accent font-medium tracking-wider uppercase text-sm">
-            Obras Maestras Culinarias
+            {(adminContent as any)?.culinary_masterpieces_label || 'Obras Maestras Culinarias'}
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading mt-2 mb-6">
             <span>{menuTitleFirstLine}</span>
@@ -152,7 +152,7 @@ const Menu = () => {
             className="btn-primary px-8 py-3 text-lg rounded-full"
             onClick={() => window.location.href = '/menu'}
           >
-            Ver Menú Completo
+            {(adminContent as any)?.view_full_menu_button_label || 'Ver Menú Completo'}
           </Button>
         </div>
       </div>

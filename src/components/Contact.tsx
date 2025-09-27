@@ -21,12 +21,12 @@ const Contact = () => {
   const contactInfo = [
     ...(client?.phone ? [{
       icon: Phone,
-      title: "Teléfono",
+      title: (adminContent as any)?.phone_field_label || "Teléfono",
       details: [`${client.phone_country_code || '+51'} ${client.phone}`]
     }] : []),
     ...(client?.email ? [{
       icon: Mail,
-      title: "Email",
+      title: (adminContent as any)?.email_field_label || "Email",
       details: [client.email]
     }] : []),
     ...(client?.address ? [{
@@ -36,7 +36,7 @@ const Contact = () => {
     }] : []),
     {
       icon: Clock,
-      title: "Horarios",
+      title: (adminContent as any)?.opening_hours_label || "Horarios",
       details: formatOpeningHours(client?.opening_hours_ordered || client?.opening_hours)
     }
   ];
@@ -46,7 +46,7 @@ const Contact = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 fade-in">
           <span className="text-accent font-medium tracking-wider uppercase text-sm">
-            Contáctanos
+            {(adminContent as any)?.contact_us_label || 'Contáctanos'}
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading mt-2 mb-6">
             <span>{contactTitleFirstLine}</span>
@@ -132,7 +132,7 @@ const Contact = () => {
                             window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
                           }}
                         >
-                          Reservar por WhatsApp
+                          {(adminContent as any)?.whatsapp_button_label || 'Reservar por WhatsApp'}
                         </Button>
                       )}
                       
@@ -147,7 +147,7 @@ const Contact = () => {
                             window.open(`tel:${phoneNumber}`, '_self');
                           }}
                         >
-                          Llamar Ahora
+                          {(adminContent as any)?.call_button_label || 'Llamar Ahora'}
                         </Button>
                       )}
                     </div>
