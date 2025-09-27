@@ -431,6 +431,9 @@ export type Database = {
           subdomain: string
           theme: string | null
           updated_at: string
+          vercel_dashboard_url: string | null
+          vercel_project: string | null
+          vercel_team: string | null
           whatsapp: string | null
           whatsapp_country_code: string | null
         }
@@ -453,6 +456,9 @@ export type Database = {
           subdomain: string
           theme?: string | null
           updated_at?: string
+          vercel_dashboard_url?: string | null
+          vercel_project?: string | null
+          vercel_team?: string | null
           whatsapp?: string | null
           whatsapp_country_code?: string | null
         }
@@ -475,6 +481,9 @@ export type Database = {
           subdomain?: string
           theme?: string | null
           updated_at?: string
+          vercel_dashboard_url?: string | null
+          vercel_project?: string | null
+          vercel_team?: string | null
           whatsapp?: string | null
           whatsapp_country_code?: string | null
         }
