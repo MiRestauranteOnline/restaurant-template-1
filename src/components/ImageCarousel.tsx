@@ -24,28 +24,19 @@ const ImageCarousel = () => {
   const [loading, setLoading] = useState(true);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   
-  console.log('🎠 ImageCarousel: Rendering with data:', {
-    clientId: client?.id,
-    carouselEnabled: adminContent?.carousel_enabled,
-    carouselOrder: adminContent?.carousel_display_order,
-    imagesCount: images.length
-  });
-  
   // Don't render if carousel is disabled
   if (adminContent?.carousel_enabled === false) {
-    console.log('🎠 ImageCarousel: Carousel disabled by admin settings');
     return null;
   }
 
   useEffect(() => {
     const fetchCarouselImages = async () => {
       if (!client?.id) {
-        console.log('🎠 ImageCarousel: No client ID, skipping fetch');
         return;
       }
 
-      console.log('🎠 ImageCarousel: Fetching images for client:', client.id);
       try {
+        // First try to get client-specific images
         const { data, error } = await supabase
           .from('carousel_images' as any)
           .select('*')
@@ -54,11 +45,24 @@ const ImageCarousel = () => {
           .order('display_order', { ascending: true });
 
         if (error) {
-          console.error('🎠 ImageCarousel: Fetch error:', error);
           throw error;
         }
-        console.log('🎠 ImageCarousel: Fetched images:', data);
-        setImages((data as unknown as CarouselImage[]) || []);
+
+        if (data && data.length > 0) {
+          setImages((data as unknown as CarouselImage[]) || []);
+        } else {
+          // Fallback: try to get any active images (global)
+          const { data: globalData, error: globalError } = await supabase
+            .from('carousel_images' as any)
+            .select('*')
+            .eq('is_active', true)
+            .order('display_order', { ascending: true });
+
+          if (globalError) {
+            throw globalError;
+          }
+          setImages((globalData as unknown as CarouselImage[]) || []);
+        }
       } catch (error) {
         console.error('Error fetching carousel images:', error);
       } finally {
@@ -70,7 +74,6 @@ const ImageCarousel = () => {
   }, [client?.id]);
 
   if (loading) {
-    console.log('🎠 ImageCarousel: Still loading...');
     return (
       <section className="py-16 bg-primary/20">
         <div className="container mx-auto px-4">
@@ -81,11 +84,8 @@ const ImageCarousel = () => {
   }
 
   if (images.length === 0) {
-    console.log('🎠 ImageCarousel: No images found, not rendering');
     return null;
   }
-
-  console.log('🎠 ImageCarousel: Rendering carousel with', images.length, 'images');
 
   return (
     <section className="py-16 bg-primary/20">
