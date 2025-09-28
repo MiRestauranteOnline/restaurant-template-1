@@ -36,7 +36,6 @@ const ImageCarousel = () => {
       }
 
       try {
-        // First try to get client-specific images
         const { data, error } = await supabase
           .from('carousel_images' as any)
           .select('*')
@@ -47,22 +46,7 @@ const ImageCarousel = () => {
         if (error) {
           throw error;
         }
-
-        if (data && data.length > 0) {
-          setImages((data as unknown as CarouselImage[]) || []);
-        } else {
-          // Fallback: try to get any active images (global)
-          const { data: globalData, error: globalError } = await supabase
-            .from('carousel_images' as any)
-            .select('*')
-            .eq('is_active', true)
-            .order('display_order', { ascending: true });
-
-          if (globalError) {
-            throw globalError;
-          }
-          setImages((globalData as unknown as CarouselImage[]) || []);
-        }
+        setImages((data as unknown as CarouselImage[]) || []);
       } catch (error) {
         console.error('Error fetching carousel images:', error);
       } finally {
