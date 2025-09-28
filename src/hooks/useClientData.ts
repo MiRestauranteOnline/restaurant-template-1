@@ -307,6 +307,10 @@ export interface AdminContent {
   id: string;
   client_id: string;
   
+  // Carousel controls
+  carousel_enabled?: boolean;
+  carousel_display_order?: number;
+  
   // Homepage content
   homepage_hero_title?: string;
   homepage_hero_description?: string;
