@@ -424,6 +424,19 @@ export interface ClientSettings {
   updated_at: string;
 }
 
+export interface PremiumFeatures {
+  id: string;
+  client_id: string;
+  google_analytics_id?: string;
+  google_search_console_verification?: string;
+  analytics_enabled?: boolean;
+  premium_support_enabled?: boolean;
+  monthly_reports_enabled?: boolean;
+  analytics_setup_date?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 // Global data cache for instant access
 interface GlobalDataCache {
   client: ClientData | null;
@@ -433,6 +446,7 @@ interface GlobalDataCache {
   teamMembers: TeamMember[];
   reviews: Review[];
   clientSettings: ClientSettings | null;
+  premiumFeatures: PremiumFeatures | null;
   loading: boolean;
   error: string | null;
   domain: string;
@@ -446,6 +460,7 @@ const globalDataCache: GlobalDataCache = {
   teamMembers: [],
   reviews: [],
   clientSettings: null,
+  premiumFeatures: null,
   loading: true,
   error: null,
   domain: ''
@@ -531,7 +546,7 @@ export const preloadAllClientData = async (domain?: string) => {
 
     if (clientData?.id) {
       // Fetch ALL data in parallel for instant access
-      const [menuResponse, categoriesResponse, settingsResponse, adminContentResponse, teamResponse, reviewsResponse] = await Promise.all([
+      const [menuResponse, categoriesResponse, settingsResponse, adminContentResponse, teamResponse, reviewsResponse, premiumFeaturesResponse] = await Promise.all([
         supabase
           .from('menu_items')
           .select('*')
@@ -570,7 +585,13 @@ export const preloadAllClientData = async (domain?: string) => {
           .select('*')
           .eq('client_id', clientData.id)
           .eq('is_active', true)
-          .order('display_order', { ascending: true })
+          .order('display_order', { ascending: true }),
+
+        supabase
+          .from('premium_features' as any)
+          .select('*')
+          .eq('client_id', clientData.id)
+          .maybeSingle()
       ]);
 
       // Store all data in global cache with normalized category_id
@@ -584,6 +605,7 @@ export const preloadAllClientData = async (domain?: string) => {
       globalDataCache.reviews = reviewsResponse.data || [];
       globalDataCache.adminContent = adminContentResponse.data || null;
       globalDataCache.clientSettings = settingsResponse.data as ClientSettings || null;
+      globalDataCache.premiumFeatures = (premiumFeaturesResponse.data as any) || null;
 
       // Apply dynamic colors immediately
       if (settingsResponse.data) {
@@ -619,6 +641,7 @@ export const useClientData = (domain?: string) => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>(globalDataCache.teamMembers);
   const [reviews, setReviews] = useState<Review[]>(globalDataCache.reviews);
   const [clientSettings, setClientSettings] = useState<ClientSettings | null>(globalDataCache.clientSettings);
+  const [premiumFeatures, setPremiumFeatures] = useState<PremiumFeatures | null>(globalDataCache.premiumFeatures);
   const [loading, setLoading] = useState(globalDataCache.loading);
   const [error, setError] = useState<string | null>(globalDataCache.error);
 
@@ -636,6 +659,7 @@ export const useClientData = (domain?: string) => {
         setTeamMembers(globalDataCache.teamMembers);
         setReviews(globalDataCache.reviews);
         setClientSettings(globalDataCache.clientSettings);
+        setPremiumFeatures(globalDataCache.premiumFeatures);
         setLoading(globalDataCache.loading);
         setError(globalDataCache.error);
       }
@@ -753,6 +777,13 @@ export const useClientData = (domain?: string) => {
             .eq('is_active', true)
             .order('display_order', { ascending: true });
 
+          // Fetch premium features
+          const premiumFeaturesResponse = await (supabase as any)
+            .from('premium_features')
+            .select('*')
+            .eq('client_id', clientData.id)
+            .maybeSingle();
+
           // Set menu data (normalize category_id using category name if missing)
           if (menuResponse.error) {
             console.error('Error fetching menu items:', menuResponse.error);
@@ -784,6 +815,13 @@ export const useClientData = (domain?: string) => {
           } else {
             const fetchedReviews = (reviewsResponse.data as Review[]) || [];
             setReviews(fetchedReviews);
+
+          // Set premium features data
+          if (premiumFeaturesResponse.error) {
+            console.error('Error fetching premium features:', premiumFeaturesResponse.error);
+          } else {
+            setPremiumFeatures((premiumFeaturesResponse.data as any) || null);
+          }
 
             // Early cache update to prevent nav layout shift (before settings/admin content loaded)
             try {
@@ -899,6 +937,7 @@ export const useClientData = (domain?: string) => {
     teamMembers,
     reviews,
     clientSettings,
+    premiumFeatures,
     loading,
     error,
     domain: detectedDomain

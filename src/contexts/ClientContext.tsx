@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import { useClientData, ClientData, MenuItem, MenuCategory, ClientSettings, AdminContent, TeamMember, Review } from '@/hooks/useClientData';
+import { useClientData, ClientData, MenuItem, MenuCategory, ClientSettings, AdminContent, TeamMember, Review, PremiumFeatures } from '@/hooks/useClientData';
 
 interface ClientContextType {
   client: ClientData | null;
@@ -9,6 +9,7 @@ interface ClientContextType {
   teamMembers: TeamMember[];
   reviews: Review[];
   clientSettings: ClientSettings | null;
+  premiumFeatures: PremiumFeatures | null;
   loading: boolean;
   error: string | null;
   domain: string;

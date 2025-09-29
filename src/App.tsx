@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ClientProvider, useClient } from "@/contexts/ClientContext";
+import HeadScripts from '@/components/HeadScripts';
 import { useEffect } from 'react';
 import Index from "./pages/Index";
 import MenuPage from "./pages/MenuPage";
@@ -44,6 +45,7 @@ const ThemedApp = () => {
 
   return (
     <>
+      <HeadScripts />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/menu" element={<MenuPage />} />
