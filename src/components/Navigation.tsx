@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useLocation } from 'react-router-dom';
 import { useClient } from '@/contexts/ClientContext';
 import { getCachedClientSettings, getCachedNavigationData, getFastLoadCachedContent, getCachedClientData } from '@/utils/cachedContent';
+import { useAnalyticsContext } from '@/components/AnalyticsProvider';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +16,7 @@ const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { client, clientSettings, reviews, adminContent, loading } = useClient();
+  const { trackButtonClick } = useAnalyticsContext();
   const location = useLocation();
 
   // Get cached settings and navigation data to prevent layout shifts
@@ -209,6 +211,7 @@ const Navigation = () => {
                 <Button 
                   className="btn-ghost px-4 py-2 rounded-full text-sm"
                   onClick={() => {
+                    trackButtonClick('phone', { source: 'navigation_desktop' });
                     const phoneNumber = client?.phone ? 
                       `${client.phone_country_code || '+51'}${client.phone}` : 
                       `${cachedClient?.phone_country_code || '+51'}${cachedClient?.phone}`;
@@ -222,6 +225,7 @@ const Navigation = () => {
                 <Button 
                   className="btn-primary px-6 py-2 rounded-full"
                   onClick={() => {
+                    trackButtonClick('whatsapp', { source: 'navigation_desktop' });
                     const whatsappNumber = client?.whatsapp ? 
                       `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
                       `${cachedClient?.whatsapp_country_code?.replace('+', '') || '51'}${cachedClient?.whatsapp}`;
@@ -316,6 +320,7 @@ const Navigation = () => {
                   <Button 
                     className="btn-ghost w-full rounded-full"
                     onClick={() => {
+                      trackButtonClick('phone', { source: 'navigation_mobile' });
                       const phoneNumber = client?.phone ? 
                         `${client.phone_country_code || '+51'}${client.phone}` : 
                         `${cachedClient?.phone_country_code || '+51'}${cachedClient?.phone}`;
@@ -329,6 +334,7 @@ const Navigation = () => {
                   <Button 
                     className="btn-primary w-full rounded-full"
                     onClick={() => {
+                      trackButtonClick('whatsapp', { source: 'navigation_mobile' });
                       const whatsappNumber = client?.whatsapp ? 
                         `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
                         `${cachedClient?.whatsapp_country_code?.replace('+', '') || '51'}${cachedClient?.whatsapp}`;

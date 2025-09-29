@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ClientProvider, useClient } from "@/contexts/ClientContext";
+import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import HeadScripts from '@/components/HeadScripts';
 import { useEffect } from 'react';
 import Index from "./pages/Index";
@@ -46,16 +47,18 @@ const ThemedApp = () => {
   return (
     <>
       <HeadScripts />
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/menu" element={<MenuPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/reviews" element={<ReviewsPage />} />
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <WhatsAppPopup />
+      <AnalyticsProvider>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/menu" element={<MenuPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/reviews" element={<ReviewsPage />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <WhatsAppPopup />
+      </AnalyticsProvider>
     </>
   );
 };

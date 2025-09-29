@@ -117,7 +117,7 @@ const MenuPage = () => {
             ))
           ) : displayCategories.length > 0 ? (
             displayCategories.map((category) => (
-              <div key={category.name} className="mb-16">
+              <div key={category.name} className="mb-16" data-analytics-section={`menu-category-${category.name.toLowerCase().replace(/\s+/g, '-')}`}>
                 <h2 className="text-3xl font-heading font-semibold text-center mb-12 text-gradient">
                   {category.name}
                 </h2>
