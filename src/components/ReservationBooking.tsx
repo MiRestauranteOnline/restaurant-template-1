@@ -45,6 +45,14 @@ export default function ReservationBooking() {
     fetchSchedules();
   }, [client]);
 
+  const [availableDates, setAvailableDates] = useState<{ value: string; label: string }[]>([]);
+
+  useEffect(() => {
+    if (schedules.length > 0) {
+      getAvailableDates().then(setAvailableDates);
+    }
+  }, [schedules]);
+
   useEffect(() => {
     if (formData.date) {
       getAvailableTimes().then(setAvailableTimes);
@@ -83,6 +91,86 @@ export default function ReservationBooking() {
       console.log('ReservationBooking: Schedules fetched:', data);
       setSchedules((data as unknown as Schedule[]) || []);
     }
+  };
+
+  const getAvailableDates = async () => {
+    if (!client?.id || schedules.length === 0) return [];
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 28); // 4 weeks = 28 days
+
+    const availableDatesArray: { value: string; label: string }[] = [];
+    const daysInSpanish = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const monthsInSpanish = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+    for (let i = 0; i < 28; i++) {
+      const checkDate = new Date(today);
+      checkDate.setDate(today.getDate() + i);
+      const dayOfWeek = checkDate.getDay();
+
+      // Check if this day has a schedule configured
+      const schedule = schedules.find(s => s.day_of_week === dayOfWeek);
+      if (!schedule) continue;
+
+      // Format date as YYYY-MM-DD
+      const dateStr = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
+
+      // Check if there's any available capacity for this date
+      const { data: existingReservations } = await supabase
+        .from('reservations')
+        .select('reservation_time, party_size')
+        .eq('client_id', client.id)
+        .eq('reservation_date', dateStr)
+        .in('status', ['pending', 'confirmed']);
+
+      // Check if at least one time slot has capacity
+      let hasAvailableSlot = false;
+      const [startHour, startMinute] = schedule.start_time.split(':').map(Number);
+      const [endHour, endMinute] = schedule.end_time.split(':').map(Number);
+      
+      let currentHour = startHour;
+      let currentMinute = startMinute;
+      
+      while (currentHour < endHour || (currentHour === endHour && currentMinute < endMinute)) {
+        const timeStr = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`;
+        const slotMinutes = currentHour * 60 + currentMinute;
+        const slotEndMinutes = slotMinutes + 30;
+        
+        const totalPartySize = (existingReservations || []).reduce((sum, res) => {
+          const resTime = res.reservation_time;
+          const resMinutes = parseInt(resTime.split(':')[0]) * 60 + parseInt(resTime.split(':')[1]);
+          const resEndMinutes = resMinutes + schedule.duration_minutes;
+          const overlaps = slotMinutes < resEndMinutes && slotEndMinutes > resMinutes;
+          return overlaps ? sum + res.party_size : sum;
+        }, 0);
+
+        const availableCapacity = schedule.capacity - totalPartySize;
+        if (availableCapacity >= 1) {
+          hasAvailableSlot = true;
+          break;
+        }
+        
+        currentMinute += 30;
+        if (currentMinute >= 60) {
+          currentMinute = 0;
+          currentHour += 1;
+        }
+      }
+
+      if (hasAvailableSlot) {
+        const dayName = daysInSpanish[dayOfWeek];
+        const dayNumber = checkDate.getDate();
+        const monthName = monthsInSpanish[checkDate.getMonth()];
+        availableDatesArray.push({
+          value: dateStr,
+          label: `${dayName} - ${dayNumber} de ${monthName}`
+        });
+      }
+    }
+
+    return availableDatesArray;
   };
 
   const getAvailableTimes = async () => {
@@ -432,14 +520,28 @@ export default function ReservationBooking() {
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <Label htmlFor="date">Fecha</Label>
-                <Input
-                  id="date"
-                  type="date"
+                <Select
                   value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value, time: '' })}
-                  min={new Date().toISOString().split('T')[0]}
+                  onValueChange={(value) => setFormData({ ...formData, date: value, time: '' })}
                   required
-                />
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona fecha" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableDates.length > 0 ? (
+                      availableDates.map((date) => (
+                        <SelectItem key={date.value} value={date.value}>
+                          {date.label}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                        No hay fechas disponibles
+                      </div>
+                    )}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
