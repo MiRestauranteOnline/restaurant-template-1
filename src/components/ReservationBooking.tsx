@@ -127,13 +127,10 @@ export default function ReservationBooking() {
     return null;
   }
 
-  // Don't render if no schedules configured
-  if (schedules.length === 0) {
-    console.log('ReservationBooking: No schedules found, not rendering');
-    return null;
-  }
+  // Always render the form; show info if no schedules configured
+  const hasSchedules = schedules.length > 0;
 
-  const availableDays = schedules.map(s => DAYS[s.day_of_week]).join(', ');
+  const availableDays = hasSchedules ? schedules.map(s => DAYS[s.day_of_week]).join(', ') : 'Próximamente';
 
   return (
     <section className="py-16 bg-background">
