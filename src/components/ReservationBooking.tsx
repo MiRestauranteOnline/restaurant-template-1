@@ -79,9 +79,16 @@ export default function ReservationBooking() {
   const getAvailableTimes = async () => {
     if (!formData.date) return [];
     
-    const selectedDate = new Date(formData.date);
+    // Parse date correctly to avoid timezone issues
+    const [year, month, day] = formData.date.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
     const dayOfWeek = selectedDate.getDay();
+    
+    console.log('Selected date:', formData.date, 'Day of week:', dayOfWeek, 'Available schedules:', schedules);
+    
     const schedule = schedules.find(s => s.day_of_week === dayOfWeek);
+    
+    console.log('Found schedule:', schedule);
     
     if (!schedule) return [];
 
@@ -188,7 +195,9 @@ export default function ReservationBooking() {
   // Get current schedule for party size validation
   const getCurrentSchedule = () => {
     if (!formData.date) return null;
-    const selectedDate = new Date(formData.date);
+    // Parse date correctly to avoid timezone issues
+    const [year, month, day] = formData.date.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
     const dayOfWeek = selectedDate.getDay();
     return schedules.find(s => s.day_of_week === dayOfWeek) || null;
   };
