@@ -30,6 +30,7 @@ export default function ReservationBooking() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [loading, setLoading] = useState(false);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+  const [availableCapacity, setAvailableCapacity] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     date: '',
     time: '',
@@ -51,6 +52,14 @@ export default function ReservationBooking() {
       setAvailableTimes([]);
     }
   }, [formData.date, schedules]);
+
+  useEffect(() => {
+    if (formData.time && formData.date) {
+      updateAvailableCapacity();
+    } else {
+      setAvailableCapacity(null);
+    }
+  }, [formData.time, formData.date, schedules]);
 
   const fetchSchedules = async () => {
     if (!client?.id) {
@@ -111,39 +120,40 @@ export default function ReservationBooking() {
       }
     }
     
-    // Check capacity for each time slot
+    // Fetch existing reservations for the selected date
     const { data: existingReservations } = await supabase
       .from('reservations')
       .select('reservation_time, party_size')
       .eq('client_id', client?.id)
       .eq('reservation_date', formData.date)
-      .neq('status', 'cancelled');
+      .in('status', ['pending', 'confirmed']);
 
     if (!existingReservations) return times;
 
-    // Filter out times that are at capacity
+    // Filter out times that don't have available capacity
     const availableTimes = times.filter(time => {
       const slotMinutes = parseInt(time.split(':')[0]) * 60 + parseInt(time.split(':')[1]);
+      const slotEndMinutes = slotMinutes + 30; // 30-minute slot duration
       
-      // Sum party sizes of all overlapping reservations
+      // Calculate available capacity by checking overlapping reservations
       const totalPartySize = existingReservations.reduce((sum, res) => {
         const resTime = res.reservation_time;
         const resMinutes = parseInt(resTime.split(':')[0]) * 60 + parseInt(resTime.split(':')[1]);
+        const resEndMinutes = resMinutes + schedule.duration_minutes;
         
         // Check if this reservation overlaps with the current time slot
-        // A reservation starting at resMinutes blocks slots from resMinutes to resMinutes + duration
-        const overlapStart = resMinutes;
-        const overlapEnd = resMinutes + schedule.duration_minutes;
+        // Overlap occurs if: slot_time < (reservation_time + duration) AND (slot_time + 30min) > reservation_time
+        const overlaps = slotMinutes < resEndMinutes && slotEndMinutes > resMinutes;
         
-        // If the slot falls within the reservation's duration, count its party size
-        if (slotMinutes >= overlapStart && slotMinutes < overlapEnd) {
+        if (overlaps) {
           return sum + res.party_size;
         }
         return sum;
       }, 0);
 
-      // Time slot is available if total party size is less than capacity
-      return totalPartySize < schedule.capacity;
+      const availableCapacity = schedule.capacity - totalPartySize;
+      // Only show slots where available capacity >= 1
+      return availableCapacity >= 1;
     });
     
     return availableTimes;
@@ -312,22 +322,65 @@ export default function ReservationBooking() {
     return null;
   };
 
-  // Generate party size options based on current schedule
+  // Calculate available capacity for selected time slot
+  const updateAvailableCapacity = async () => {
+    if (!currentSchedule || !formData.date || !formData.time) {
+      setAvailableCapacity(null);
+      return;
+    }
+    
+    const { data: existingReservations } = await supabase
+      .from('reservations')
+      .select('reservation_time, party_size')
+      .eq('client_id', client?.id)
+      .eq('reservation_date', formData.date)
+      .in('status', ['pending', 'confirmed']);
+
+    if (!existingReservations) {
+      setAvailableCapacity(currentSchedule.capacity);
+      return;
+    }
+
+    const slotMinutes = parseInt(formData.time.split(':')[0]) * 60 + parseInt(formData.time.split(':')[1]);
+    const slotEndMinutes = slotMinutes + 30;
+    
+    const totalPartySize = existingReservations.reduce((sum, res) => {
+      const resTime = res.reservation_time;
+      const resMinutes = parseInt(resTime.split(':')[0]) * 60 + parseInt(resTime.split(':')[1]);
+      const resEndMinutes = resMinutes + currentSchedule.duration_minutes;
+      
+      const overlaps = slotMinutes < resEndMinutes && slotEndMinutes > resMinutes;
+      
+      if (overlaps) {
+        return sum + res.party_size;
+      }
+      return sum;
+    }, 0);
+
+    setAvailableCapacity(currentSchedule.capacity - totalPartySize);
+  };
+
+  // Generate party size options based on current schedule and available capacity
   const getPartySizeOptions = () => {
     if (!currentSchedule) {
       return Array.from({ length: 10 }, (_, i) => i + 1);
     }
     
-    const options = [];
     const min = currentSchedule.min_party_size;
-    const max = currentSchedule.max_party_size;
+    let max = currentSchedule.max_party_size;
+    
+    // If we have a selected time and know the available capacity, limit max to available capacity
+    if (availableCapacity !== null && formData.time) {
+      max = Math.min(max, availableCapacity);
+    }
     
     // Show options from min to max only
+    const options = [];
     for (let i = min; i <= max; i++) {
       options.push(i);
     }
     
-    return options;
+    return options.length > 0 ? options : [min]; // Ensure at least one option
   };
 
   // Get special groups info message
