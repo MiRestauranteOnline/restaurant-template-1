@@ -70,7 +70,7 @@ const App = () => {
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <ClientProvider domain="demos">
+          <ClientProvider>
             <ThemedApp />
           </ClientProvider>
         </TooltipProvider>
