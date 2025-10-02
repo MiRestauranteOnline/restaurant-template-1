@@ -123,20 +123,27 @@ export default function ReservationBooking() {
 
     // Filter out times that are at capacity
     const availableTimes = times.filter(time => {
-      // Count overlapping reservations considering duration
-      const overlappingCount = existingReservations.filter(res => {
+      const slotMinutes = parseInt(time.split(':')[0]) * 60 + parseInt(time.split(':')[1]);
+      
+      // Sum party sizes of all overlapping reservations
+      const totalPartySize = existingReservations.reduce((sum, res) => {
         const resTime = res.reservation_time;
         const resMinutes = parseInt(resTime.split(':')[0]) * 60 + parseInt(resTime.split(':')[1]);
-        const slotMinutes = parseInt(time.split(':')[0]) * 60 + parseInt(time.split(':')[1]);
         
-        // Check if reservation overlaps with this time slot
+        // Check if this reservation overlaps with the current time slot
+        // A reservation starting at resMinutes blocks slots from resMinutes to resMinutes + duration
         const overlapStart = resMinutes;
         const overlapEnd = resMinutes + schedule.duration_minutes;
         
-        return slotMinutes >= overlapStart && slotMinutes < overlapEnd;
-      }).length;
+        // If the slot falls within the reservation's duration, count its party size
+        if (slotMinutes >= overlapStart && slotMinutes < overlapEnd) {
+          return sum + res.party_size;
+        }
+        return sum;
+      }, 0);
 
-      return overlappingCount < schedule.capacity;
+      // Time slot is available if total party size is less than capacity
+      return totalPartySize < schedule.capacity;
     });
     
     return availableTimes;
