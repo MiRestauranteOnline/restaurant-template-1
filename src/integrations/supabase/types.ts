@@ -30,7 +30,10 @@ export type Database = {
           about_team_section_title_first_line: string | null
           about_team_section_title_second_line: string | null
           about_us_label: string | null
+          carousel_display_order: number | null
+          carousel_enabled: boolean | null
           client_id: string
+          contact_delivery_briefing: string | null
           contact_page_hero_background_url: string | null
           contact_page_hero_description: string | null
           contact_page_hero_title: string | null
@@ -39,6 +42,7 @@ export type Database = {
           contact_reservation_description: string | null
           contact_reservation_title: string | null
           contact_us_label: string | null
+          content_briefing: string | null
           created_at: string
           culinary_masterpieces_label: string | null
           downloadable_menu_url: string | null
@@ -131,6 +135,7 @@ export type Database = {
           stats_item3_icon: string | null
           stats_item3_label: string | null
           stats_item3_number: string | null
+          style_briefing: string | null
           testimonials_label: string | null
           updated_at: string
           whatsapp_general_message: string | null
@@ -151,7 +156,10 @@ export type Database = {
           about_team_section_title_first_line?: string | null
           about_team_section_title_second_line?: string | null
           about_us_label?: string | null
+          carousel_display_order?: number | null
+          carousel_enabled?: boolean | null
           client_id: string
+          contact_delivery_briefing?: string | null
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
@@ -160,6 +168,7 @@ export type Database = {
           contact_reservation_description?: string | null
           contact_reservation_title?: string | null
           contact_us_label?: string | null
+          content_briefing?: string | null
           created_at?: string
           culinary_masterpieces_label?: string | null
           downloadable_menu_url?: string | null
@@ -252,6 +261,7 @@ export type Database = {
           stats_item3_icon?: string | null
           stats_item3_label?: string | null
           stats_item3_number?: string | null
+          style_briefing?: string | null
           testimonials_label?: string | null
           updated_at?: string
           whatsapp_general_message?: string | null
@@ -272,7 +282,10 @@ export type Database = {
           about_team_section_title_first_line?: string | null
           about_team_section_title_second_line?: string | null
           about_us_label?: string | null
+          carousel_display_order?: number | null
+          carousel_enabled?: boolean | null
           client_id?: string
+          contact_delivery_briefing?: string | null
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
@@ -281,6 +294,7 @@ export type Database = {
           contact_reservation_description?: string | null
           contact_reservation_title?: string | null
           contact_us_label?: string | null
+          content_briefing?: string | null
           created_at?: string
           culinary_masterpieces_label?: string | null
           downloadable_menu_url?: string | null
@@ -373,6 +387,7 @@ export type Database = {
           stats_item3_icon?: string | null
           stats_item3_label?: string | null
           stats_item3_number?: string | null
+          style_briefing?: string | null
           testimonials_label?: string | null
           updated_at?: string
           whatsapp_general_message?: string | null
@@ -387,6 +402,231 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      analytics_events: {
+        Row: {
+          client_id: string
+          created_at: string
+          device_type: string | null
+          event_data: Json
+          event_type: string
+          id: string
+          session_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          device_type?: string | null
+          event_data?: Json
+          event_type: string
+          id?: string
+          session_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          device_type?: string | null
+          event_data?: Json
+          event_type?: string
+          id?: string
+          session_id?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      brand_profile: {
+        Row: {
+          brand_values: string[]
+          company_description: string
+          company_name: string
+          created_at: string
+          founder_bio: string | null
+          geographic_focus: string[]
+          id: string
+          key_differentiators: string[]
+          primary_services: string[]
+          target_audience: string
+          tone_of_voice: string
+          updated_at: string
+        }
+        Insert: {
+          brand_values?: string[]
+          company_description: string
+          company_name?: string
+          created_at?: string
+          founder_bio?: string | null
+          geographic_focus?: string[]
+          id?: string
+          key_differentiators?: string[]
+          primary_services?: string[]
+          target_audience: string
+          tone_of_voice?: string
+          updated_at?: string
+        }
+        Update: {
+          brand_values?: string[]
+          company_description?: string
+          company_name?: string
+          created_at?: string
+          founder_bio?: string | null
+          geographic_focus?: string[]
+          id?: string
+          key_differentiators?: string[]
+          primary_services?: string[]
+          target_audience?: string
+          tone_of_voice?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      carousel_images: {
+        Row: {
+          alt_text: string | null
+          client_id: string
+          created_at: string
+          display_order: number
+          id: string
+          image_url: string
+          is_active: boolean
+          updated_at: string
+        }
+        Insert: {
+          alt_text?: string | null
+          client_id: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Update: {
+          alt_text?: string | null
+          client_id?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      client_discount_assignments: {
+        Row: {
+          applied_at: string | null
+          client_id: string
+          created_at: string
+          discount_id: string
+          id: string
+          is_active: boolean
+          updated_at: string
+        }
+        Insert: {
+          applied_at?: string | null
+          client_id: string
+          created_at?: string
+          discount_id: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Update: {
+          applied_at?: string | null
+          client_id?: string
+          created_at?: string
+          discount_id?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_discount_assignments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_discount_assignments_discount_id_fkey"
+            columns: ["discount_id"]
+            isOneToOne: false
+            referencedRelation: "client_discounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_discounts: {
+        Row: {
+          created_at: string
+          discount_type: string
+          id: string
+          is_active: boolean
+          name: string
+          percentage: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          discount_type: string
+          id?: string
+          is_active?: boolean
+          name: string
+          percentage: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          discount_type?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          percentage?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      client_images: {
+        Row: {
+          alt_text: string | null
+          client_id: string
+          created_at: string
+          file_size_kb: number | null
+          id: string
+          image_url: string
+          original_filename: string | null
+          updated_at: string
+          upload_context: string | null
+          uploaded_at: string
+        }
+        Insert: {
+          alt_text?: string | null
+          client_id: string
+          created_at?: string
+          file_size_kb?: number | null
+          id?: string
+          image_url: string
+          original_filename?: string | null
+          updated_at?: string
+          upload_context?: string | null
+          uploaded_at?: string
+        }
+        Update: {
+          alt_text?: string | null
+          client_id?: string
+          created_at?: string
+          file_size_kb?: number | null
+          id?: string
+          image_url?: string
+          original_filename?: string | null
+          updated_at?: string
+          upload_context?: string | null
+          uploaded_at?: string
+        }
+        Relationships: []
       }
       client_settings: {
         Row: {
@@ -469,21 +709,36 @@ export type Database = {
         Row: {
           address: string | null
           brand_colors: Json | null
+          cancellation_date: string | null
+          cancellation_reason: string | null
           coordinates: Json | null
           created_at: string
           delivery: Json | null
           domain: string | null
           email: string | null
           id: string
+          last_payment_attempt: string | null
+          mercadopago_preapproval_id: string | null
+          mercadopago_subscription_id: string | null
+          next_billing_date: string | null
           opening_hours: Json | null
           opening_hours_ordered: Json | null
           other_customizations: Json | null
+          payment_failures_count: number | null
+          payment_status: string | null
           phone: string | null
           phone_country_code: string | null
+          plan_type: string | null
+          referral_source: string | null
           restaurant_name: string
           social_media_links: Json | null
           subdomain: string
+          subscription_auto_recurring: boolean | null
+          subscription_end_date: string | null
+          subscription_start_date: string | null
+          subscription_status: string | null
           theme: string | null
+          trial_end_date: string | null
           updated_at: string
           vercel_dashboard_url: string | null
           vercel_project: string | null
@@ -494,21 +749,36 @@ export type Database = {
         Insert: {
           address?: string | null
           brand_colors?: Json | null
+          cancellation_date?: string | null
+          cancellation_reason?: string | null
           coordinates?: Json | null
           created_at?: string
           delivery?: Json | null
           domain?: string | null
           email?: string | null
           id?: string
+          last_payment_attempt?: string | null
+          mercadopago_preapproval_id?: string | null
+          mercadopago_subscription_id?: string | null
+          next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
           other_customizations?: Json | null
+          payment_failures_count?: number | null
+          payment_status?: string | null
           phone?: string | null
           phone_country_code?: string | null
+          plan_type?: string | null
+          referral_source?: string | null
           restaurant_name: string
           social_media_links?: Json | null
           subdomain: string
+          subscription_auto_recurring?: boolean | null
+          subscription_end_date?: string | null
+          subscription_start_date?: string | null
+          subscription_status?: string | null
           theme?: string | null
+          trial_end_date?: string | null
           updated_at?: string
           vercel_dashboard_url?: string | null
           vercel_project?: string | null
@@ -519,21 +789,36 @@ export type Database = {
         Update: {
           address?: string | null
           brand_colors?: Json | null
+          cancellation_date?: string | null
+          cancellation_reason?: string | null
           coordinates?: Json | null
           created_at?: string
           delivery?: Json | null
           domain?: string | null
           email?: string | null
           id?: string
+          last_payment_attempt?: string | null
+          mercadopago_preapproval_id?: string | null
+          mercadopago_subscription_id?: string | null
+          next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
           other_customizations?: Json | null
+          payment_failures_count?: number | null
+          payment_status?: string | null
           phone?: string | null
           phone_country_code?: string | null
+          plan_type?: string | null
+          referral_source?: string | null
           restaurant_name?: string
           social_media_links?: Json | null
           subdomain?: string
+          subscription_auto_recurring?: boolean | null
+          subscription_end_date?: string | null
+          subscription_start_date?: string | null
+          subscription_status?: string | null
           theme?: string | null
+          trial_end_date?: string | null
           updated_at?: string
           vercel_dashboard_url?: string | null
           vercel_project?: string | null
@@ -589,6 +874,105 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      coupons: {
+        Row: {
+          applicable_plans: string[]
+          code: string
+          created_at: string
+          discount_type: string
+          discount_value: number
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          updated_at: string
+          uses_count: number
+          valid_from: string
+          valid_until: string | null
+        }
+        Insert: {
+          applicable_plans?: string[]
+          code: string
+          created_at?: string
+          discount_type: string
+          discount_value: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          uses_count?: number
+          valid_from?: string
+          valid_until?: string | null
+        }
+        Update: {
+          applicable_plans?: string[]
+          code?: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          uses_count?: number
+          valid_from?: string
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
+      daily_analytics: {
+        Row: {
+          avg_time_on_page: number
+          bounce_rate: number
+          client_id: string
+          created_at: string
+          date: string
+          device_breakdown: Json
+          id: string
+          menu_downloads: number
+          menu_section_data: Json
+          phone_clicks: number
+          reservation_clicks: number
+          total_page_views: number
+          unique_sessions: number
+          updated_at: string
+          whatsapp_clicks: number
+        }
+        Insert: {
+          avg_time_on_page?: number
+          bounce_rate?: number
+          client_id: string
+          created_at?: string
+          date: string
+          device_breakdown?: Json
+          id?: string
+          menu_downloads?: number
+          menu_section_data?: Json
+          phone_clicks?: number
+          reservation_clicks?: number
+          total_page_views?: number
+          unique_sessions?: number
+          updated_at?: string
+          whatsapp_clicks?: number
+        }
+        Update: {
+          avg_time_on_page?: number
+          bounce_rate?: number
+          client_id?: string
+          created_at?: string
+          date?: string
+          device_breakdown?: Json
+          id?: string
+          menu_downloads?: number
+          menu_section_data?: Json
+          phone_clicks?: number
+          reservation_clicks?: number
+          total_page_views?: number
+          unique_sessions?: number
+          updated_at?: string
+          whatsapp_clicks?: number
+        }
+        Relationships: []
       }
       generated_articles: {
         Row: {
@@ -741,6 +1125,7 @@ export type Database = {
           client_id: string
           created_at: string
           description: string | null
+          display_order: number
           id: string
           image_url: string | null
           is_active: boolean
@@ -757,6 +1142,7 @@ export type Database = {
           client_id: string
           created_at?: string
           description?: string | null
+          display_order?: number
           id?: string
           image_url?: string | null
           is_active?: boolean
@@ -773,6 +1159,7 @@ export type Database = {
           client_id?: string
           created_at?: string
           description?: string | null
+          display_order?: number
           id?: string
           image_url?: string | null
           is_active?: boolean
@@ -793,6 +1180,153 @@ export type Database = {
           },
           {
             foreignKeyName: "menu_items_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      premium_features: {
+        Row: {
+          analytics_enabled: boolean | null
+          analytics_setup_date: string | null
+          client_id: string
+          created_at: string
+          google_analytics_id: string | null
+          google_search_console_verification: string | null
+          id: string
+          monthly_reports_enabled: boolean | null
+          premium_support_enabled: boolean | null
+          unique_support_pin: string | null
+          updated_at: string
+        }
+        Insert: {
+          analytics_enabled?: boolean | null
+          analytics_setup_date?: string | null
+          client_id: string
+          created_at?: string
+          google_analytics_id?: string | null
+          google_search_console_verification?: string | null
+          id?: string
+          monthly_reports_enabled?: boolean | null
+          premium_support_enabled?: boolean | null
+          unique_support_pin?: string | null
+          updated_at?: string
+        }
+        Update: {
+          analytics_enabled?: boolean | null
+          analytics_setup_date?: string | null
+          client_id?: string
+          created_at?: string
+          google_analytics_id?: string | null
+          google_search_console_verification?: string | null
+          id?: string
+          monthly_reports_enabled?: boolean | null
+          premium_support_enabled?: boolean | null
+          unique_support_pin?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "premium_features_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reservation_schedules: {
+        Row: {
+          capacity: number
+          client_id: string
+          created_at: string
+          day_of_week: number
+          end_time: string
+          id: string
+          is_active: boolean
+          start_time: string
+          updated_at: string
+        }
+        Insert: {
+          capacity: number
+          client_id: string
+          created_at?: string
+          day_of_week: number
+          end_time: string
+          id?: string
+          is_active?: boolean
+          start_time: string
+          updated_at?: string
+        }
+        Update: {
+          capacity?: number
+          client_id?: string
+          created_at?: string
+          day_of_week?: number
+          end_time?: string
+          id?: string
+          is_active?: boolean
+          start_time?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservation_schedules_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reservations: {
+        Row: {
+          client_id: string
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          party_size: number
+          reservation_date: string
+          reservation_time: string
+          special_requests: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id?: string
+          party_size: number
+          reservation_date: string
+          reservation_time: string
+          special_requests?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          id?: string
+          party_size?: number
+          reservation_date?: string
+          reservation_time?: string
+          special_requests?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservations_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
@@ -838,6 +1372,184 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      subscription_payments: {
+        Row: {
+          amount: number
+          client_id: string
+          coupon_code: string | null
+          created_at: string
+          currency: string
+          discount_amount: number | null
+          id: string
+          mercadopago_payment_id: string | null
+          mercadopago_preference_id: string | null
+          mercadopago_subscription_id: string | null
+          original_amount: number | null
+          paid_at: string | null
+          payment_method: string | null
+          period_end: string
+          period_start: string
+          status: string
+        }
+        Insert: {
+          amount: number
+          client_id: string
+          coupon_code?: string | null
+          created_at?: string
+          currency?: string
+          discount_amount?: number | null
+          id?: string
+          mercadopago_payment_id?: string | null
+          mercadopago_preference_id?: string | null
+          mercadopago_subscription_id?: string | null
+          original_amount?: number | null
+          paid_at?: string | null
+          payment_method?: string | null
+          period_end: string
+          period_start: string
+          status?: string
+        }
+        Update: {
+          amount?: number
+          client_id?: string
+          coupon_code?: string | null
+          created_at?: string
+          currency?: string
+          discount_amount?: number | null
+          id?: string
+          mercadopago_payment_id?: string | null
+          mercadopago_preference_id?: string | null
+          mercadopago_subscription_id?: string | null
+          original_amount?: number | null
+          paid_at?: string | null
+          payment_method?: string | null
+          period_end?: string
+          period_start?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_payments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          currency: string
+          discount_percentage: number | null
+          display_order: number
+          features: string[]
+          id: string
+          is_active: boolean
+          is_popular: boolean
+          monthly_price: number
+          name: string
+          original_price: number | null
+          plan_key: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          discount_percentage?: number | null
+          display_order?: number
+          features?: string[]
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          monthly_price: number
+          name: string
+          original_price?: number | null
+          plan_key: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          discount_percentage?: number | null
+          display_order?: number
+          features?: string[]
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          monthly_price?: number
+          name?: string
+          original_price?: number | null
+          plan_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      support_tickets: {
+        Row: {
+          assigned_to: string | null
+          client_id: string | null
+          created_at: string
+          customer_email: string
+          customer_name: string
+          id: string
+          last_response_at: string | null
+          message: string
+          priority: string
+          resolved_at: string | null
+          response_count: number
+          status: string
+          subject: string
+          support_type: string
+          ticket_number: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          client_id?: string | null
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          id?: string
+          last_response_at?: string | null
+          message: string
+          priority?: string
+          resolved_at?: string | null
+          response_count?: number
+          status?: string
+          subject: string
+          support_type?: string
+          ticket_number: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          client_id?: string | null
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          id?: string
+          last_response_at?: string | null
+          message?: string
+          priority?: string
+          resolved_at?: string | null
+          response_count?: number
+          status?: string
+          subject?: string
+          support_type?: string
+          ticket_number?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       target_keywords: {
         Row: {
@@ -925,6 +1637,47 @@ export type Database = {
         }
         Relationships: []
       }
+      ticket_responses: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          created_by_email: string
+          created_by_name: string
+          id: string
+          is_internal_note: boolean
+          message: string
+          ticket_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          created_by_email: string
+          created_by_name: string
+          id?: string
+          is_internal_note?: boolean
+          message: string
+          ticket_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          created_by_email?: string
+          created_by_name?: string
+          id?: string
+          is_internal_note?: boolean
+          message?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_responses_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_clients: {
         Row: {
           client_id: string
@@ -983,6 +1736,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_subscription_end_date: {
+        Args: { plan_type: string; start_date: string }
+        Returns: string
+      }
       generate_fast_load_data: {
         Args: { client_domain: string }
         Returns: undefined
@@ -990,6 +1747,14 @@ export type Database = {
       generate_opening_hours_ordered: {
         Args: { opening_hours_obj: Json }
         Returns: Json
+      }
+      generate_support_pin: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      generate_ticket_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       get_user_role: {
         Args: { _user_id: string }
@@ -1002,9 +1767,21 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_coupon_usage: {
+        Args: { coupon_code: string }
+        Returns: undefined
+      }
+      is_subscription_active: {
+        Args: { client_id: string }
+        Returns: boolean
+      }
       link_user_to_client: {
         Args: { client_uuid: string; user_email: string; user_role?: string }
         Returns: string
+      }
+      validate_coupon: {
+        Args: { amount: number; coupon_code: string; plan_type: string }
+        Returns: Json
       }
     }
     Enums: {
