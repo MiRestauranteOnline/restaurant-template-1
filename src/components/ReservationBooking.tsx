@@ -547,7 +547,7 @@ export default function ReservationBooking() {
               size="lg" 
               disabled={loading || (shouldShowSpecialGroupsMessage && !currentSchedule?.special_groups_contact_method)}
             >
-              <Calendar className="mr-2 h-5 w-5" />
+              <Calendar className="mr-2 h-5 w-5 text-current" />
               {loading ? 'Enviando...' : 'Solicitar Reserva'}
             </Button>
             
