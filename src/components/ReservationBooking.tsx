@@ -72,7 +72,7 @@ export default function ReservationBooking() {
       console.error('ReservationBooking: Error fetching schedules:', error);
     } else {
       console.log('ReservationBooking: Schedules fetched:', data);
-      setSchedules(data || []);
+      setSchedules((data as unknown as Schedule[]) || []);
     }
   };
 
