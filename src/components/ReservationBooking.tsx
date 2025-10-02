@@ -38,7 +38,12 @@ export default function ReservationBooking() {
   }, [client]);
 
   const fetchSchedules = async () => {
-    if (!client?.id) return;
+    if (!client?.id) {
+      console.log('ReservationBooking: No client ID yet');
+      return;
+    }
+    
+    console.log('ReservationBooking: Fetching schedules for client:', client.id);
     
     const { data, error } = await supabase
       .from('reservation_schedules')
@@ -48,8 +53,11 @@ export default function ReservationBooking() {
       .order('day_of_week')
       .order('start_time');
 
-    if (!error && data) {
-      setSchedules(data);
+    if (error) {
+      console.error('ReservationBooking: Error fetching schedules:', error);
+    } else {
+      console.log('ReservationBooking: Schedules fetched:', data);
+      setSchedules(data || []);
     }
   };
 
@@ -113,7 +121,17 @@ export default function ReservationBooking() {
     }
   };
 
-  if (schedules.length === 0) return null;
+  // Don't render if client hasn't loaded yet
+  if (!client?.id) {
+    console.log('ReservationBooking: Waiting for client to load');
+    return null;
+  }
+
+  // Don't render if no schedules configured
+  if (schedules.length === 0) {
+    console.log('ReservationBooking: No schedules found, not rendering');
+    return null;
+  }
 
   const availableDays = schedules.map(s => DAYS[s.day_of_week]).join(', ');
 
