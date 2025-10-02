@@ -135,14 +135,15 @@ export default function ReservationBooking() {
       
       while (currentHour < endHour || (currentHour === endHour && currentMinute < endMinute)) {
         const timeStr = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`;
-        const slotMinutes = currentHour * 60 + currentMinute;
-        const slotEndMinutes = slotMinutes + 30;
+        const newResStartMinutes = currentHour * 60 + currentMinute;
+        const newResEndMinutes = newResStartMinutes + schedule.duration_minutes;
         
         const totalPartySize = (existingReservations || []).reduce((sum, res) => {
           const resTime = res.reservation_time;
-          const resMinutes = parseInt(resTime.split(':')[0]) * 60 + parseInt(resTime.split(':')[1]);
-          const resEndMinutes = resMinutes + schedule.duration_minutes;
-          const overlaps = slotMinutes < resEndMinutes && slotEndMinutes > resMinutes;
+          const resStartMinutes = parseInt(resTime.split(':')[0]) * 60 + parseInt(resTime.split(':')[1]);
+          const resEndMinutes = resStartMinutes + schedule.duration_minutes;
+          // Check if NEW reservation window overlaps with EXISTING reservation window
+          const overlaps = newResStartMinutes < resEndMinutes && newResEndMinutes > resStartMinutes;
           return overlaps ? sum + res.party_size : sum;
         }, 0);
 
@@ -220,18 +221,19 @@ export default function ReservationBooking() {
 
     // Filter out times that don't have available capacity
     const availableTimes = times.filter(time => {
-      const slotMinutes = parseInt(time.split(':')[0]) * 60 + parseInt(time.split(':')[1]);
-      const slotEndMinutes = slotMinutes + 30; // 30-minute slot duration
+      const newResStartMinutes = parseInt(time.split(':')[0]) * 60 + parseInt(time.split(':')[1]);
+      const newResEndMinutes = newResStartMinutes + schedule.duration_minutes;
       
       // Calculate available capacity by checking overlapping reservations
+      // A new reservation would run from newResStartMinutes to newResEndMinutes
       const totalPartySize = existingReservations.reduce((sum, res) => {
         const resTime = res.reservation_time;
-        const resMinutes = parseInt(resTime.split(':')[0]) * 60 + parseInt(resTime.split(':')[1]);
-        const resEndMinutes = resMinutes + schedule.duration_minutes;
+        const resStartMinutes = parseInt(resTime.split(':')[0]) * 60 + parseInt(resTime.split(':')[1]);
+        const resEndMinutes = resStartMinutes + schedule.duration_minutes;
         
-        // Check if this reservation overlaps with the current time slot
-        // Overlap occurs if: slot_time < (reservation_time + duration) AND (slot_time + 30min) > reservation_time
-        const overlaps = slotMinutes < resEndMinutes && slotEndMinutes > resMinutes;
+        // Check if the NEW reservation window overlaps with this EXISTING reservation window
+        // Overlap occurs if: new_start < existing_end AND new_end > existing_start
+        const overlaps = newResStartMinutes < resEndMinutes && newResEndMinutes > resStartMinutes;
         
         if (overlaps) {
           return sum + res.party_size;
