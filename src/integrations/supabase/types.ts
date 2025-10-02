@@ -1243,9 +1243,15 @@ export type Database = {
           client_id: string
           created_at: string
           day_of_week: number
+          duration_minutes: number
           end_time: string
           id: string
           is_active: boolean
+          max_party_size: number
+          min_party_size: number
+          special_groups_condition: string | null
+          special_groups_contact_method: string | null
+          special_groups_enabled: boolean
           start_time: string
           updated_at: string
         }
@@ -1254,9 +1260,15 @@ export type Database = {
           client_id: string
           created_at?: string
           day_of_week: number
+          duration_minutes?: number
           end_time: string
           id?: string
           is_active?: boolean
+          max_party_size?: number
+          min_party_size?: number
+          special_groups_condition?: string | null
+          special_groups_contact_method?: string | null
+          special_groups_enabled?: boolean
           start_time: string
           updated_at?: string
         }
@@ -1265,9 +1277,15 @@ export type Database = {
           client_id?: string
           created_at?: string
           day_of_week?: number
+          duration_minutes?: number
           end_time?: string
           id?: string
           is_active?: boolean
+          max_party_size?: number
+          min_party_size?: number
+          special_groups_condition?: string | null
+          special_groups_contact_method?: string | null
+          special_groups_enabled?: boolean
           start_time?: string
           updated_at?: string
         }
