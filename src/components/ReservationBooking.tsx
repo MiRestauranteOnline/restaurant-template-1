@@ -315,12 +315,46 @@ export default function ReservationBooking() {
     const min = currentSchedule.min_party_size;
     const max = currentSchedule.max_party_size;
     
-    // Always show options from 1 to max + buffer for special groups
-    for (let i = 1; i <= Math.max(max + 5, 10); i++) {
+    // Show options from min to max only
+    for (let i = min; i <= max; i++) {
       options.push(i);
     }
     
     return options;
+  };
+
+  // Get special groups info message
+  const getSpecialGroupsInfoMessage = () => {
+    if (!currentSchedule?.special_groups_enabled) return null;
+    
+    const condition = currentSchedule.special_groups_condition;
+    const method = currentSchedule.special_groups_contact_method;
+    
+    let conditionText = '';
+    if (condition === 'bigger') {
+      conditionText = 'grupos más grandes';
+    } else if (condition === 'smaller') {
+      conditionText = 'grupos más pequeños';
+    } else if (condition === 'both') {
+      conditionText = 'grupos más grandes o más pequeños';
+    }
+    
+    let methodText = '';
+    if (method === 'whatsapp') {
+      methodText = 'WhatsApp';
+    } else if (method === 'phone') {
+      methodText = 'teléfono';
+    } else if (method === 'both') {
+      methodText = 'WhatsApp o teléfono';
+    }
+    
+    return (
+      <div className="p-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md text-sm">
+        <p className="text-blue-900 dark:text-blue-100">
+          Para {conditionText}, contáctanos por {methodText}.
+        </p>
+      </div>
+    );
   };
 
   return (
@@ -395,12 +429,12 @@ export default function ReservationBooking() {
               </Select>
               {currentSchedule && (
                 <p className="text-xs text-muted-foreground mt-1">
-                  Capacidad normal: {currentSchedule.min_party_size}-{currentSchedule.max_party_size} personas
+                  Capacidad: {currentSchedule.min_party_size}-{currentSchedule.max_party_size} personas
                 </p>
               )}
             </div>
 
-            {getContactMethodMessage()}
+            {getSpecialGroupsInfoMessage()}
 
             <div>
               <Label htmlFor="name">Nombre Completo</Label>
