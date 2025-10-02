@@ -10,6 +10,7 @@ import HomepageReviews from '@/components/HomepageReviews';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import ImageCarousel from '@/components/ImageCarousel';
+import ReservationBooking from '@/components/ReservationBooking';
 
 const RestaurantContent = () => {
   const { adminContent } = useClient();
@@ -22,6 +23,7 @@ const RestaurantContent = () => {
       { order: 4, component: <Menu key="menu" /> },
       { order: 5, component: <DeliveryServices key="delivery" /> },
       { order: 6, component: <Services key="services" /> },
+      { order: 6.5, component: <ReservationBooking key="reservation" /> },
       { order: 7, component: <HomepageReviews key="reviews" /> },
       { order: 8, component: <Contact key="contact" /> },
     ];
