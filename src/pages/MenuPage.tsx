@@ -32,12 +32,22 @@ const MenuPage = () => {
     return acc;
   }, {} as Record<string, typeof menuItems>);
 
-  // While loading, we'll show skeleton sections instead of static fallbacks to avoid shifts
+  // Add items that don't match any category to an "Other" category
+  const unmatchedItems = menuItems.filter(item => 
+    item.is_active && 
+    !menuCategories.some(cat => 
+      item.category_id === cat.id || (!item.category_id && item.category === cat.name)
+    )
+  );
+  
+  if (unmatchedItems.length > 0) {
+    groupedItems['Otros'] = unmatchedItems;
+  }
 
   const displayCategories = Object.keys(groupedItems).length > 0 
-    ? menuCategories.filter(cat => groupedItems[cat.name]).map(category => ({
-        name: category.name,
-        items: groupedItems[category.name]
+    ? Object.keys(groupedItems).map(categoryName => ({
+        name: categoryName,
+        items: groupedItems[categoryName]
       }))
     : [];
 
