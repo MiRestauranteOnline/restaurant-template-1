@@ -79,3 +79,12 @@ verify_jwt = false
 
 [functions.duplicate-template]
 verify_jwt = true
+
+[functions.setup-cloudflare-zone]
+verify_jwt = true
+
+[functions.add-vercel-domain]
+verify_jwt = true
+
+[functions.check-domain-status]
+verify_jwt = true
