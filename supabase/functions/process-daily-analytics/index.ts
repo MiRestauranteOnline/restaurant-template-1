@@ -43,6 +43,7 @@ serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const vercelToken = Deno.env.get('VERCEL_API_TOKEN');
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -91,6 +92,38 @@ serve(async (req) => {
 
       const analytics = processClientAnalytics(clientId, typedClientEvents, targetDate);
       
+      // Fetch Vercel bandwidth if available
+      if (vercelToken) {
+        try {
+          const { data: client } = await supabase
+            .from('clients')
+            .select('vercel_project, vercel_team')
+            .eq('id', clientId)
+            .single();
+
+          if (client?.vercel_project) {
+            const bandwidth = await fetchVercelBandwidth(
+              vercelToken,
+              client.vercel_project,
+              client.vercel_team,
+              targetDate
+            );
+            
+            if (bandwidth !== null) {
+              console.log(`📊 Fetched ${bandwidth}GB bandwidth for client ${clientId}`);
+              
+              // Update usage tracking
+              await supabase.rpc('increment_client_usage', {
+                p_client_id: clientId,
+                p_bandwidth_gb: bandwidth
+              });
+            }
+          }
+        } catch (error) {
+          console.warn(`⚠️ Failed to fetch Vercel bandwidth for client ${clientId}:`, error);
+        }
+      }
+      
       // Upsert daily analytics
       const { error: upsertError } = await supabase
         .from('daily_analytics')
@@ -132,6 +165,41 @@ serve(async (req) => {
     });
   }
 });
+
+async function fetchVercelBandwidth(
+  token: string,
+  projectId: string,
+  teamId: string | null,
+  date: string
+): Promise<number | null> {
+  try {
+    const startTime = new Date(date).getTime();
+    const endTime = startTime + 24 * 60 * 60 * 1000;
+    
+    const teamParam = teamId ? `&teamId=${teamId}` : '';
+    const url = `https://api.vercel.com/v1/projects/${projectId}/analytics/bandwidth?from=${startTime}&to=${endTime}${teamParam}`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.error(`Vercel API error: ${response.status}`);
+      return null;
+    }
+
+    const data = await response.json();
+    const bandwidthBytes = data.bandwidth?.total || 0;
+    const bandwidthGB = bandwidthBytes / (1024 * 1024 * 1024);
+    
+    return Math.round(bandwidthGB * 100) / 100; // Round to 2 decimals
+  } catch (error) {
+    console.error('Error fetching Vercel bandwidth:', error);
+    return null;
+  }
+}
 
 function processClientAnalytics(clientId: string, events: AnalyticsEvent[], date: string): DailyAnalytics {
   const sessions = new Set(events.map(e => e.session_id));
