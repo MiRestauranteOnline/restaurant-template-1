@@ -628,6 +628,59 @@ export type Database = {
         }
         Relationships: []
       }
+      client_monthly_usage: {
+        Row: {
+          billed: boolean | null
+          billing_date: string | null
+          client_id: string
+          created_at: string | null
+          id: string
+          month: string
+          overage_bandwidth_gb: number | null
+          overage_charge: number | null
+          overage_visits: number | null
+          total_bandwidth_gb: number | null
+          total_visits: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          billed?: boolean | null
+          billing_date?: string | null
+          client_id: string
+          created_at?: string | null
+          id?: string
+          month: string
+          overage_bandwidth_gb?: number | null
+          overage_charge?: number | null
+          overage_visits?: number | null
+          total_bandwidth_gb?: number | null
+          total_visits?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          billed?: boolean | null
+          billing_date?: string | null
+          client_id?: string
+          created_at?: string | null
+          id?: string
+          month?: string
+          overage_bandwidth_gb?: number | null
+          overage_charge?: number | null
+          overage_visits?: number | null
+          total_bandwidth_gb?: number | null
+          total_visits?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_monthly_usage_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_settings: {
         Row: {
           body_font: string | null
@@ -718,6 +771,8 @@ export type Database = {
           email: string | null
           id: string
           last_payment_attempt: string | null
+          monthly_bandwidth_limit_gb: number | null
+          monthly_visits_limit: number | null
           next_billing_date: string | null
           opening_hours: Json | null
           opening_hours_ordered: Json | null
@@ -735,6 +790,7 @@ export type Database = {
           subscription_end_date: string | null
           subscription_start_date: string | null
           subscription_status: string | null
+          template_id: string | null
           theme: string | null
           trial_end_date: string | null
           updated_at: string
@@ -756,6 +812,8 @@ export type Database = {
           email?: string | null
           id?: string
           last_payment_attempt?: string | null
+          monthly_bandwidth_limit_gb?: number | null
+          monthly_visits_limit?: number | null
           next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
@@ -773,6 +831,7 @@ export type Database = {
           subscription_end_date?: string | null
           subscription_start_date?: string | null
           subscription_status?: string | null
+          template_id?: string | null
           theme?: string | null
           trial_end_date?: string | null
           updated_at?: string
@@ -794,6 +853,8 @@ export type Database = {
           email?: string | null
           id?: string
           last_payment_attempt?: string | null
+          monthly_bandwidth_limit_gb?: number | null
+          monthly_visits_limit?: number | null
           next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
@@ -811,6 +872,7 @@ export type Database = {
           subscription_end_date?: string | null
           subscription_start_date?: string | null
           subscription_status?: string | null
+          template_id?: string | null
           theme?: string | null
           trial_end_date?: string | null
           updated_at?: string
@@ -820,7 +882,15 @@ export type Database = {
           whatsapp?: string | null
           whatsapp_country_code?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "clients_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "templates"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       content_gaps: {
         Row: {
@@ -1637,6 +1707,45 @@ export type Database = {
           name?: string
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      templates: {
+        Row: {
+          client_count: number | null
+          created_at: string | null
+          description: string | null
+          folder_path: string
+          id: string
+          is_active: boolean | null
+          name: string
+          slug: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          client_count?: number | null
+          created_at?: string | null
+          description?: string | null
+          folder_path: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          slug: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          client_count?: number | null
+          created_at?: string | null
+          description?: string | null
+          folder_path?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          slug?: string
+          status?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
