@@ -36,51 +36,56 @@ const Hero = () => {
     cachedAdminContent?.homepage_hero_background_url;
 
   return (
-    <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden" aria-label="Hero principal del restaurante">
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${backgroundImageUrl || heroPasta})` }}
-        role="img"
-        aria-label={`Imagen de fondo: ${heroTitleFirstLine} ${heroTitleSecondLine}`}
-      >
-        <div className="absolute inset-0 hero-overlay"></div>
-      </div>
+    <section id="home" className="relative min-h-screen flex items-center justify-center py-20 px-4" aria-label="Hero principal del restaurante">
+      {/* Container with max width */}
+      <div className="w-full max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          
+          {/* Left: Text Content */}
+          <div className="fade-in text-left order-2 lg:order-1">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading mb-6 leading-tight">
+              <span className="block">{heroTitleFirstLine}</span>
+              {heroTitleSecondLine && (
+                <span className="block text-gradient">{heroTitleSecondLine}</span>
+              )}
+            </h1>
+            
+            <p className="text-lg md:text-xl mb-8 leading-relaxed opacity-90">
+              {heroDescription}
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button 
+                className="btn-primary px-8 py-3 text-lg rounded-md"
+                onClick={() => window.location.href = '/menu'}
+              >
+                Ver Menú
+              </Button>
+              <Button 
+                variant="contrast" 
+                className="px-8 py-3 text-lg rounded-md border-2"
+                onClick={() => {
+                  if (rightButtonLink.startsWith('#')) {
+                    document.querySelector(rightButtonLink)?.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    window.open(rightButtonLink, '_blank');
+                  }
+                }}
+              >
+                {rightButtonText}
+              </Button>
+            </div>
+          </div>
 
-      {/* Content */}
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-        <div className="fade-in">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading mb-6 leading-tight hero-text">
-            <span>{heroTitleFirstLine}</span>
-            {heroTitleSecondLine && (
-              <span className="block text-gradient">{heroTitleSecondLine}</span>
-            )}
-          </h1>
-          
-          <p className="text-xl md:text-2xl hero-text mb-8 max-w-2xl mx-auto leading-relaxed">
-            {heroDescription}
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              className="btn-primary px-8 py-3 text-lg rounded-full"
-              onClick={() => window.location.href = '/menu'}
-            >
-              Ver Menú
-            </Button>
-            <Button 
-              variant="contrast" 
-              className="px-8 py-3 text-lg rounded-full"
-              onClick={() => {
-                if (rightButtonLink.startsWith('#')) {
-                  document.querySelector(rightButtonLink)?.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                  window.open(rightButtonLink, '_blank');
-                }
-              }}
-            >
-              {rightButtonText}
-            </Button>
+          {/* Right: Image */}
+          <div className="fade-in order-1 lg:order-2">
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
+              <img 
+                src={backgroundImageUrl || heroPasta}
+                alt={`${heroTitleFirstLine} ${heroTitleSecondLine}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
         </div>
       </div>
