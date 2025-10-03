@@ -73,3 +73,6 @@ verify_jwt = false
 
 [functions.process-monthly-billing]
 verify_jwt = true
+
+[functions.manage-custom-domain]
+verify_jwt = false
