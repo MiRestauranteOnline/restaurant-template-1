@@ -4,7 +4,7 @@ import { getTemplateStatus, getGuardMessage } from '../template-guard.config';
 
 // Components
 import Navigation from '@/components/Navigation';
-import Hero from '@/components/Hero';
+import HeroRustic from '@/components/HeroRustic';
 import About from '@/components/About';
 import Menu from '@/components/Menu';
 import DeliveryServices from '@/components/DeliveryServices';
@@ -38,7 +38,7 @@ const RusticRestaurant = () => {
 
   const sections = useMemo(() => {
     const sectionList = [
-      { order: 1, component: <Hero key="hero" /> },
+      { order: 1, component: <HeroRustic key="hero" /> },
       { order: adminContent?.carousel_display_order || 2, component: <ImageCarousel key="carousel" /> },
       { order: 3, component: <About key="about" /> },
       { order: 4, component: <Menu key="menu" /> },
