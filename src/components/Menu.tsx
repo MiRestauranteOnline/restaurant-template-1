@@ -20,52 +20,8 @@ const Menu = () => {
   // Get items marked for homepage display (limit 8)
   const homepageItems = menuItems.filter(item => item.show_on_homepage).slice(0, 8);
 
-  // Fallback menu items ONLY if no database items exist at all
-  const fallbackMenuItems = [
-    {
-      id: '1',
-      name: "Pasta Suprema con Trufa",
-      description: "Pasta artesanal con láminas de trufa negra, hongos silvestres y salsa cremosa de parmesano",
-      price: 65,
-      image: heroPasta,
-      category: "Especialidad",
-      show_on_homepage: true,
-      show_image_home: true
-    },
-    {
-      id: '2',
-      name: "Lomo de Res Premium",
-      description: "Corte premium con romero, ajo confitado y vegetales de temporada",
-      price: 85,
-      image: grilledSteak,
-      category: "Plato Principal",
-      show_on_homepage: true,
-      show_image_home: true
-    },
-    {
-      id: '3',
-      name: "Plato del Océano",
-      description: "Langosta fresca, ostras y mariscos de temporada con mignonette cítrica",
-      price: 95,
-      image: seafoodPlatter,
-      category: "Mariscos",
-      show_on_homepage: true,
-      show_image_home: true
-    },
-    {
-      id: '4',
-      name: "Decadencia de Chocolate",
-      description: "Soufflé de chocolate negro con hoja de oro y helado de vainilla",
-      price: 28,
-      image: chocolateDessert,
-      category: "Postre",
-      show_on_homepage: true,
-      show_image_home: true
-    }
-  ];
-
-  // Use database items if they exist, otherwise fallback
-  const displayMenuItems = menuItems.length > 0 ? homepageItems : (!loading ? fallbackMenuItems : []);
+  // Only show items from database - no fallbacks
+  const displayMenuItems = homepageItems;
   const currency = client?.other_customizations?.currency || 'S/';
 
   return (
@@ -105,9 +61,9 @@ const Menu = () => {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="menu-card-image relative overflow-hidden">
-                  {(item.image_url || (typeof item.image === 'string' && item.show_image_home !== false)) && (
+                  {item.image_url ? (
                     <img
-                      src={item.image_url || (typeof item.image === 'string' ? item.image : heroPasta)}
+                      src={item.image_url}
                       alt={item.name}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       width="400"
@@ -115,8 +71,7 @@ const Menu = () => {
                       style={{ aspectRatio: '400/256' }}
                       loading="lazy"
                     />
-                  )}
-                  {!item.image_url && !item.image && (
+                  ) : (
                     <div className="w-full h-full bg-gradient-to-br from-accent/10 to-accent/30 flex items-center justify-center">
                       <span className="text-accent text-lg font-heading">{item.category}</span>
                     </div>
