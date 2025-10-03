@@ -1900,6 +1900,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_client_usage: {
+        Args: { p_bandwidth_gb?: number; p_client_id: string }
+        Returns: undefined
+      }
       increment_coupon_usage: {
         Args: { coupon_code: string }
         Returns: undefined
