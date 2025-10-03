@@ -6,7 +6,7 @@ import { getTemplateStatus, getGuardMessage } from '../template-guard.config';
 import Navigation from '@/components/Navigation';
 import HeroRustic from '@/components/HeroRustic';
 import AboutRustic from '@/components/AboutRustic';
-import Menu from '@/components/Menu';
+import MenuRustic from '@/components/MenuRustic';
 import DeliveryServices from '@/components/DeliveryServices';
 import Services from '@/components/Services';
 import HomepageReviews from '@/components/HomepageReviews';
@@ -41,7 +41,7 @@ const RusticRestaurant = () => {
       { order: 1, component: <HeroRustic key="hero" /> },
       { order: adminContent?.carousel_display_order || 2, component: <ImageCarousel key="carousel" /> },
       { order: 3, component: <AboutRustic key="about" /> },
-      { order: 4, component: <Menu key="menu" /> },
+      { order: 4, component: <MenuRustic key="menu" /> },
       { order: 5, component: <DeliveryServices key="delivery" /> },
       { order: 6, component: <Services key="services" /> },
       { order: 6.5, component: <ReservationBooking key="reservation" /> },
