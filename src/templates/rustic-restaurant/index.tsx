@@ -17,21 +17,21 @@ import ReservationBooking from '@/components/ReservationBooking';
 import StructuredData from '@/components/StructuredData';
 
 /**
- * MODERN RESTAURANT TEMPLATE
+ * RUSTIC RESTAURANT TEMPLATE
  * 
  * Template Guard Status: Loaded dynamically from database
  * This will log the current status (development/production) in development mode
  */
 
-const ModernRestaurant = () => {
+const RusticRestaurant = () => {
   const { adminContent } = useClient();
 
   // Log template guard status in development
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
-      getTemplateStatus('modern-restaurant').then(status => {
+      getTemplateStatus('rustic-restaurant').then(status => {
         const message = getGuardMessage(status, 0);
-        console.warn(`[Template Guard] modern-restaurant: ${status}\n${message}`);
+        console.warn(`[Template Guard] rustic-restaurant: ${status}\n${message}`);
       });
     }
   }, []);
@@ -66,4 +66,4 @@ const ModernRestaurant = () => {
   );
 };
 
-export default ModernRestaurant;
+export default RusticRestaurant;
