@@ -766,10 +766,15 @@ export type Database = {
           cancellation_reason: string | null
           coordinates: Json | null
           created_at: string
+          custom_domain: string | null
           delivery: Json | null
+          dns_records_status: Json | null
           domain: string | null
+          domain_verification_date: string | null
+          domain_verified: boolean | null
           email: string | null
           id: string
+          last_domain_check: string | null
           last_payment_attempt: string | null
           monthly_bandwidth_limit_gb: number | null
           monthly_visits_limit: number | null
@@ -785,6 +790,8 @@ export type Database = {
           referral_source: string | null
           restaurant_name: string
           social_media_links: Json | null
+          ssl_issued_date: string | null
+          ssl_status: string | null
           subdomain: string
           subscription_auto_recurring: boolean | null
           subscription_end_date: string | null
@@ -807,10 +814,15 @@ export type Database = {
           cancellation_reason?: string | null
           coordinates?: Json | null
           created_at?: string
+          custom_domain?: string | null
           delivery?: Json | null
+          dns_records_status?: Json | null
           domain?: string | null
+          domain_verification_date?: string | null
+          domain_verified?: boolean | null
           email?: string | null
           id?: string
+          last_domain_check?: string | null
           last_payment_attempt?: string | null
           monthly_bandwidth_limit_gb?: number | null
           monthly_visits_limit?: number | null
@@ -826,6 +838,8 @@ export type Database = {
           referral_source?: string | null
           restaurant_name: string
           social_media_links?: Json | null
+          ssl_issued_date?: string | null
+          ssl_status?: string | null
           subdomain: string
           subscription_auto_recurring?: boolean | null
           subscription_end_date?: string | null
@@ -848,10 +862,15 @@ export type Database = {
           cancellation_reason?: string | null
           coordinates?: Json | null
           created_at?: string
+          custom_domain?: string | null
           delivery?: Json | null
+          dns_records_status?: Json | null
           domain?: string | null
+          domain_verification_date?: string | null
+          domain_verified?: boolean | null
           email?: string | null
           id?: string
+          last_domain_check?: string | null
           last_payment_attempt?: string | null
           monthly_bandwidth_limit_gb?: number | null
           monthly_visits_limit?: number | null
@@ -867,6 +886,8 @@ export type Database = {
           referral_source?: string | null
           restaurant_name?: string
           social_media_links?: Json | null
+          ssl_issued_date?: string | null
+          ssl_status?: string | null
           subdomain?: string
           subscription_auto_recurring?: boolean | null
           subscription_end_date?: string | null
