@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ClientProvider, useClient } from "@/contexts/ClientContext";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import HeadScripts from '@/components/HeadScripts';
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import LoadingSpinner from "./components/LoadingSpinner";
 import MenuPage from "./pages/MenuPage";
 import AboutPage from "./pages/AboutPage";
@@ -14,28 +14,95 @@ import ContactPage from "./pages/ContactPage";
 import ReviewsPage from "./pages/ReviewsPage";
 import NotFound from "./pages/NotFound";
 import WhatsAppPopup from "./components/WhatsAppPopup";
+import { supabase } from "@/integrations/supabase/client";
+import ErrorPage from "./components/ErrorPage";
 
-// Lazy load templates
-const ModernRestaurant = lazy(() => import('@/templates/modern-restaurant'));
+// Template registry: Maps template slugs to lazy-loaded components
+const TEMPLATE_REGISTRY: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
+  'modern-restaurant': lazy(() => import('@/templates/modern-restaurant')),
+  'rustic-restaurant': lazy(() => import('@/templates/rustic-restaurant')),
+};
 
 const queryClient = new QueryClient();
 
 /**
  * Template Switcher Component
- * Loads the appropriate template based on client.template_id from database
- * Currently only modern-restaurant template exists
+ * Dynamically loads the appropriate template based on client.template_id from database
  */
 const TemplateSwitcher = () => {
-  const { client, loading } = useClient();
+  const { client, loading: clientLoading } = useClient();
+  const [templateSlug, setTemplateSlug] = useState<string | null>(null);
+  const [templateLoading, setTemplateLoading] = useState(true);
+  const [templateError, setTemplateError] = useState<string | null>(null);
   
-  if (loading) {
+  useEffect(() => {
+    const fetchTemplateSlug = async () => {
+      // Type cast to access template_id (exists in DB but not in TS types yet)
+      const clientWithTemplate = client as any;
+      
+      if (!clientWithTemplate?.template_id) {
+        // No template assigned, default to modern-restaurant
+        console.log('⚠️ No template_id assigned, defaulting to modern-restaurant');
+        setTemplateSlug('modern-restaurant');
+        setTemplateLoading(false);
+        return;
+      }
+
+      try {
+        // Fetch template slug from database
+        const { data, error } = await supabase
+          .from('templates' as any)
+          .select('slug')
+          .eq('id', clientWithTemplate.template_id)
+          .eq('is_active', true)
+          .single();
+
+        if (error) throw error;
+
+        const templateData = data as any;
+        if (templateData?.slug) {
+          console.log(`✅ Loaded template: ${templateData.slug}`);
+          setTemplateSlug(templateData.slug);
+        } else {
+          throw new Error('Template not found or inactive');
+        }
+      } catch (error) {
+        console.error('❌ Error loading template:', error);
+        setTemplateError('Failed to load template. Falling back to default.');
+        setTemplateSlug('modern-restaurant');
+      } finally {
+        setTemplateLoading(false);
+      }
+    };
+
+    if (!clientLoading && client) {
+      fetchTemplateSlug();
+    }
+  }, [client, clientLoading]);
+  
+  if (clientLoading || templateLoading) {
     return <LoadingSpinner />;
   }
 
-  // Default to modern-restaurant if no template specified
-  // Future: Fetch template.slug from database based on client.template_id
-  // and dynamically load the correct template
-  const TemplateComponent = ModernRestaurant;
+  if (templateError) {
+    console.warn(templateError);
+  }
+
+  // Get template component from registry
+  const TemplateComponent = templateSlug ? TEMPLATE_REGISTRY[templateSlug] : null;
+
+  if (!TemplateComponent) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="text-center p-8">
+          <h1 className="text-4xl font-bold mb-4">Template Not Found</h1>
+          <p className="text-muted-foreground">
+            The template "{templateSlug}" is not available. Please contact support.
+          </p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <Suspense fallback={<LoadingSpinner />}>
