@@ -76,3 +76,6 @@ verify_jwt = true
 
 [functions.manage-custom-domain]
 verify_jwt = false
+
+[functions.duplicate-template]
+verify_jwt = true
