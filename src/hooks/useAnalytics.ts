@@ -119,7 +119,20 @@ export const useAnalytics = () => {
     track('page_view', { page });
     pageStartTimeRef.current = Date.now();
     scrollDepthRef.current = 0;
-  }, [track]);
+
+    // Track visit for usage/billing
+    if (client?.id) {
+      const estimatedPageSizeKb = 3000; // 3MB average page size
+      supabase.functions.invoke('track-visit', {
+        body: {
+          client_id: client.id,
+          page_size_kb: estimatedPageSizeKb,
+        }
+      }).catch(error => {
+        console.warn('Failed to track visit for billing:', error);
+      });
+    }
+  }, [track, client?.id]);
 
   // Track button click
   const trackButtonClick = useCallback((buttonType: string, additionalData: Record<string, any> = {}) => {
