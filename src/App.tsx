@@ -6,8 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ClientProvider, useClient } from "@/contexts/ClientContext";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import HeadScripts from '@/components/HeadScripts';
-import { useEffect } from 'react';
-import Index from "./pages/Index";
+import { lazy, Suspense, useEffect } from 'react';
+import LoadingSpinner from "./components/LoadingSpinner";
 import MenuPage from "./pages/MenuPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
@@ -15,7 +15,34 @@ import ReviewsPage from "./pages/ReviewsPage";
 import NotFound from "./pages/NotFound";
 import WhatsAppPopup from "./components/WhatsAppPopup";
 
+// Lazy load templates
+const ModernRestaurant = lazy(() => import('@/templates/modern-restaurant'));
+
 const queryClient = new QueryClient();
+
+/**
+ * Template Switcher Component
+ * Loads the appropriate template based on client.template_id from database
+ * Currently only modern-restaurant template exists
+ */
+const TemplateSwitcher = () => {
+  const { client, loading } = useClient();
+  
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  // Default to modern-restaurant if no template specified
+  // Future: Fetch template.slug from database based on client.template_id
+  // and dynamically load the correct template
+  const TemplateComponent = ModernRestaurant;
+  
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <TemplateComponent />
+    </Suspense>
+  );
+};
 
 // Theme wrapper component that waits for client data
 const ThemedApp = () => {
@@ -49,7 +76,7 @@ const ThemedApp = () => {
       <HeadScripts />
       <AnalyticsProvider>
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<TemplateSwitcher />} />
           <Route path="/menu" element={<MenuPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
