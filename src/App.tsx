@@ -49,22 +49,25 @@ const TemplateSwitcher = () => {
       }
 
       try {
+        console.log(`🔍 Fetching template for template_id: ${clientWithTemplate.template_id}`);
+        
         // Fetch template slug from database
         const { data, error } = await supabase
           .from('templates' as any)
-          .select('slug')
+          .select('slug, is_active')
           .eq('id', clientWithTemplate.template_id)
-          .eq('is_active', true)
           .single();
+
+        console.log('🔍 Template query result:', { data, error });
 
         if (error) throw error;
 
         const templateData = data as any;
         if (templateData?.slug) {
-          console.log(`✅ Loaded template: ${templateData.slug}`);
+          console.log(`✅ Loaded template: ${templateData.slug} (is_active: ${templateData.is_active})`);
           setTemplateSlug(templateData.slug);
         } else {
-          throw new Error('Template not found or inactive');
+          throw new Error('Template not found');
         }
       } catch (error) {
         console.error('❌ Error loading template:', error);
