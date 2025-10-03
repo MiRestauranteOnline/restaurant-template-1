@@ -36,11 +36,13 @@ const Hero = () => {
     cachedAdminContent?.homepage_hero_background_url;
 
   return (
-    <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden" aria-label="Hero principal del restaurante">
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${backgroundImageUrl || heroPasta})` }}
+        role="img"
+        aria-label={`Imagen de fondo: ${heroTitleFirstLine} ${heroTitleSecondLine}`}
       >
         <div className="absolute inset-0 hero-overlay"></div>
       </div>

@@ -152,9 +152,9 @@ const Navigation = () => {
               ) : isLoadingAdmin ? (
                 <div className="h-10 md:h-12 w-32 bg-foreground/10 rounded animate-pulse" />
               ) : (
-                <h1 className="text-xl md:text-2xl font-heading font-bold text-gradient h-full flex items-center">
+                <div className="text-xl md:text-2xl font-heading font-bold text-gradient h-full flex items-center">
                   {client?.restaurant_name || 'Restaurant'}
-                </h1>
+                </div>
               )}
             </a>
           </div>

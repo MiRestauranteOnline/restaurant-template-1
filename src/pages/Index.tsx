@@ -11,6 +11,8 @@ import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import ImageCarousel from '@/components/ImageCarousel';
 import ReservationBooking from '@/components/ReservationBooking';
+import StructuredData from '@/components/StructuredData';
+import HeadScripts from '@/components/HeadScripts';
 
 const RestaurantContent = () => {
   const { adminContent } = useClient();
@@ -32,11 +34,17 @@ const RestaurantContent = () => {
   }, [adminContent?.carousel_display_order]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      {sections.map(section => section.component)}
-      <Footer />
-    </div>
+    <>
+      <HeadScripts />
+      <StructuredData />
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <main>
+          {sections.map(section => section.component)}
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 };
 

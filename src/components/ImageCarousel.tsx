@@ -95,7 +95,7 @@ const ImageCarousel = () => {
                       <div className="relative group cursor-pointer rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">
                         <img
                           src={image.image_url}
-                          alt={image.alt_text || 'Carousel image'}
+                          alt={image.alt_text || `Imagen del restaurante ${image.display_order}`}
                           className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -107,7 +107,7 @@ const ImageCarousel = () => {
                       <div className="relative">
                         <img
                           src={image.image_url}
-                          alt={image.alt_text || 'Carousel image'}
+                          alt={image.alt_text || `Imagen del restaurante ${image.display_order}`}
                           className="w-full h-auto max-h-[85vh] object-contain rounded-lg"
                         />
                         <Button
