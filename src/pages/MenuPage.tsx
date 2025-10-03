@@ -45,10 +45,15 @@ const MenuPage = () => {
   }
 
   const displayCategories = Object.keys(groupedItems).length > 0 
-    ? Object.keys(groupedItems).map(categoryName => ({
-        name: categoryName,
-        items: groupedItems[categoryName]
-      }))
+    ? [
+        ...menuCategories
+          .filter(cat => groupedItems[cat.name])
+          .map(category => ({
+            name: category.name,
+            items: groupedItems[category.name]
+          })),
+        ...(groupedItems['Otros'] ? [{ name: 'Otros', items: groupedItems['Otros'] }] : [])
+      ]
     : [];
 
   return (
@@ -106,7 +111,56 @@ const MenuPage = () => {
         {/* Menu Categories */}
         <main>
           <section className="py-16">
-...
+            <div className="container mx-auto px-4">
+              {loading && menuItems.length === 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-40 bg-muted rounded-xl mb-4" />
+                      <div className="h-6 bg-muted rounded w-3/4 mb-2" />
+                      <div className="h-4 bg-muted rounded w-1/2" />
+                    </div>
+                  ))}
+                </div>
+              ) : displayCategories.length > 0 ? (
+                <div className="space-y-12">
+                  {displayCategories.map(({ name, items }) => (
+                    <article key={name} id={name.replace(/\s+/g, '-').toLowerCase()} className="scroll-mt-24">
+                      <header className="mb-6">
+                        <h2 className="text-2xl md:text-3xl font-heading text-foreground">{name}</h2>
+                      </header>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {items.map((item) => (
+                          <Card key={item.id} className="overflow-hidden">
+                            {item.show_image_menu && item.image_url ? (
+                              <img
+                                src={item.image_url}
+                                alt={`${item.name} – ${name}`}
+                                loading="lazy"
+                                className="h-40 w-full object-cover"
+                              />
+                            ) : null}
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between gap-4">
+                                <h3 className="text-lg font-medium text-foreground">{item.name}</h3>
+                                <span className="shrink-0 text-foreground/80 font-semibold">
+                                  {currency}{Number(item.price).toFixed(2)}
+                                </span>
+                              </div>
+                              {item.description && (
+                                <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
+                              )}
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-muted-foreground">No hay elementos del menú disponibles por ahora.</p>
+              )}
+            </div>
           </section>
         </main>
 
