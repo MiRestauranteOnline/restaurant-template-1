@@ -340,14 +340,23 @@ export default function ReservationBooking() {
       // Convert from client timezone to UTC before saving
       const clientTimezone = client?.timezone || 'America/Lima';
       const utcDateTime = combineDateTimeToUtc(formData.date, formData.time, clientTimezone);
-      const { date: utcDate, time: utcTime } = splitUtcToDateTimeStrings(utcDateTime, 'UTC');
+      
+      // Extract UTC components directly (not browser local time)
+      const utcYear = utcDateTime.getUTCFullYear();
+      const utcMonth = String(utcDateTime.getUTCMonth() + 1).padStart(2, '0');
+      const utcDay = String(utcDateTime.getUTCDate()).padStart(2, '0');
+      const utcHours = String(utcDateTime.getUTCHours()).padStart(2, '0');
+      const utcMinutes = String(utcDateTime.getUTCMinutes()).padStart(2, '0');
       
       const reservationDataWithUtc = {
         ...reservationData,
-        reservation_date: utcDate,
-        reservation_time: utcTime
+        reservation_date: `${utcYear}-${utcMonth}-${utcDay}`,
+        reservation_time: `${utcHours}:${utcMinutes}`
       };
 
+      console.log('Client timezone:', clientTimezone);
+      console.log('Selected date/time:', formData.date, formData.time);
+      console.log('UTC DateTime object:', utcDateTime.toISOString());
       console.log('Attempting to insert reservation (UTC):', reservationDataWithUtc);
       
       const { data, error } = await supabase
