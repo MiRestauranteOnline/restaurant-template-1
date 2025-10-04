@@ -3,12 +3,16 @@ import { useClient } from '@/contexts/ClientContext';
 import { getCachedAdminContent } from '@/utils/cachedContent';
 
 const ContactMinimalistic = () => {
-  const { client } = useClient();
+  const { client, adminContent } = useClient();
   
   const cachedAdminContent = getCachedAdminContent();
-  const contactTitle = (cachedAdminContent as any)?.homepage_contact_title || 'Visit Us';
-  const contactDescription = (cachedAdminContent as any)?.homepage_contact_description || 
-    'Come experience our restaurant in person.';
+  const contactTitle = (adminContent as any)?.homepage_contact_section_title || 'Reserva Tu Experiencia';
+  const contactDescription = (adminContent as any)?.homepage_contact_section_description || 
+    'Contáctanos para reservar tu mesa y vivir una experiencia gastronómica única';
+  
+  // Use separate title fields from database
+  const contactTitleFirstLine = (adminContent as any)?.homepage_contact_section_title_first_line || "Reserva Tu";
+  const contactTitleSecondLine = (adminContent as any)?.homepage_contact_section_title_second_line || "Experiencia";
 
   return (
     <section id="contact" className="py-24 lg:py-32 bg-background">
@@ -17,10 +21,13 @@ const ContactMinimalistic = () => {
           {/* Header */}
           <div className="text-center mb-16 fade-in">
             <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium mb-4">
-              Location
+              {(adminContent as any)?.contact_us_label || 'Contáctanos'}
             </p>
             <h2 className="text-4xl md:text-5xl font-heading font-light mb-4">
-              {contactTitle}
+              {contactTitleFirstLine}
+              {contactTitleSecondLine && (
+                <span className="block text-accent mt-2">{contactTitleSecondLine}</span>
+              )}
             </h2>
             <div className="w-12 h-px bg-accent mx-auto mb-6" />
             <p className="text-foreground/60 text-lg">

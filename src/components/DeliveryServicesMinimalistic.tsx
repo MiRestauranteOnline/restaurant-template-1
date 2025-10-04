@@ -5,12 +5,12 @@ import { PedidosYaIcon } from './icons/PedidosYaIcon';
 import { DidiIcon } from './icons/DidiIcon';
 
 const DeliveryServicesMinimalistic = () => {
-  const { client, clientSettings } = useClient();
+  const { client, clientSettings, adminContent } = useClient();
   
   const cachedAdminContent = getCachedAdminContent();
-  const deliveryTitle = (cachedAdminContent as any)?.homepage_delivery_title || 'Order Online';
-  const deliveryDescription = (cachedAdminContent as any)?.homepage_delivery_description || 
-    'Enjoy our dishes from the comfort of your home.';
+  const deliveryTitle = (adminContent as any)?.homepage_delivery_section_title || 'Delivery Partners';
+  const deliveryDescription = (adminContent as any)?.homepage_delivery_section_description || 
+    'Ordena desde la comodidad de tu hogar';
 
   const services = [
     {
@@ -42,7 +42,7 @@ const DeliveryServicesMinimalistic = () => {
           {/* Header */}
           <div className="text-center mb-16 fade-in">
             <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium mb-4">
-              Delivery
+              {(adminContent as any)?.delivery_label || 'Delivery'}
             </p>
             <h2 className="text-4xl md:text-5xl font-heading font-light mb-4">
               {deliveryTitle}

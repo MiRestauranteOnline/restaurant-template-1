@@ -6,25 +6,29 @@ const ServicesMinimalistic = () => {
   const { adminContent } = useClient();
   
   const cachedAdminContent = getCachedAdminContent();
-  const servicesTitle = (adminContent as any)?.homepage_services_title || cachedAdminContent?.homepage_services_title || 'Our Services';
-  const servicesDescription = (adminContent as any)?.homepage_services_description || cachedAdminContent?.homepage_services_description || 
-    'Experience excellence in every detail.';
+  const servicesTitle = (adminContent as any)?.homepage_services_section_title || 'Nuestros Servicios';
+  const servicesDescription = (adminContent as any)?.homepage_services_section_description || 
+    'Experimenta la excelencia en cada detalle';
+  
+  // Use separate title fields from database
+  const servicesTitleFirstLine = (adminContent as any)?.homepage_services_section_title_first_line || "Experiencias";
+  const servicesTitleSecondLine = (adminContent as any)?.homepage_services_section_title_second_line || "Auténticas";
 
   const services = [
     {
-      icon: getIcon((adminContent as any)?.service1_icon || 'Utensils'),
-      title: (adminContent as any)?.service1_title || 'Fine Dining',
-      description: (adminContent as any)?.service1_description || 'Experience exquisite cuisine',
+      icon: getIcon((adminContent as any)?.services_card1_icon || 'Utensils'),
+      title: (adminContent as any)?.services_card1_title || 'Comida en el Local',
+      description: (adminContent as any)?.services_card1_description || 'Disfruta de nuestros platos únicos en un ambiente acogedor',
     },
     {
-      icon: getIcon((adminContent as any)?.service2_icon || 'Users'),
-      title: (adminContent as any)?.service2_title || 'Private Events',
-      description: (adminContent as any)?.service2_description || 'Host your special occasions',
+      icon: getIcon((adminContent as any)?.services_card2_icon || 'Truck'),
+      title: (adminContent as any)?.services_card2_title || 'Delivery',
+      description: (adminContent as any)?.services_card2_description || 'Lleva los sabores de nuestro restaurante a tu hogar',
     },
     {
-      icon: getIcon((adminContent as any)?.service3_icon || 'Car'),
-      title: (adminContent as any)?.service3_title || 'Catering',
-      description: (adminContent as any)?.service3_description || 'Premium catering services',
+      icon: getIcon((adminContent as any)?.services_card3_icon || 'Users'),
+      title: (adminContent as any)?.services_card3_title || 'Eventos Pequeños',
+      description: (adminContent as any)?.services_card3_description || 'Celebra tus momentos especiales con nosotros',
     },
   ];
 
@@ -35,10 +39,13 @@ const ServicesMinimalistic = () => {
           {/* Header */}
           <div className="text-center mb-16 fade-in">
             <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium mb-4">
-              Services
+              {(adminContent as any)?.our_services_label || 'Nuestros Servicios'}
             </p>
             <h2 className="text-4xl md:text-5xl font-heading font-light mb-4">
-              {servicesTitle}
+              {servicesTitleFirstLine}
+              {servicesTitleSecondLine && (
+                <span className="block text-accent mt-2">{servicesTitleSecondLine}</span>
+              )}
             </h2>
             <div className="w-12 h-px bg-accent mx-auto mb-6" />
             <p className="text-foreground/60 text-lg max-w-2xl mx-auto">

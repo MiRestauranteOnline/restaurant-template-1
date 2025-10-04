@@ -68,8 +68,8 @@ const AboutPageMinimalistic = () => {
           
           <div className="relative z-10 container mx-auto px-4 py-16 text-center">
             <div className="max-w-2xl mx-auto space-y-4">
-              <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium">
-                Our Story
+              <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium mb-4">
+                {(adminContent as any)?.our_story_label || 'Nuestra Historia'}
               </p>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-light tracking-tight">
                 {aboutHeroTitleFirst}
@@ -121,7 +121,7 @@ const AboutPageMinimalistic = () => {
                 {/* Header */}
                 <div className="text-center mb-16 fade-in">
                   <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium mb-4">
-                    Our Team
+                    {(adminContent as any)?.our_team_label || 'Nuestro Equipo'}
                   </p>
                   <h2 className="text-4xl md:text-5xl font-heading font-light mb-4">
                     {teamTitleFirst}

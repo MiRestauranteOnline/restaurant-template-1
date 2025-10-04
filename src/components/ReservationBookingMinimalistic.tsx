@@ -6,10 +6,10 @@ const ReservationBookingMinimalistic = () => {
   const { adminContent } = useClient();
   
   const cachedAdminContent = getCachedAdminContent();
-  const reservationTitle = (adminContent as any)?.homepage_reservation_title || cachedAdminContent?.homepage_reservation_title || 'Reserve Your Table';
+  const reservationTitle = (adminContent as any)?.homepage_reservation_title || cachedAdminContent?.homepage_reservation_title || 'Reserva Tu Mesa';
   const reservationDescription = (adminContent as any)?.homepage_reservation_description || cachedAdminContent?.homepage_reservation_description || 
-    'Book your dining experience with us.';
-  const reservationButtonText = (adminContent as any)?.homepage_reservation_button_text || 'Make a Reservation';
+    '¿Listo para disfrutar de una experiencia culinaria excepcional?';
+  const reservationButtonText = (adminContent as any)?.homepage_reservation_button_text || 'Reservar Ahora';
   const reservationButtonLink = (adminContent as any)?.homepage_reservation_button_link || '#contact';
 
   return (
@@ -17,7 +17,7 @@ const ReservationBookingMinimalistic = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center space-y-8 fade-in">
           <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium">
-            Reservations
+            {(adminContent as any)?.reservation_label || 'Reservaciones'}
           </p>
           <h2 className="text-4xl md:text-5xl font-heading font-light">
             {reservationTitle}

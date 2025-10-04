@@ -7,9 +7,13 @@ const HomepageReviewsMinimalistic = () => {
   const { reviews, adminContent } = useClient();
   
   const cachedAdminContent = getCachedAdminContent();
-  const reviewsTitle = (adminContent as any)?.homepage_reviews_title || cachedAdminContent?.homepage_reviews_title || 'What Our Guests Say';
+  const reviewsTitle = (adminContent as any)?.homepage_reviews_title || cachedAdminContent?.homepage_reviews_title || 'Lo Que Dicen Nuestros Clientes';
   const reviewsDescription = (adminContent as any)?.homepage_reviews_description || cachedAdminContent?.homepage_reviews_description || 
-    'Read about experiences from our valued customers.';
+    'Cada opinión refleja nuestro compromiso con la excelencia';
+  
+  // Use separate title fields from database
+  const reviewsTitleFirstLine = (adminContent as any)?.reviews_section_title_first_line || "Lo Que Dicen";
+  const reviewsTitleSecondLine = (adminContent as any)?.reviews_section_title_second_line || "Nuestros Clientes";
 
   const featuredReviews = reviews?.filter(r => r.is_active).slice(0, 3) || [];
 
@@ -31,10 +35,13 @@ const HomepageReviewsMinimalistic = () => {
           {/* Header */}
           <div className="text-center mb-16 fade-in">
             <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium mb-4">
-              Testimonials
+              {(adminContent as any)?.testimonials_label || 'Testimonios'}
             </p>
             <h2 className="text-4xl md:text-5xl font-heading font-light mb-4">
-              {reviewsTitle}
+              {reviewsTitleFirstLine}
+              {reviewsTitleSecondLine && (
+                <span className="block text-accent mt-2">{reviewsTitleSecondLine}</span>
+              )}
             </h2>
             <div className="w-12 h-px bg-accent mx-auto mb-6" />
             <p className="text-foreground/60 text-lg max-w-2xl mx-auto">
@@ -70,7 +77,7 @@ const HomepageReviewsMinimalistic = () => {
               className="btn-primary px-8 py-3 text-sm rounded-none tracking-wider uppercase"
               onClick={() => window.location.href = '/reviews'}
             >
-              View All Reviews
+              {(adminContent as any)?.view_all_reviews_button || 'Ver Todas las Reseñas'}
             </Button>
           </div>
         </div>

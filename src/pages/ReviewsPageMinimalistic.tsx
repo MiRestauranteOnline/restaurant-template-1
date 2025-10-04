@@ -95,7 +95,7 @@ const ReviewsPageMinimalistic = () => {
             <div className="relative z-10 container mx-auto px-4 py-16 text-center">
               <div className="max-w-2xl mx-auto space-y-4">
                 <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium">
-                  Testimonials
+                  {(adminContent as any)?.testimonials_label || 'Testimonios'}
                 </p>
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-light tracking-tight">
                   {reviewsHeroTitleFirst}
@@ -134,9 +134,9 @@ const ReviewsPageMinimalistic = () => {
           
           <div className="relative z-10 container mx-auto px-4 py-16 text-center">
             <div className="max-w-2xl mx-auto space-y-4">
-              <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium">
-                Testimonials
-              </p>
+                <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium">
+                  {(adminContent as any)?.testimonials_label || 'Testimonios'}
+                </p>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-light tracking-tight">
                 {reviewsHeroTitleFirst}
                 {reviewsHeroTitleSecond && (

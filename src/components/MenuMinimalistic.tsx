@@ -4,19 +4,22 @@ import { getCachedAdminContent } from '@/utils/cachedContent';
 import { useMenuSectionTracking } from '@/hooks/useMenuSectionTracking';
 
 const MenuMinimalistic = () => {
-  const { menuItems, client } = useClient();
+  const { menuItems, client, adminContent } = useClient();
   
   const cachedAdminContent = getCachedAdminContent();
-  const menuTitle = (client?.other_customizations as any)?.menu_title || 'Our Menu';
-  const menuDescription = (client?.other_customizations as any)?.menu_description || 
-    'Explore our selection of carefully crafted dishes.';
+  const sectionTitle = adminContent?.homepage_menu_section_title || "Nuestro Menú";
+  const sectionDescription = adminContent?.homepage_menu_section_description || "Descubre nuestra selección de platos cuidadosamente elaborados";
+  
+  // Use separate title fields from database
+  const menuTitleFirstLine = (adminContent as any)?.homepage_menu_section_title_first_line || "Selecciones";
+  const menuTitleSecondLine = (adminContent as any)?.homepage_menu_section_title_second_line || "Especiales";
   const currency = client?.other_customizations?.currency || '$';
 
   // Track which section is visible
   useMenuSectionTracking();
 
-  // Show only first 6 featured items
-  const featuredItems = menuItems.filter(item => item.is_active).slice(0, 6);
+  // Get items marked for homepage display (limit to 8 like rustic template)
+  const featuredItems = menuItems.filter(item => item.show_on_homepage && item.is_active).slice(0, 8);
 
   if (featuredItems.length === 0) return null;
 
@@ -27,14 +30,17 @@ const MenuMinimalistic = () => {
           {/* Header */}
           <div className="text-center mb-16 fade-in">
             <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium mb-4">
-              Menu
+              {(adminContent as any)?.culinary_masterpieces_label || 'Obras Maestras Culinarias'}
             </p>
             <h2 className="text-4xl md:text-5xl font-heading font-light mb-4">
-              {menuTitle}
+              {menuTitleFirstLine}
+              {menuTitleSecondLine && (
+                <span className="block text-accent mt-2">{menuTitleSecondLine}</span>
+              )}
             </h2>
             <div className="w-12 h-px bg-accent mx-auto mb-6" />
             <p className="text-foreground/60 text-lg max-w-2xl mx-auto">
-              {menuDescription}
+              {sectionDescription}
             </p>
           </div>
 
@@ -71,7 +77,7 @@ const MenuMinimalistic = () => {
               className="btn-primary px-8 py-3 text-sm rounded-none tracking-wider uppercase"
               onClick={() => window.location.href = '/menu'}
             >
-              View Full Menu
+              {(adminContent as any)?.view_full_menu_button || 'Ver Menú Completo'}
             </Button>
           </div>
         </div>
