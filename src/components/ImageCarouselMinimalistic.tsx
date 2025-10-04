@@ -11,6 +11,9 @@ import { useClient } from '@/contexts/ClientContext';
 const ImageCarouselMinimalistic = () => {
   const { adminContent } = useClient();
 
+  // Check if carousel is enabled
+  if (!adminContent?.carousel_enabled) return null;
+
   const carouselImages = [
     (adminContent as any)?.carousel_image1_url,
     (adminContent as any)?.carousel_image2_url,
