@@ -8,7 +8,7 @@ import HeroRustic from '@/components/HeroRustic';
 import AboutRustic from '@/components/AboutRustic';
 import MenuRustic from '@/components/MenuRustic';
 import DeliveryServicesRustic from '@/components/DeliveryServicesRustic';
-import Services from '@/components/Services';
+import ServicesRustic from '@/components/ServicesRustic';
 import HomepageReviewsRustic from '@/components/HomepageReviewsRustic';
 import ContactRustic from '@/components/ContactRustic';
 import FooterRustic from '@/components/FooterRustic';
@@ -43,7 +43,7 @@ const RusticRestaurant = () => {
       { order: 3, component: <AboutRustic key="about" /> },
       { order: 4, component: <MenuRustic key="menu" /> },
       { order: 5, component: <DeliveryServicesRustic key="delivery" /> },
-      { order: 6, component: <Services key="services" /> },
+      { order: 6, component: <ServicesRustic key="services" /> },
       { order: 6.5, component: <ReservationBookingRustic key="reservation" /> },
       { order: 7, component: <HomepageReviewsRustic key="reviews" /> },
       { order: 8, component: <ContactRustic key="contact" /> },
