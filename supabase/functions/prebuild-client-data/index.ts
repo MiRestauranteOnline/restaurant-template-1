@@ -118,11 +118,38 @@ serve(async (req) => {
       header_logo_url: adminContent?.header_logo_url,
       footer_logo_url: adminContent?.footer_logo_url,
       footer_description: adminContent?.footer_description,
+      
+      // Homepage hero
       homepage_hero_background_url: adminContent?.homepage_hero_background_url,
       homepage_hero_title: adminContent?.homepage_hero_title,
       homepage_hero_title_first_line: adminContent?.homepage_hero_title_first_line,
       homepage_hero_title_second_line: adminContent?.homepage_hero_title_second_line,
       homepage_hero_description: adminContent?.homepage_hero_description,
+      
+      // Menu page hero
+      menu_page_hero_title_first_line: adminContent?.menu_page_hero_title_first_line,
+      menu_page_hero_title_second_line: adminContent?.menu_page_hero_title_second_line,
+      menu_page_hero_description: adminContent?.menu_page_hero_description,
+      menu_page_hero_background_url: adminContent?.menu_page_hero_background_url,
+      downloadable_menu_url: adminContent?.downloadable_menu_url,
+      
+      // About page hero
+      about_page_hero_title_first_line: adminContent?.about_page_hero_title_first_line,
+      about_page_hero_title_second_line: adminContent?.about_page_hero_title_second_line,
+      about_page_hero_description: adminContent?.about_page_hero_description,
+      about_page_hero_background_url: adminContent?.about_page_hero_background_url,
+      
+      // Reviews page hero
+      reviews_page_hero_title_first_line: adminContent?.reviews_page_hero_title_first_line,
+      reviews_page_hero_title_second_line: adminContent?.reviews_page_hero_title_second_line,
+      reviews_page_hero_description: adminContent?.reviews_page_hero_description,
+      reviews_page_hero_background_url: adminContent?.reviews_page_hero_background_url,
+      
+      // Contact page hero
+      contact_page_hero_title_first_line: adminContent?.contact_page_hero_title_first_line,
+      contact_page_hero_title_second_line: adminContent?.contact_page_hero_title_second_line,
+      contact_page_hero_description: adminContent?.contact_page_hero_description,
+      contact_page_hero_background_url: adminContent?.contact_page_hero_background_url,
       
       // Critical settings
       primary_color: clientSettings?.primary_color,

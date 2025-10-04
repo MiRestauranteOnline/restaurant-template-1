@@ -12,11 +12,38 @@ export interface FastLoadData {
   header_logo_url?: string;
   footer_logo_url?: string;
   footer_description?: string;
+  
+  // Homepage hero
   homepage_hero_background_url?: string;
   homepage_hero_title?: string;
   homepage_hero_title_first_line?: string;
   homepage_hero_title_second_line?: string;
   homepage_hero_description?: string;
+  
+  // Menu page hero
+  menu_page_hero_title_first_line?: string;
+  menu_page_hero_title_second_line?: string;
+  menu_page_hero_description?: string;
+  menu_page_hero_background_url?: string;
+  downloadable_menu_url?: string;
+  
+  // About page hero
+  about_page_hero_title_first_line?: string;
+  about_page_hero_title_second_line?: string;
+  about_page_hero_description?: string;
+  about_page_hero_background_url?: string;
+  
+  // Reviews page hero
+  reviews_page_hero_title_first_line?: string;
+  reviews_page_hero_title_second_line?: string;
+  reviews_page_hero_description?: string;
+  reviews_page_hero_background_url?: string;
+  
+  // Contact page hero
+  contact_page_hero_title_first_line?: string;
+  contact_page_hero_title_second_line?: string;
+  contact_page_hero_description?: string;
+  contact_page_hero_background_url?: string;
   
   // Critical settings
   primary_color?: string;
