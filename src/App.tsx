@@ -10,6 +10,7 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import LoadingSpinner from "./components/LoadingSpinner";
 import MenuPage from "./pages/MenuPage";
 import AboutPage from "./pages/AboutPage";
+import AboutPageRustic from "./pages/AboutPageRustic";
 import ContactPage from "./pages/ContactPage";
 import ReviewsPage from "./pages/ReviewsPage";
 import NotFound from "./pages/NotFound";
@@ -114,6 +115,48 @@ const TemplateSwitcher = () => {
   );
 };
 
+// Template-aware About page wrapper
+const TemplateAwareAboutPage = () => {
+  const { client, loading: clientLoading } = useClient();
+  const [templateSlug, setTemplateSlug] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const fetchTemplateSlug = async () => {
+      const clientWithTemplate = client as any;
+      
+      if (!clientWithTemplate?.template_id) {
+        setTemplateSlug('modern-restaurant');
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('templates' as any)
+          .select('slug')
+          .eq('id', clientWithTemplate.template_id)
+          .single();
+
+        if (error) throw error;
+        const templateData = data as any;
+        setTemplateSlug(templateData?.slug || 'modern-restaurant');
+      } catch (error) {
+        console.error('Error loading template:', error);
+        setTemplateSlug('modern-restaurant');
+      }
+    };
+
+    if (!clientLoading && client) {
+      fetchTemplateSlug();
+    }
+  }, [client, clientLoading]);
+  
+  if (clientLoading || !templateSlug) {
+    return <LoadingSpinner />;
+  }
+
+  return templateSlug === 'rustic-restaurant' ? <AboutPageRustic /> : <AboutPage />;
+};
+
 // Theme wrapper component that waits for client data
 const ThemedApp = () => {
   console.log('🔍 ThemedApp: Component mounting');
@@ -148,7 +191,7 @@ const ThemedApp = () => {
         <Routes>
           <Route path="/" element={<TemplateSwitcher />} />
           <Route path="/menu" element={<MenuPage />} />
-          <Route path="/about" element={<AboutPage />} />
+          <Route path="/about" element={<TemplateAwareAboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/reviews" element={<ReviewsPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
