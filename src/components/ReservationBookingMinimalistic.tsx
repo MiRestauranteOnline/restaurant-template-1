@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { getCachedAdminContent } from '@/utils/cachedContent';
 import { toast } from 'sonner';
-import { combineDateTimeToUtc, splitUtcToDateTimeStrings } from '@/lib/timezone';
+
 
 interface Schedule {
   id: string;
@@ -327,31 +327,10 @@ const ReservationBookingMinimalistic = () => {
         status: 'pending'
       };
 
-      // Convert from client timezone to UTC before saving
-      const clientTimezone = client?.timezone || 'America/Lima';
-      const utcDateTime = combineDateTimeToUtc(formData.date, formData.time, clientTimezone);
-      
-      // Extract UTC components directly (not browser local time)
-      const utcYear = utcDateTime.getUTCFullYear();
-      const utcMonth = String(utcDateTime.getUTCMonth() + 1).padStart(2, '0');
-      const utcDay = String(utcDateTime.getUTCDate()).padStart(2, '0');
-      const utcHours = String(utcDateTime.getUTCHours()).padStart(2, '0');
-      const utcMinutes = String(utcDateTime.getUTCMinutes()).padStart(2, '0');
-      
-      const reservationDataWithUtc = {
-        ...reservationData,
-        reservation_date: `${utcYear}-${utcMonth}-${utcDay}`,
-        reservation_time: `${utcHours}:${utcMinutes}`
-      };
-
-      console.log('Client timezone:', clientTimezone);
-      console.log('Selected date/time:', formData.date, formData.time);
-      console.log('UTC DateTime object:', utcDateTime.toISOString());
-      console.log('Attempting to insert reservation (UTC):', reservationDataWithUtc);
-      
+      // Store local date and time (no timezone) to match DB schema and schedules
       const { data, error } = await supabase
         .from('reservations')
-        .insert(reservationDataWithUtc)
+        .insert(reservationData)
         .select();
 
       if (error) {
