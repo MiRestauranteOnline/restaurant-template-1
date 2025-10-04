@@ -2,6 +2,7 @@ import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import Contact from '@/components/Contact';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
 import { getCachedAdminContent, getCachedClientData } from '@/utils/cachedContent';
@@ -104,8 +105,64 @@ const ContactPage = () => {
 
         <main>
           {/* Contact Methods */}
-          <section className="py-16 bg-background">
-...
+          <section className="py-12 lg:py-16 bg-background">
+            <div className="container mx-auto px-4">
+              <div className="grid md:grid-cols-3 gap-6 mb-12">
+                {contactMethods.map((method, index) => (
+                  <Card 
+                    key={index}
+                    className="border-border hover:border-accent/50 transition-all duration-300 bg-card group"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <CardContent className="p-6 text-center">
+                      <div className="flex flex-col items-center gap-4">
+                        <div className="p-4 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
+                          <method.icon className="w-8 h-8 text-accent" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-heading font-semibold mb-2 text-foreground">
+                            {method.title}
+                          </h3>
+                          <p className="text-foreground/70 mb-4 text-sm">
+                            {method.content}
+                          </p>
+                        </div>
+                        <Button 
+                          className="btn-primary px-6 py-2 text-sm rounded-full shadow-md hover:shadow-xl transition-all hover:scale-105"
+                          onClick={method.action}
+                        >
+                          {method.buttonText}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Hours Section */}
+              {hours && hours.length > 0 && (
+                <Card className="border-border bg-card">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4 mb-4 pb-4 border-b border-border">
+                      <div className="p-3 rounded-lg bg-accent/10">
+                        <Clock className="w-6 h-6 text-accent" />
+                      </div>
+                      <h3 className="text-2xl font-heading font-semibold text-foreground">
+                        Horarios de Atención
+                      </h3>
+                    </div>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {hours.map((hour, idx) => (
+                        <div key={idx} className="flex justify-between items-center p-3 bg-muted/30 rounded-lg">
+                          <span className="font-medium text-foreground capitalize">{hour.day}</span>
+                          <span className="text-foreground/70 text-sm">{hour.time}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </section>
 
           {/* Contact Component */}
