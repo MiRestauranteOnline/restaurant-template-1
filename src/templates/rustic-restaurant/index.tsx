@@ -3,7 +3,7 @@ import { useClient } from '@/contexts/ClientContext';
 import { getTemplateStatus, getGuardMessage } from '../template-guard.config';
 
 // Components
-import Navigation from '@/components/Navigation';
+import NavigationRustic from '@/components/NavigationRustic';
 import HeroRustic from '@/components/HeroRustic';
 import AboutRustic from '@/components/AboutRustic';
 import MenuRustic from '@/components/MenuRustic';
@@ -56,7 +56,7 @@ const RusticRestaurant = () => {
     <>
       <StructuredData />
       <div className="min-h-screen bg-background">
-        <Navigation />
+        <NavigationRustic />
         <main>
           {sections.map(section => section.component)}
         </main>
