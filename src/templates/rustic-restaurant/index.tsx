@@ -9,7 +9,7 @@ import AboutRustic from '@/components/AboutRustic';
 import MenuRustic from '@/components/MenuRustic';
 import DeliveryServicesRustic from '@/components/DeliveryServicesRustic';
 import Services from '@/components/Services';
-import HomepageReviews from '@/components/HomepageReviews';
+import HomepageReviewsRustic from '@/components/HomepageReviewsRustic';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import ImageCarousel from '@/components/ImageCarousel';
@@ -45,7 +45,7 @@ const RusticRestaurant = () => {
       { order: 5, component: <DeliveryServicesRustic key="delivery" /> },
       { order: 6, component: <Services key="services" /> },
       { order: 6.5, component: <ReservationBookingRustic key="reservation" /> },
-      { order: 7, component: <HomepageReviews key="reviews" /> },
+      { order: 7, component: <HomepageReviewsRustic key="reviews" /> },
       { order: 8, component: <Contact key="contact" /> },
     ];
 
