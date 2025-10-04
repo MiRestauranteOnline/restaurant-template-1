@@ -10,7 +10,7 @@ import MenuRustic from '@/components/MenuRustic';
 import DeliveryServicesRustic from '@/components/DeliveryServicesRustic';
 import Services from '@/components/Services';
 import HomepageReviewsRustic from '@/components/HomepageReviewsRustic';
-import Contact from '@/components/Contact';
+import ContactRustic from '@/components/ContactRustic';
 import Footer from '@/components/Footer';
 import ImageCarouselRustic from '@/components/ImageCarouselRustic';
 import ReservationBookingRustic from '@/components/ReservationBookingRustic';
@@ -46,7 +46,7 @@ const RusticRestaurant = () => {
       { order: 6, component: <Services key="services" /> },
       { order: 6.5, component: <ReservationBookingRustic key="reservation" /> },
       { order: 7, component: <HomepageReviewsRustic key="reviews" /> },
-      { order: 8, component: <Contact key="contact" /> },
+      { order: 8, component: <ContactRustic key="contact" /> },
     ];
 
     return sectionList.sort((a, b) => a.order - b.order);
