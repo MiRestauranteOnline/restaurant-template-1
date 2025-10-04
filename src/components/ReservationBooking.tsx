@@ -21,6 +21,17 @@ interface Schedule {
   special_groups_enabled: boolean;
   special_groups_condition: string | null;
   special_groups_contact_method: string | null;
+  custom_table_configs: TableConfig[] | null;
+}
+
+interface TableConfig {
+  id: string;
+  table_name: string;
+  seats: number;
+  quantity: number;
+  min_party_size: number;
+  max_party_size: number;
+  available?: number;
 }
 
 const DAYS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -28,6 +39,7 @@ const DAYS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', '
 export default function ReservationBooking() {
   const { client } = useClient();
   const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [globalTableConfigs, setGlobalTableConfigs] = useState<TableConfig[]>([]);
   const [loading, setLoading] = useState(false);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [availableCapacity, setAvailableCapacity] = useState<number | null>(null);
@@ -77,9 +89,10 @@ export default function ReservationBooking() {
     
     console.log('ReservationBooking: Fetching schedules for client:', client.id);
     
+    // Fetch schedules
     const { data, error } = await supabase
       .from('reservation_schedules')
-      .select('id, day_of_week, start_time, end_time, capacity, duration_minutes, min_party_size, max_party_size, special_groups_enabled, special_groups_condition, special_groups_contact_method')
+      .select('id, day_of_week, start_time, end_time, capacity, duration_minutes, min_party_size, max_party_size, special_groups_enabled, special_groups_condition, special_groups_contact_method, custom_table_configs')
       .eq('client_id', client.id)
       .eq('is_active', true)
       .order('day_of_week')
@@ -90,6 +103,20 @@ export default function ReservationBooking() {
     } else {
       console.log('ReservationBooking: Schedules fetched:', data);
       setSchedules((data as unknown as Schedule[]) || []);
+    }
+
+    // Fetch global table configurations
+    const { data: tableConfigs, error: tableError } = await supabase
+      .from('table_configurations' as any)
+      .select('id, table_name, seats, quantity, min_party_size, max_party_size')
+      .eq('client_id', client.id)
+      .eq('is_active', true);
+
+    if (tableError) {
+      console.error('ReservationBooking: Error fetching table configs:', tableError);
+    } else {
+      console.log('ReservationBooking: Table configs fetched:', tableConfigs);
+      setGlobalTableConfigs((tableConfigs as any) || []);
     }
   };
 
@@ -254,6 +281,45 @@ export default function ReservationBooking() {
     setLoading(true);
 
     try {
+      const { getActiveTableConfigs, findSuitableTable, calculateTableAvailability } = await import('@/utils/reservationTableLogic');
+      const currentSchedule = getCurrentSchedule();
+      
+      // Determine table assignment if table configs exist
+      let tableConfigId: string | null = null;
+      
+      if (currentSchedule && globalTableConfigs.length > 0) {
+        const activeConfigs = getActiveTableConfigs(currentSchedule, globalTableConfigs);
+        
+        if (activeConfigs.length > 0) {
+          // Fetch existing reservations to calculate availability
+          const { data: existingReservations } = await supabase
+            .from('reservations')
+            .select('reservation_time, party_size, table_config_id')
+            .eq('client_id', client?.id)
+            .eq('reservation_date', formData.date)
+            .in('status', ['pending', 'confirmed']);
+
+          const slotStartMinutes = parseInt(formData.time.split(':')[0]) * 60 + 
+                                   parseInt(formData.time.split(':')[1]);
+          const slotEndMinutes = slotStartMinutes + (currentSchedule.duration_minutes || 120);
+
+          const availableTables = calculateTableAvailability(
+            activeConfigs,
+            (existingReservations as any) || [],
+            slotStartMinutes,
+            slotEndMinutes
+          );
+
+          tableConfigId = findSuitableTable(parseInt(formData.partySize), availableTables);
+
+          if (!tableConfigId) {
+            toast.error(`No hay mesas disponibles para ${formData.partySize} personas en este horario. Por favor intenta otro horario o contáctanos directamente.`);
+            setLoading(false);
+            return;
+          }
+        }
+      }
+
       const { error } = await supabase
         .from('reservations')
         .insert({
@@ -265,6 +331,7 @@ export default function ReservationBooking() {
           customer_email: formData.email,
           customer_phone: formData.phone,
           special_requests: formData.specialRequests || null,
+          table_config_id: tableConfigId,
           status: 'pending'
         });
 
