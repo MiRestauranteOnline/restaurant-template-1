@@ -37,6 +37,9 @@ const StructuredData = () => {
     const clientAny = client as any;
     const settingsAny = clientSettings as any;
 
+    // Extract coordinates from client data
+    const coordinates = clientAny.coordinates as { latitude?: number; longitude?: number } | undefined;
+    
     const schema = {
       "@context": "https://schema.org",
       "@type": "Restaurant",
@@ -46,16 +49,17 @@ const StructuredData = () => {
       "@id": window.location.origin,
       "url": window.location.origin,
       "telephone": client.phone ? `${client.phone_country_code || '+51'}${client.phone}` : undefined,
+      "inLanguage": clientAny.locale || "es-PE",
       "address": client.address ? {
         "@type": "PostalAddress",
         "streetAddress": client.address,
         "addressLocality": clientAny.city || undefined,
-        "addressCountry": clientAny.country || "PE"
+        "addressCountry": clientAny.country_code || "PE"
       } : undefined,
-      "geo": clientAny.latitude && clientAny.longitude ? {
+      "geo": coordinates?.latitude && coordinates?.longitude ? {
         "@type": "GeoCoordinates",
-        "latitude": clientAny.latitude,
-        "longitude": clientAny.longitude
+        "latitude": coordinates.latitude,
+        "longitude": coordinates.longitude
       } : undefined,
       "openingHoursSpecification": openingHours.length > 0 ? openingHours : undefined,
       "servesCuisine": settingsAny?.cuisine_type || "International",

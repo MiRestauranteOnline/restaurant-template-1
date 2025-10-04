@@ -276,6 +276,9 @@ export interface ClientData {
   theme?: 'dark' | 'bright';
   other_customizations?: any;
   delivery?: any;
+  timezone?: string;
+  country_code?: string;
+  locale?: string;
   created_at: string;
   updated_at: string;
 }

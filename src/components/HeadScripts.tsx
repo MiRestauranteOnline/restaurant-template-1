@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useClient } from '@/contexts/ClientContext';
 
 const HeadScripts = () => {
-  const { premiumFeatures } = useClient();
+  const { premiumFeatures, client } = useClient();
 
   useEffect(() => {
     // Google Analytics 4 Script
@@ -45,6 +45,39 @@ const HeadScripts = () => {
       document.head.appendChild(gscMeta);
     }
 
+    // Geo Location Meta Tag
+    if (client?.country_code) {
+      const existingGeoMeta = document.querySelector('meta[name="geo.region"]');
+      if (existingGeoMeta) existingGeoMeta.remove();
+
+      const geoMeta = document.createElement('meta');
+      geoMeta.name = 'geo.region';
+      geoMeta.content = client.country_code;
+      document.head.appendChild(geoMeta);
+    }
+
+    // Content Language Meta Tag
+    if (client?.locale) {
+      const existingLangMeta = document.querySelector('meta[http-equiv="content-language"]');
+      if (existingLangMeta) existingLangMeta.remove();
+
+      const langMeta = document.createElement('meta');
+      langMeta.httpEquiv = 'content-language';
+      langMeta.content = client.locale;
+      document.head.appendChild(langMeta);
+    }
+
+    // Open Graph Locale Meta Tag
+    if (client?.locale) {
+      const existingOgLocaleMeta = document.querySelector('meta[property="og:locale"]');
+      if (existingOgLocaleMeta) existingOgLocaleMeta.remove();
+
+      const ogLocaleMeta = document.createElement('meta');
+      ogLocaleMeta.setAttribute('property', 'og:locale');
+      ogLocaleMeta.content = client.locale;
+      document.head.appendChild(ogLocaleMeta);
+    }
+
     // Cleanup function to remove scripts when component unmounts or data changes
     return () => {
       if (premiumFeatures?.google_analytics_id) {
@@ -58,8 +91,20 @@ const HeadScripts = () => {
         const gscMeta = document.querySelector('meta[name="google-site-verification"]');
         if (gscMeta) gscMeta.remove();
       }
+
+      if (client?.country_code) {
+        const geoMeta = document.querySelector('meta[name="geo.region"]');
+        if (geoMeta) geoMeta.remove();
+      }
+
+      if (client?.locale) {
+        const langMeta = document.querySelector('meta[http-equiv="content-language"]');
+        if (langMeta) langMeta.remove();
+        const ogLocaleMeta = document.querySelector('meta[property="og:locale"]');
+        if (ogLocaleMeta) ogLocaleMeta.remove();
+      }
     };
-  }, [premiumFeatures?.google_analytics_id, premiumFeatures?.google_search_console_verification]);
+  }, [premiumFeatures?.google_analytics_id, premiumFeatures?.google_search_console_verification, client?.country_code, client?.locale]);
 
   return null; // This component doesn't render anything visible
 };

@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from 'lucide-react';
 import { toast } from 'sonner';
+import { combineDateTimeToUtc, splitUtcToDateTimeStrings } from '@/lib/timezone';
 
 interface Schedule {
   id: string;
@@ -371,11 +372,22 @@ export default function ReservationBookingRustic() {
         status: 'pending'
       };
 
-      console.log('Attempting to insert reservation:', reservationData);
+      // Convert from client timezone to UTC before saving
+      const clientTimezone = client?.timezone || 'America/Lima';
+      const utcDateTime = combineDateTimeToUtc(formData.date, formData.time, clientTimezone);
+      const { date: utcDate, time: utcTime } = splitUtcToDateTimeStrings(utcDateTime, 'UTC');
+      
+      const reservationDataWithUtc = {
+        ...reservationData,
+        reservation_date: utcDate,
+        reservation_time: utcTime
+      };
+
+      console.log('Attempting to insert reservation (UTC):', reservationDataWithUtc);
       
       const { data, error } = await supabase
         .from('reservations')
-        .insert(reservationData)
+        .insert(reservationDataWithUtc)
         .select();
 
       if (error) {
