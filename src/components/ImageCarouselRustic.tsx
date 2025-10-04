@@ -74,19 +74,6 @@ const ImageCarouselRustic = () => {
   return (
     <section className="py-20 lg:py-32 bg-background">
       <div className="container mx-auto px-4">
-        <div className="text-left max-w-3xl mb-16 fade-in">
-          <span className="text-accent font-medium tracking-wider uppercase text-sm border-l-4 border-accent pl-4">
-            Galería Visual
-          </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading mt-4 mb-6 border-l-4 border-foreground/10 pl-4">
-            <span className="block">Nuestra</span>
-            <span className="block text-gradient mt-2">Experiencia</span>
-          </h2>
-          <p className="text-xl text-foreground/80 leading-relaxed pl-4">
-            Descubre el ambiente y los detalles que hacen única cada visita a nuestro restaurante.
-          </p>
-        </div>
-
         <Carousel
           opts={{
             align: "start",
