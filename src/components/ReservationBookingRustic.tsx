@@ -284,20 +284,32 @@ export default function ReservationBookingRustic() {
         }
       }
 
-      const { error } = await supabase
-        .from('reservations')
-        .insert({
-          client_id: client?.id,
-          reservation_date: formData.date,
-          reservation_time: formData.time,
-          party_size: parseInt(formData.partySize),
-          customer_phone: formData.phone,
-          special_requests: formData.specialRequests || null,
-          table_config_id: tableConfigId,
-          status: 'pending'
-        });
+      const reservationData = {
+        client_id: client?.id,
+        reservation_date: formData.date,
+        reservation_time: formData.time,
+        party_size: parseInt(formData.partySize),
+        customer_name: formData.name,
+        customer_email: formData.email,
+        customer_phone: formData.phone,
+        special_requests: formData.specialRequests || null,
+        table_config_id: tableConfigId,
+        status: 'pending'
+      };
 
-      if (error) throw error;
+      console.log('Attempting to insert reservation:', reservationData);
+      
+      const { data, error } = await supabase
+        .from('reservations')
+        .insert(reservationData)
+        .select();
+
+      if (error) {
+        console.error('Reservation insert error:', error);
+        throw error;
+      }
+      
+      console.log('Reservation created successfully:', data);
 
       toast.success('¡Reserva solicitada! Te contactaremos pronto para confirmar.');
       setFormData({
