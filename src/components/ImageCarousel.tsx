@@ -57,7 +57,7 @@ const ImageCarousel = () => {
 
   if (loading) {
     return (
-      <section className="py-16 bg-primary/20">
+      <section className="py-16 bg-primary/10">
         <div className="container mx-auto px-4">
           <div className="animate-pulse h-96 bg-muted rounded-lg"></div>
         </div>
@@ -70,7 +70,7 @@ const ImageCarousel = () => {
   }
 
   return (
-    <section className="py-16 bg-primary/20">
+    <section className="py-16 bg-primary/10">
       <div className="container mx-auto px-4">
         <Carousel
           opts={{
