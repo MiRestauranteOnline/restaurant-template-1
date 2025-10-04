@@ -142,85 +142,61 @@ const MenuPageRustic = () => {
             </section>
           ) : displayCategories.length > 0 ? (
             displayCategories.map(({ name, items }, categoryIndex) => (
-              <div key={name}>
-                <section 
-                  id={name.replace(/\s+/g, '-').toLowerCase()} 
-                  className={`py-20 lg:py-32 scroll-mt-24 ${categoryIndex % 2 === 0 ? 'bg-background' : 'bg-muted/30'}`}
-                >
-                  <div className="container mx-auto px-4">
-                    {/* Category Header */}
-                    <div className="text-left max-w-3xl mb-16 fade-in">
-                      <span className="text-accent font-medium tracking-wider uppercase text-sm border-l-4 border-accent pl-4">
-                        Categoría
-                      </span>
-                      <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading mt-4 mb-6 border-l-4 border-foreground/10 pl-4">
-                        <span className="block text-gradient">{name}</span>
-                      </h2>
-                    </div>
+              <section 
+                key={name}
+                id={name.replace(/\s+/g, '-').toLowerCase()} 
+                className={`py-12 lg:py-16 scroll-mt-24 ${categoryIndex % 2 === 0 ? 'bg-background' : 'bg-muted/30'}`}
+              >
+                <div className="container mx-auto px-4">
+                  {/* Category Header */}
+                  <div className="text-left max-w-3xl mb-8 fade-in">
+                    <span className="text-accent font-medium tracking-wider uppercase text-xs border-l-4 border-accent pl-4">
+                      Categoría
+                    </span>
+                    <h2 className="text-3xl md:text-4xl font-heading mt-3 mb-4 border-l-4 border-foreground/10 pl-4">
+                      <span className="block text-gradient">{name}</span>
+                    </h2>
+                  </div>
 
-                    {/* Menu Items Grid - Asymmetric Layout */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {items.map((item, index) => (
-                        <Card 
-                          key={item.id}
-                          className={`overflow-hidden border-2 border-border card-hover bg-card group ${
-                            index === items.length - 1 && items.length % 2 !== 0 
-                              ? 'md:col-span-2 md:max-w-3xl md:mx-auto' 
-                              : ''
-                          }`}
-                          style={{ animationDelay: `${index * 0.1}s` }}
-                        >
-                          <div className={`grid ${index === items.length - 1 && items.length % 2 !== 0 ? 'md:grid-cols-5' : 'md:grid-cols-1'} gap-0`}>
-                            {item.show_image_menu && item.image_url && (
-                              <div className={`${index === items.length - 1 && items.length % 2 !== 0 ? 'md:col-span-2' : ''} relative h-64 overflow-hidden`}>
-                                <img
-                                  src={item.image_url}
-                                  alt={`${item.name} – ${name}`}
-                                  loading="lazy"
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                />
-                                <div className="absolute top-0 right-0 bg-accent text-accent-foreground px-4 py-2 text-sm font-medium">
-                                  {name}
-                                </div>
-                              </div>
-                            )}
-                            <CardContent className={`${index === items.length - 1 && items.length % 2 !== 0 ? 'md:col-span-3' : ''} p-8 flex flex-col justify-center`}>
-                              <div className="flex items-start justify-between gap-4 mb-4 pb-4 border-b-2 border-accent/20">
-                                <h3 className="text-2xl md:text-3xl font-heading font-bold text-foreground group-hover:text-accent transition-colors flex-1">
-                                  {item.name}
-                                </h3>
-                                <span className="shrink-0 text-3xl font-heading font-bold text-accent">
-                                  {currency}{Number(item.price).toFixed(2)}
-                                </span>
-                              </div>
-                              {item.description && (
-                                <p className="text-foreground/70 leading-relaxed text-lg">{item.description}</p>
-                              )}
-                            </CardContent>
+                  {/* Menu Items Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {items.map((item, index) => (
+                      <Card 
+                        key={item.id}
+                        className="overflow-hidden border-2 border-border card-hover bg-card group"
+                        style={{ animationDelay: `${index * 0.05}s` }}
+                      >
+                        {item.show_image_menu && item.image_url && (
+                          <div className="relative h-40 overflow-hidden">
+                            <img
+                              src={item.image_url}
+                              alt={`${item.name} – ${name}`}
+                              loading="lazy"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            <div className="absolute top-0 right-0 bg-accent text-accent-foreground px-3 py-1 text-xs font-medium">
+                              {name}
+                            </div>
                           </div>
-                        </Card>
-                      ))}
-                    </div>
+                        )}
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between gap-3 mb-2">
+                            <h3 className="text-lg font-heading font-bold text-foreground group-hover:text-accent transition-colors flex-1">
+                              {item.name}
+                            </h3>
+                            <span className="shrink-0 text-xl font-heading font-bold text-accent">
+                              {currency}{Number(item.price).toFixed(2)}
+                            </span>
+                          </div>
+                          {item.description && (
+                            <p className="text-foreground/70 leading-relaxed text-sm">{item.description}</p>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
-                </section>
-
-                {/* Decorative Divider between categories */}
-                {categoryIndex < displayCategories.length - 1 && (
-                  <div className="container mx-auto px-4 py-8">
-                    <div className="flex items-center gap-4">
-                      <Separator className="flex-1 bg-border/50" />
-                      <div className="flex gap-2">
-                        <div className="w-2 h-2 rounded-full bg-accent/40"></div>
-                        <div className="w-2 h-2 rounded-full bg-accent/60"></div>
-                        <div className="w-2 h-2 rounded-full bg-accent"></div>
-                        <div className="w-2 h-2 rounded-full bg-accent/60"></div>
-                        <div className="w-2 h-2 rounded-full bg-accent/40"></div>
-                      </div>
-                      <Separator className="flex-1 bg-border/50" />
-                    </div>
-                  </div>
-                )}
-              </div>
+                </div>
+              </section>
             ))
           ) : (
             <section className="py-20 bg-background">
