@@ -11,7 +11,7 @@ import DeliveryServicesRustic from '@/components/DeliveryServicesRustic';
 import Services from '@/components/Services';
 import HomepageReviewsRustic from '@/components/HomepageReviewsRustic';
 import ContactRustic from '@/components/ContactRustic';
-import Footer from '@/components/Footer';
+import FooterRustic from '@/components/FooterRustic';
 import ImageCarouselRustic from '@/components/ImageCarouselRustic';
 import ReservationBookingRustic from '@/components/ReservationBookingRustic';
 import StructuredData from '@/components/StructuredData';
@@ -60,7 +60,7 @@ const RusticRestaurant = () => {
         <main>
           {sections.map(section => section.component)}
         </main>
-        <Footer />
+        <FooterRustic />
       </div>
     </>
   );
