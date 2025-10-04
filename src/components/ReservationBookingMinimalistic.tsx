@@ -1,43 +1,597 @@
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from 'react';
 import { useClient } from '@/contexts/ClientContext';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { getCachedAdminContent } from '@/utils/cachedContent';
+import { toast } from 'sonner';
+
+interface Schedule {
+  id: string;
+  day_of_week: number;
+  start_time: string;
+  end_time: string;
+  capacity: number;
+  duration_minutes: number;
+  min_party_size: number;
+  max_party_size: number;
+  special_groups_enabled: boolean;
+  special_groups_condition: string | null;
+  special_groups_contact_method: string | null;
+}
+
+const DAYS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
 const ReservationBookingMinimalistic = () => {
-  const { adminContent } = useClient();
-  
+  const { client, adminContent } = useClient();
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+  const [availableCapacity, setAvailableCapacity] = useState<number | null>(null);
+  const [availableDates, setAvailableDates] = useState<{ value: string; label: string }[]>([]);
+  const [formData, setFormData] = useState({
+    date: '',
+    time: '',
+    partySize: '2',
+    name: '',
+    email: '',
+    phone: '',
+    specialRequests: ''
+  });
+
   const cachedAdminContent = getCachedAdminContent();
   const reservationTitle = (adminContent as any)?.homepage_reservation_title || cachedAdminContent?.homepage_reservation_title || 'Reserva Tu Mesa';
   const reservationDescription = (adminContent as any)?.homepage_reservation_description || cachedAdminContent?.homepage_reservation_description || 
     '¿Listo para disfrutar de una experiencia culinaria excepcional?';
-  const reservationButtonText = (adminContent as any)?.homepage_reservation_button_text || 'Reservar Ahora';
-  const reservationButtonLink = (adminContent as any)?.homepage_reservation_button_link || '#contact';
+
+  useEffect(() => {
+    fetchSchedules();
+  }, [client]);
+
+  useEffect(() => {
+    if (schedules.length > 0) {
+      getAvailableDates().then(setAvailableDates);
+    }
+  }, [schedules]);
+
+  useEffect(() => {
+    if (formData.date) {
+      getAvailableTimes().then(setAvailableTimes);
+    } else {
+      setAvailableTimes([]);
+    }
+  }, [formData.date, schedules]);
+
+  useEffect(() => {
+    if (formData.time && formData.date) {
+      updateAvailableCapacity();
+    } else {
+      setAvailableCapacity(null);
+    }
+  }, [formData.time, formData.date, schedules]);
+
+  const fetchSchedules = async () => {
+    if (!client?.id) return;
+    
+    const { data, error } = await supabase
+      .from('reservation_schedules')
+      .select('id, day_of_week, start_time, end_time, capacity, duration_minutes, min_party_size, max_party_size, special_groups_enabled, special_groups_condition, special_groups_contact_method')
+      .eq('client_id', client.id)
+      .eq('is_active', true)
+      .order('day_of_week')
+      .order('start_time');
+
+    if (error) {
+      console.error('Error fetching schedules:', error);
+    } else {
+      setSchedules((data as unknown as Schedule[]) || []);
+    }
+  };
+
+  const getAvailableDates = async () => {
+    if (!client?.id || schedules.length === 0) return [];
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const availableDatesArray: { value: string; label: string }[] = [];
+    const daysInSpanish = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const monthsInSpanish = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+    for (let i = 0; i < 28; i++) {
+      const checkDate = new Date(today);
+      checkDate.setDate(today.getDate() + i);
+      const dayOfWeek = checkDate.getDay();
+
+      const schedule = schedules.find(s => s.day_of_week === dayOfWeek);
+      if (!schedule) continue;
+
+      const dateStr = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
+
+      const { data: existingReservations } = await supabase
+        .from('reservations')
+        .select('reservation_time, party_size')
+        .eq('client_id', client.id)
+        .eq('reservation_date', dateStr)
+        .in('status', ['pending', 'confirmed']);
+
+      let hasAvailableSlot = false;
+      const [startHour, startMinute] = schedule.start_time.split(':').map(Number);
+      const [endHour, endMinute] = schedule.end_time.split(':').map(Number);
+      
+      let currentHour = startHour;
+      let currentMinute = startMinute;
+      
+      while (currentHour < endHour || (currentHour === endHour && currentMinute < endMinute)) {
+        const newResStartMinutes = currentHour * 60 + currentMinute;
+        const newResEndMinutes = newResStartMinutes + schedule.duration_minutes;
+        
+        const totalPartySize = (existingReservations || []).reduce((sum, res) => {
+          const resTime = res.reservation_time;
+          const resStartMinutes = parseInt(resTime.split(':')[0]) * 60 + parseInt(resTime.split(':')[1]);
+          const resEndMinutes = resStartMinutes + schedule.duration_minutes;
+          const overlaps = newResStartMinutes < resEndMinutes && newResEndMinutes > resStartMinutes;
+          return overlaps ? sum + res.party_size : sum;
+        }, 0);
+
+        const availableCapacity = schedule.capacity - totalPartySize;
+        if (availableCapacity >= 1) {
+          hasAvailableSlot = true;
+          break;
+        }
+        
+        currentMinute += 30;
+        if (currentMinute >= 60) {
+          currentMinute = 0;
+          currentHour += 1;
+        }
+      }
+
+      if (hasAvailableSlot) {
+        const dayName = daysInSpanish[dayOfWeek];
+        const dayNumber = checkDate.getDate();
+        const monthName = monthsInSpanish[checkDate.getMonth()];
+        availableDatesArray.push({
+          value: dateStr,
+          label: `${dayName} - ${dayNumber} de ${monthName}`
+        });
+      }
+    }
+
+    return availableDatesArray;
+  };
+
+  const getAvailableTimes = async () => {
+    if (!formData.date) return [];
+    
+    const [year, month, day] = formData.date.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
+    const dayOfWeek = selectedDate.getDay();
+    
+    const schedule = schedules.find(s => s.day_of_week === dayOfWeek);
+    if (!schedule) return [];
+
+    const times = [];
+    const [startHour, startMinute] = schedule.start_time.split(':').map(Number);
+    const [endHour, endMinute] = schedule.end_time.split(':').map(Number);
+    
+    let currentHour = startHour;
+    let currentMinute = startMinute;
+    
+    while (currentHour < endHour || (currentHour === endHour && currentMinute < endMinute)) {
+      const timeStr = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`;
+      times.push(timeStr);
+      
+      currentMinute += 30;
+      if (currentMinute >= 60) {
+        currentMinute = 0;
+        currentHour += 1;
+      }
+    }
+    
+    const { data: existingReservations } = await supabase
+      .from('reservations')
+      .select('reservation_time, party_size')
+      .eq('client_id', client?.id)
+      .eq('reservation_date', formData.date)
+      .in('status', ['pending', 'confirmed']);
+
+    if (!existingReservations) return times;
+
+    const availableTimes = times.filter(time => {
+      const newResStartMinutes = parseInt(time.split(':')[0]) * 60 + parseInt(time.split(':')[1]);
+      const newResEndMinutes = newResStartMinutes + schedule.duration_minutes;
+      
+      const totalPartySize = existingReservations.reduce((sum, res) => {
+        const resTime = res.reservation_time;
+        const resStartMinutes = parseInt(resTime.split(':')[0]) * 60 + parseInt(resTime.split(':')[1]);
+        const resEndMinutes = resStartMinutes + schedule.duration_minutes;
+        const overlaps = newResStartMinutes < resEndMinutes && newResEndMinutes > resStartMinutes;
+        return overlaps ? sum + res.party_size : sum;
+      }, 0);
+
+      const availableCapacity = schedule.capacity - totalPartySize;
+      return availableCapacity >= 1;
+    });
+    
+    return availableTimes;
+  };
+
+  const updateAvailableCapacity = async () => {
+    const currentSchedule = getCurrentSchedule();
+    if (!currentSchedule || !formData.date || !formData.time) {
+      setAvailableCapacity(null);
+      return;
+    }
+    
+    const { data: existingReservations } = await supabase
+      .from('reservations')
+      .select('reservation_time, party_size')
+      .eq('client_id', client?.id)
+      .eq('reservation_date', formData.date)
+      .in('status', ['pending', 'confirmed']);
+
+    if (!existingReservations) {
+      setAvailableCapacity(currentSchedule.capacity);
+      return;
+    }
+
+    const slotMinutes = parseInt(formData.time.split(':')[0]) * 60 + parseInt(formData.time.split(':')[1]);
+    const slotEndMinutes = slotMinutes + 30;
+    
+    const totalPartySize = existingReservations.reduce((sum, res) => {
+      const resTime = res.reservation_time;
+      const resStartMinutes = parseInt(resTime.split(':')[0]) * 60 + parseInt(resTime.split(':')[1]);
+      const resEndMinutes = resStartMinutes + currentSchedule.duration_minutes;
+      const overlaps = slotMinutes < resEndMinutes && slotEndMinutes > resStartMinutes;
+      return overlaps ? sum + res.party_size : sum;
+    }, 0);
+
+    setAvailableCapacity(currentSchedule.capacity - totalPartySize);
+  };
+
+  const getCurrentSchedule = () => {
+    if (!formData.date) return null;
+    const [year, month, day] = formData.date.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
+    const dayOfWeek = selectedDate.getDay();
+    return schedules.find(s => s.day_of_week === dayOfWeek) || null;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from('reservations')
+        .insert({
+          client_id: client?.id,
+          reservation_date: formData.date,
+          reservation_time: formData.time,
+          party_size: parseInt(formData.partySize),
+          customer_name: formData.name,
+          customer_email: formData.email,
+          customer_phone: formData.phone,
+          special_requests: formData.specialRequests || null,
+          status: 'pending'
+        });
+
+      if (error) throw error;
+
+      toast.success('¡Reserva solicitada! Te contactaremos pronto para confirmar.');
+      setFormData({
+        date: '',
+        time: '',
+        partySize: '2',
+        name: '',
+        email: '',
+        phone: '',
+        specialRequests: ''
+      });
+    } catch (error) {
+      console.error('Error creating reservation:', error);
+      toast.error('Error al crear la reserva. Por favor intenta nuevamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!client?.id) return null;
+
+  const hasSchedules = schedules.length > 0;
+  const availableDays = hasSchedules ? schedules.map(s => DAYS[s.day_of_week]).join(', ') : 'Próximamente';
+  const currentSchedule = getCurrentSchedule();
+  const partySize = parseInt(formData.partySize);
+  const isPartySizeOutOfRange = currentSchedule && (
+    partySize < currentSchedule.min_party_size || 
+    partySize > currentSchedule.max_party_size
+  );
+
+  const shouldShowSpecialGroupsMessage = currentSchedule?.special_groups_enabled && isPartySizeOutOfRange && (
+    (currentSchedule.special_groups_condition === 'bigger' && partySize > currentSchedule.max_party_size) ||
+    (currentSchedule.special_groups_condition === 'smaller' && partySize < currentSchedule.min_party_size) ||
+    (currentSchedule.special_groups_condition === 'both' && isPartySizeOutOfRange)
+  );
+
+  const getContactMethodMessage = () => {
+    if (!currentSchedule || !shouldShowSpecialGroupsMessage) return null;
+    
+    const method = currentSchedule.special_groups_contact_method;
+    const whatsapp = client?.whatsapp ? `${client.whatsapp_country_code}${client.whatsapp}` : null;
+    const phone = client?.phone ? `${client.phone_country_code}${client.phone}` : null;
+
+    if (method === 'whatsapp' && whatsapp) {
+      return (
+        <div className="p-4 bg-accent/10 border border-accent/20 rounded-sm">
+          <p className="text-sm text-foreground/70 mb-2">
+            Para grupos {partySize < currentSchedule.min_party_size ? 'pequeños' : 'grandes'}, por favor contáctanos por WhatsApp:
+          </p>
+          <a 
+            href={`https://wa.me/${whatsapp.replace(/\D/g, '')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center text-accent hover:text-accent/80 font-medium text-sm"
+          >
+            Contactar por WhatsApp
+          </a>
+        </div>
+      );
+    }
+
+    if (method === 'phone' && phone) {
+      return (
+        <div className="p-4 bg-accent/10 border border-accent/20 rounded-sm">
+          <p className="text-sm text-foreground/70 mb-2">
+            Para grupos {partySize < currentSchedule.min_party_size ? 'pequeños' : 'grandes'}, por favor llámanos:
+          </p>
+          <a 
+            href={`tel:${phone}`}
+            className="inline-flex items-center text-accent hover:text-accent/80 font-medium text-sm"
+          >
+            {phone}
+          </a>
+        </div>
+      );
+    }
+
+    if (method === 'both' && (whatsapp || phone)) {
+      return (
+        <div className="p-4 bg-accent/10 border border-accent/20 rounded-sm">
+          <p className="text-sm text-foreground/70 mb-3">
+            Para grupos {partySize < currentSchedule.min_party_size ? 'pequeños' : 'grandes'}, por favor contáctanos:
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            {whatsapp && (
+              <a 
+                href={`https://wa.me/${whatsapp.replace(/\D/g, '')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-4 py-2 bg-accent text-accent-foreground hover:bg-accent/90 rounded-sm transition-colors text-sm"
+              >
+                WhatsApp
+              </a>
+            )}
+            {phone && (
+              <a 
+                href={`tel:${phone}`}
+                className="inline-flex items-center justify-center px-4 py-2 border border-accent text-accent hover:bg-accent/10 rounded-sm transition-colors text-sm"
+              >
+                Llamar
+              </a>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   return (
-    <section className="py-24 lg:py-32 bg-accent/5">
+    <section className="py-24 lg:py-32 bg-muted/30">
       <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto text-center space-y-8 fade-in">
-          <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium">
-            {(adminContent as any)?.reservation_label || 'Reservaciones'}
-          </p>
-          <h2 className="text-4xl md:text-5xl font-heading font-light">
-            {reservationTitle}
-          </h2>
-          <div className="w-12 h-px bg-accent mx-auto" />
-          <p className="text-foreground/70 text-lg max-w-2xl mx-auto">
-            {reservationDescription}
-          </p>
-          <Button 
-            className="btn-primary px-8 py-3 text-sm rounded-none tracking-wider uppercase mt-6"
-            onClick={() => {
-              if (reservationButtonLink.startsWith('#')) {
-                document.querySelector(reservationButtonLink)?.scrollIntoView({ behavior: 'smooth' });
-              } else {
-                window.open(reservationButtonLink, '_blank');
-              }
-            }}
-          >
-            {reservationButtonText}
-          </Button>
+        <div className="max-w-2xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12 fade-in">
+            <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium mb-4">
+              {(adminContent as any)?.reservation_label || 'Reservaciones'}
+            </p>
+            <h2 className="text-4xl md:text-5xl font-heading font-light mb-4">
+              {reservationTitle}
+            </h2>
+            <div className="w-12 h-px bg-accent mx-auto mb-6" />
+            <p className="text-foreground/70 text-lg">
+              {reservationDescription}
+            </p>
+          </div>
+
+          {/* Reservation Form */}
+          {hasSchedules ? (
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 p-8 fade-in">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Date Selection */}
+                <div className="space-y-2">
+                  <Label htmlFor="date" className="text-sm tracking-wider uppercase text-foreground/70">
+                    Fecha
+                  </Label>
+                  <Select
+                    value={formData.date}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, date: value, time: '' }))}
+                    disabled={availableDates.length === 0}
+                  >
+                    <SelectTrigger id="date" className="bg-background border-border rounded-none">
+                      <SelectValue placeholder={availableDates.length === 0 ? "Cargando fechas..." : "Selecciona una fecha"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableDates.map((date) => (
+                        <SelectItem key={date.value} value={date.value}>
+                          {date.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Time Selection */}
+                <div className="space-y-2">
+                  <Label htmlFor="time" className="text-sm tracking-wider uppercase text-foreground/70">
+                    Hora
+                  </Label>
+                  <Select
+                    value={formData.time}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, time: value }))}
+                    disabled={!formData.date || availableTimes.length === 0}
+                  >
+                    <SelectTrigger id="time" className="bg-background border-border rounded-none">
+                      <SelectValue placeholder={!formData.date ? "Primero selecciona una fecha" : availableTimes.length === 0 ? "No hay horarios disponibles" : "Selecciona una hora"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableTimes.map((time) => (
+                        <SelectItem key={time} value={time}>
+                          {time}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Party Size */}
+                <div className="space-y-2">
+                  <Label htmlFor="partySize" className="text-sm tracking-wider uppercase text-foreground/70">
+                    Número de Personas
+                  </Label>
+                  <Input
+                    id="partySize"
+                    type="number"
+                    min="1"
+                    max="50"
+                    value={formData.partySize}
+                    onChange={(e) => setFormData(prev => ({ ...prev, partySize: e.target.value }))}
+                    className="bg-background border-border rounded-none"
+                    required
+                  />
+                  {availableCapacity !== null && (
+                    <p className="text-xs text-foreground/60">
+                      Capacidad disponible: {availableCapacity} personas
+                    </p>
+                  )}
+                </div>
+
+                {/* Special Groups Message */}
+                {getContactMethodMessage()}
+
+                {/* Name */}
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-sm tracking-wider uppercase text-foreground/70">
+                    Nombre Completo
+                  </Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    className="bg-background border-border rounded-none"
+                    required
+                  />
+                </div>
+
+                {/* Email */}
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm tracking-wider uppercase text-foreground/70">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    className="bg-background border-border rounded-none"
+                    required
+                  />
+                </div>
+
+                {/* Phone */}
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-sm tracking-wider uppercase text-foreground/70">
+                    Teléfono
+                  </Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                    className="bg-background border-border rounded-none"
+                    required
+                  />
+                </div>
+
+                {/* Special Requests */}
+                <div className="space-y-2">
+                  <Label htmlFor="specialRequests" className="text-sm tracking-wider uppercase text-foreground/70">
+                    Solicitudes Especiales (Opcional)
+                  </Label>
+                  <Textarea
+                    id="specialRequests"
+                    value={formData.specialRequests}
+                    onChange={(e) => setFormData(prev => ({ ...prev, specialRequests: e.target.value }))}
+                    className="bg-background border-border rounded-none min-h-[100px]"
+                    placeholder="Alergias, preferencias de asiento, celebraciones..."
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <Button
+                  type="submit"
+                  disabled={loading || !formData.date || !formData.time || isPartySizeOutOfRange}
+                  className="btn-primary w-full py-6 text-sm tracking-wider uppercase rounded-none"
+                >
+                  {loading ? 'Procesando...' : 'Solicitar Reserva'}
+                </Button>
+              </form>
+            </div>
+          ) : (
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 p-8 text-center fade-in">
+              <p className="text-foreground/70 mb-6">
+                El sistema de reservas se está configurando. Mientras tanto, puedes contactarnos directamente.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                {client?.whatsapp && (
+                  <Button 
+                    className="btn-primary px-8 py-3 text-sm rounded-none tracking-wider uppercase"
+                    onClick={() => {
+                      const whatsappNumber = `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}`;
+                      const message = (adminContent as any)?.whatsapp_reservation_message || 'Hola, me gustaría hacer una reserva';
+                      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+                    }}
+                  >
+                    WhatsApp
+                  </Button>
+                )}
+                
+                {client?.phone && (
+                  <Button 
+                    className="btn-ghost px-8 py-3 text-sm rounded-none tracking-wider uppercase"
+                    onClick={() => {
+                      const phoneNumber = `${client.phone_country_code || '+51'}${client.phone}`;
+                      window.open(`tel:${phoneNumber}`, '_self');
+                    }}
+                  >
+                    Llamar
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Available Days Info */}
+          {hasSchedules && (
+            <div className="mt-8 text-center text-sm text-foreground/60">
+              <p>Días disponibles: {availableDays}</p>
+            </div>
+          )}
         </div>
       </div>
     </section>

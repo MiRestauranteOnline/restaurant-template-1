@@ -40,36 +40,37 @@ const ContactPageMinimalistic = () => {
   const contactMethods = [
     ...(client?.phone || cachedClient?.phone ? [{
       icon: Phone,
-      title: "Phone",
-      content: client?.phone ? `${client.phone_country_code || '+1'} ${client.phone}` : "+1 555-0123",
+      title: (adminContent as any)?.contact_phone_label || cachedAdminContent?.contact_phone_label || "Llámanos",
+      content: client?.phone ? `${client.phone_country_code || '+51'} ${client.phone}` : "+51 987 654 321",
       action: () => {
         const phoneNumber = client?.phone ? 
-          `${client.phone_country_code || '+1'}${client.phone}` : 
-          '+15550123';
+          `${client.phone_country_code || '+51'}${client.phone}` : 
+          '+51987654321';
         window.open(`tel:${phoneNumber}`, '_self');
       }
     }] : []),
     ...(client?.whatsapp || cachedClient?.whatsapp ? [{
       icon: Mail,
       title: "WhatsApp", 
-      content: "Send us a message",
+      content: (adminContent as any)?.contact_whatsapp_label || cachedAdminContent?.contact_whatsapp_label || "Envíanos un mensaje",
       action: () => {
         const whatsappNumber = client?.whatsapp ? 
-          `${client.whatsapp_country_code?.replace('+', '') || '1'}${client.whatsapp}` : 
-          '15550123';
-        window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hello, I would like to contact you')}`, '_blank');
+          `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
+          '51987654321';
+        const message = (adminContent as any)?.whatsapp_contact_message || 'Hola, me gustaría contactarlos';
+        window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
       }
     }] : []),
     {
       icon: MapPin,
-      title: "Visit Us",
-      content: client?.address || "123 Main Street, City, State",
+      title: (adminContent as any)?.contact_visit_label || cachedAdminContent?.contact_visit_label || "Visítanos",
+      content: client?.address || "Av. Larco 123, Miraflores, Lima",
       action: () => {
         if (client?.coordinates) {
           const coords = client.coordinates;
           window.open(`https://maps.google.com/?q=${coords.lat},${coords.lng}`, '_blank');
         } else {
-          window.open('https://maps.google.com', '_blank');
+          window.open('https://maps.google.com/?q=-12.1267,-77.0365', '_blank');
         }
       }
     }
@@ -145,7 +146,7 @@ const ContactPageMinimalistic = () => {
                     <div className="flex items-center justify-center gap-3 mb-4">
                       <Clock className="w-5 h-5 text-accent" />
                       <h3 className="text-sm tracking-[0.3em] uppercase text-accent font-medium">
-                        Opening Hours
+                        {(adminContent as any)?.opening_hours_label || cachedAdminContent?.opening_hours_label || 'Horarios de Atención'}
                       </h3>
                     </div>
                     <div className="w-12 h-px bg-accent mx-auto" />
