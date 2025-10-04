@@ -14,6 +14,16 @@ const MenuPage = () => {
   const cachedAdminContent = getCachedAdminContent();
   const cachedClient = getCachedClientData();
   
+  const menuHeroTitleFirst = 
+    (adminContent as any)?.menu_page_hero_title_first_line ?? 
+    cachedAdminContent?.menu_page_hero_title_first_line ?? 'Nuestro';
+  const menuHeroTitleSecond = 
+    (adminContent as any)?.menu_page_hero_title_second_line ?? 
+    cachedAdminContent?.menu_page_hero_title_second_line ?? 'Menú';
+  const menuHeroDescription = 
+    (adminContent as any)?.menu_page_hero_description ?? 
+    cachedAdminContent?.menu_page_hero_description ?? 
+    'Descubre los auténticos sabores preparados con ingredientes frescos y recetas tradicionales.';
   const menuHeroBackground = 
     (adminContent as any)?.menu_page_hero_background_url ?? 
     cachedAdminContent?.menu_page_hero_background_url ?? heroPasta;
@@ -78,11 +88,11 @@ const MenuPage = () => {
           <div className="relative z-10 container mx-auto px-4">
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mb-6 text-foreground">
-                Nuestro
-                <span className="block text-gradient font-normal">Menú</span>
+                {menuHeroTitleFirst}
+                <span className="block text-gradient font-normal">{menuHeroTitleSecond}</span>
               </h1>
               <p className="text-xl text-foreground/90 max-w-2xl mx-auto leading-relaxed mb-8">
-                Descubre los auténticos sabores preparados con ingredientes frescos y recetas tradicionales.
+                {menuHeroDescription}
               </p>
               
               {/* Download Menu Button */}

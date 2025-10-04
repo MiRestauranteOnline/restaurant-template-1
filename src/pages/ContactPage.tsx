@@ -17,6 +17,13 @@ const ContactPage = () => {
   const cachedAdminContent = getCachedAdminContent();
   const cachedClient = getCachedClientData();
   
+  const contactHeroTitle = 
+    (adminContent as any)?.contact_page_hero_title ?? 
+    cachedAdminContent?.contact_page_hero_title ?? 'Contáctanos';
+  const contactHeroDescription = 
+    (adminContent as any)?.contact_page_hero_description ?? 
+    cachedAdminContent?.contact_page_hero_description ?? 
+    'Estamos aquí para ayudarte. Contacta con nosotros para reservas, consultas o cualquier información que necesites.';
   const contactHeroBackground = 
     (adminContent as any)?.contact_page_hero_background_url ?? 
     cachedAdminContent?.contact_page_hero_background_url ?? '/src/assets/grilled-steak.jpg';
@@ -94,10 +101,10 @@ const ContactPage = () => {
           <div className="relative z-10 container mx-auto px-4">
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light mb-6 text-foreground">
-                Contáctanos
+                {contactHeroTitle}
               </h1>
               <p className="text-xl text-foreground/90 max-w-2xl mx-auto leading-relaxed">
-                Estamos aquí para ayudarte. Contacta con nosotros para reservas, consultas o cualquier información que necesites.
+                {contactHeroDescription}
               </p>
             </div>
           </div>
