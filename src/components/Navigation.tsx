@@ -209,7 +209,7 @@ const Navigation = () => {
             <div className="flex items-center space-x-3">
               {(client?.phone || cachedClient?.phone) && !(clientSettings?.hide_phone_button_menu ?? cachedSettings?.hide_phone_button_menu ?? false) && (
                 <Button 
-                  className="btn-ghost px-4 py-2 rounded-full text-sm"
+                  className="btn-ghost px-4 py-2 rounded-full text-sm hover:scale-105 transition-all"
                   onClick={() => {
                     trackButtonClick('phone', { source: 'navigation_desktop' });
                     const phoneNumber = client?.phone ? 
@@ -223,7 +223,7 @@ const Navigation = () => {
               )}
               {(client?.whatsapp || cachedClient?.whatsapp) && !(clientSettings?.hide_whatsapp_button_menu ?? cachedSettings?.hide_whatsapp_button_menu ?? false) && (
                 <Button 
-                  className="btn-primary px-6 py-2 rounded-full"
+                  className="btn-primary px-6 py-2 rounded-full shadow-md hover:shadow-xl transition-all hover:scale-105"
                   onClick={() => {
                     trackButtonClick('whatsapp', { source: 'navigation_desktop' });
                     const whatsappNumber = client?.whatsapp ? 
@@ -238,7 +238,7 @@ const Navigation = () => {
               )}
               {(clientSettings?.custom_cta_button_link || cachedSettings?.custom_cta_button_link) && (
                 <Button 
-                  className="btn-secondary px-6 py-2 rounded-full"
+                  className="btn-secondary px-6 py-2 rounded-full shadow-md hover:shadow-xl transition-all hover:scale-105"
                   onClick={() => {
                     const link = clientSettings?.custom_cta_button_link || cachedSettings?.custom_cta_button_link;
                     if (link?.startsWith('http')) {
@@ -318,7 +318,7 @@ const Navigation = () => {
               <div className="px-3 py-2 space-y-2">
                 {(client?.phone || cachedClient?.phone) && !(clientSettings?.hide_phone_button_menu ?? cachedSettings?.hide_phone_button_menu ?? false) && (
                   <Button 
-                    className="btn-ghost w-full rounded-full"
+                    className="btn-ghost w-full rounded-full hover:scale-105 transition-all"
                     onClick={() => {
                       trackButtonClick('phone', { source: 'navigation_mobile' });
                       const phoneNumber = client?.phone ? 
@@ -332,7 +332,7 @@ const Navigation = () => {
                 )}
                 {(client?.whatsapp || cachedClient?.whatsapp) && !(clientSettings?.hide_whatsapp_button_menu ?? cachedSettings?.hide_whatsapp_button_menu ?? false) && (
                   <Button 
-                    className="btn-primary w-full rounded-full"
+                    className="btn-primary w-full rounded-full shadow-md hover:shadow-xl transition-all hover:scale-105"
                     onClick={() => {
                       trackButtonClick('whatsapp', { source: 'navigation_mobile' });
                       const whatsappNumber = client?.whatsapp ? 
@@ -347,7 +347,7 @@ const Navigation = () => {
                 )}
                 {(clientSettings?.custom_cta_button_link || cachedSettings?.custom_cta_button_link) && (
                   <Button 
-                    className="btn-secondary w-full rounded-full"
+                    className="btn-secondary w-full rounded-full shadow-md hover:shadow-xl transition-all hover:scale-105"
                     onClick={() => {
                       const link = clientSettings?.custom_cta_button_link || cachedSettings?.custom_cta_button_link;
                       if (link?.startsWith('http')) {

@@ -181,7 +181,7 @@ const Footer = () => {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
                   {showButton1 && (
                     <button 
-                      className="btn-primary px-6 py-3 rounded-full"
+                      className="btn-primary px-6 py-3 rounded-full shadow-md hover:shadow-xl transition-all hover:scale-105"
                       onClick={() => {
                         if (button1Link) {
                           window.open(button1Link, '_blank');
@@ -198,7 +198,7 @@ const Footer = () => {
                   )}
                   {showButton2 && (
                     <button 
-                      className="btn-ghost px-6 py-3 rounded-full"
+                      className="btn-ghost px-6 py-3 rounded-full hover:scale-105 transition-all"
                       onClick={() => {
                         if (button2Link) {
                           window.open(button2Link, '_blank');

@@ -121,7 +121,7 @@ const Contact = () => {
                     <div className="grid gap-4">
                       {client?.whatsapp && (
                         <Button 
-                          className="btn-primary w-full py-4 text-lg rounded-full"
+                          className="btn-primary w-full py-4 text-lg rounded-full shadow-md hover:shadow-xl transition-all hover:scale-105"
                           onClick={() => {
                             const whatsappNumber = client?.whatsapp ? 
                               `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
@@ -139,7 +139,7 @@ const Contact = () => {
                       {client?.phone && (
                         <Button 
                           variant="outline"
-                          className="w-full py-4 text-lg rounded-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                          className="w-full py-4 text-lg rounded-full border-accent text-accent hover:bg-accent hover:text-accent-foreground hover:scale-105 transition-all"
                           onClick={() => {
                             const phoneNumber = client?.phone ? 
                               `${client.phone_country_code || '+51'}${client.phone}` : 

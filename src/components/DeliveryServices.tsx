@@ -93,7 +93,7 @@ const DeliveryServices = () => {
                   </h3>
                   <Button
                     asChild
-                    className="w-full group-hover:scale-105 transition-transform duration-300"
+                    className="w-full shadow-md hover:shadow-xl transition-all hover:scale-105"
                   >
                     <a 
                       href={service.url} 
