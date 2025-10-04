@@ -44,7 +44,7 @@ const HomepageReviewsRustic = () => {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-accent to-transparent mx-auto mb-6"></div>
           <p className="text-xl text-foreground/80 leading-relaxed">
-            Cada opinión refleja nuestro compromiso con la excelencia culinaria y el servicio excepcional.
+            {(adminContent as any)?.reviews_section_description || 'Cada opinión refleja nuestro compromiso con la excelencia culinaria y el servicio excepcional.'}
           </p>
         </div>
 

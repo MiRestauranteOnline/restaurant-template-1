@@ -65,7 +65,7 @@ const Reviews = () => {
             )}
           </h2>
           <p className="text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
-            Cada opinión refleja nuestro compromiso con la excelencia culinaria y el servicio excepcional.
+            {(adminContent as any)?.reviews_section_description || 'Cada opinión refleja nuestro compromiso con la excelencia culinaria y el servicio excepcional.'}
           </p>
         </div>
 

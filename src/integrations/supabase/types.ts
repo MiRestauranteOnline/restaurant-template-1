@@ -97,6 +97,7 @@ export type Database = {
           reviews_page_hero_title: string | null
           reviews_page_hero_title_first_line: string | null
           reviews_page_hero_title_second_line: string | null
+          reviews_section_description: string | null
           reviews_section_title_first_line: string | null
           reviews_section_title_second_line: string | null
           services_card1_button_link: string | null
@@ -223,6 +224,7 @@ export type Database = {
           reviews_page_hero_title?: string | null
           reviews_page_hero_title_first_line?: string | null
           reviews_page_hero_title_second_line?: string | null
+          reviews_section_description?: string | null
           reviews_section_title_first_line?: string | null
           reviews_section_title_second_line?: string | null
           services_card1_button_link?: string | null
@@ -349,6 +351,7 @@ export type Database = {
           reviews_page_hero_title?: string | null
           reviews_page_hero_title_first_line?: string | null
           reviews_page_hero_title_second_line?: string | null
+          reviews_section_description?: string | null
           reviews_section_title_first_line?: string | null
           reviews_section_title_second_line?: string | null
           services_card1_button_link?: string | null
