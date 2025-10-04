@@ -107,14 +107,63 @@ const AboutPage = () => {
           <About />
 
           {/* Stats Section */}
-          <section className="py-16" style={{ backgroundColor: '#ffffff' }}>
-...
+          <section className="py-16 bg-muted/30">
+            <div className="container mx-auto px-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {stats.map((stat, index) => (
+                  <Card key={index} className="text-center border-2 hover:border-accent/50 transition-all duration-300">
+                    <CardContent className="p-8">
+                      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 mb-4">
+                        <stat.icon className="w-8 h-8 text-accent" />
+                      </div>
+                      <h3 className="text-4xl font-heading font-bold mb-2 text-foreground">
+                        {stat.number}
+                      </h3>
+                      <p className="text-foreground/70">{stat.label}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
           </section>
 
           {/* Team Section - Only show if team members exist */}
           {teamMembers && teamMembers.length > 0 && (
-            <section className="py-16 bg-card">
-...
+            <section className="py-16 bg-background">
+              <div className="container mx-auto px-4">
+                <div className="text-center max-w-3xl mx-auto mb-16">
+                  <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
+                    {teamTitleFirst}
+                    <span className="block text-gradient mt-2">{teamTitleSecond}</span>
+                  </h2>
+                  <p className="text-xl text-foreground/80 leading-relaxed">
+                    {teamDescription}
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {teamMembers.map((member, index) => (
+                    <Card key={member.id} className="overflow-hidden border-2 hover:border-accent/50 transition-all duration-300 hover:shadow-xl">
+                      <CardContent className="p-0">
+                        <div className="aspect-square overflow-hidden">
+                          <img 
+                            src={member.image_url || '/placeholder.svg'} 
+                            alt={member.name}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                        <div className="p-6">
+                          <h3 className="text-2xl font-heading font-bold mb-2 text-foreground">
+                            {member.name}
+                          </h3>
+                          <p className="text-accent font-medium mb-3">{member.title}</p>
+                          <p className="text-foreground/70 leading-relaxed">{member.bio}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
             </section>
           )}
         </main>
