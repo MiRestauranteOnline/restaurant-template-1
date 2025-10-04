@@ -7,6 +7,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { ZoomIn } from "lucide-react";
 import Autoplay from "embla-carousel-autoplay";
 import { useClient } from '@/contexts/ClientContext';
 
@@ -89,19 +91,33 @@ const ImageCarouselMinimalistic = () => {
             ]}
             className="w-full"
           >
-          <CarouselContent>
+            <CarouselContent>
               {images.map((image) => (
                 <CarouselItem key={image.id} className="md:basis-1/2 lg:basis-1/3">
                   <div className="p-2">
-                    <div className="relative aspect-[4/3] overflow-hidden">
-                      <img
-                        src={image.image_url}
-                        alt={image.alt_text || `Gallery image ${image.display_order}`}
-                        className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 border border-border opacity-50" />
-                    </div>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <div className="relative aspect-[4/3] overflow-hidden group cursor-pointer">
+                          <img
+                            src={image.image_url}
+                            alt={image.alt_text || `Gallery image ${image.display_order}`}
+                            className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+                            loading="lazy"
+                          />
+                          <div className="absolute inset-0 border border-border opacity-50" />
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <ZoomIn className="text-white w-8 h-8" />
+                          </div>
+                        </div>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-4xl max-h-[90vh] p-0 bg-transparent border-0">
+                        <img
+                          src={image.image_url}
+                          alt={image.alt_text || `Gallery image ${image.display_order}`}
+                          className="w-full h-auto max-h-[85vh] object-contain rounded-lg"
+                        />
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </CarouselItem>
               ))}
