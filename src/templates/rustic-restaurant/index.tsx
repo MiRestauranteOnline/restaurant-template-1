@@ -12,7 +12,7 @@ import Services from '@/components/Services';
 import HomepageReviewsRustic from '@/components/HomepageReviewsRustic';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
-import ImageCarousel from '@/components/ImageCarousel';
+import ImageCarouselRustic from '@/components/ImageCarouselRustic';
 import ReservationBookingRustic from '@/components/ReservationBookingRustic';
 import StructuredData from '@/components/StructuredData';
 
@@ -39,7 +39,7 @@ const RusticRestaurant = () => {
   const sections = useMemo(() => {
     const sectionList = [
       { order: 1, component: <HeroRustic key="hero" /> },
-      { order: adminContent?.carousel_display_order || 2, component: <ImageCarousel key="carousel" /> },
+      { order: adminContent?.carousel_display_order || 2, component: <ImageCarouselRustic key="carousel" /> },
       { order: 3, component: <AboutRustic key="about" /> },
       { order: 4, component: <MenuRustic key="menu" /> },
       { order: 5, component: <DeliveryServicesRustic key="delivery" /> },
