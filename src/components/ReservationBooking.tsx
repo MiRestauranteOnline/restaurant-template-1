@@ -43,6 +43,7 @@ export default function ReservationBooking() {
   const [loading, setLoading] = useState(false);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [availableCapacity, setAvailableCapacity] = useState<number | null>(null);
+  const [partySizeOptions, setPartySizeOptions] = useState<number[]>([]);
   const [formData, setFormData] = useState({
     date: '',
     time: '',
@@ -76,10 +77,12 @@ export default function ReservationBooking() {
   useEffect(() => {
     if (formData.time && formData.date) {
       updateAvailableCapacity();
+      updatePartySizeOptions();
     } else {
       setAvailableCapacity(null);
+      updatePartySizeOptions();
     }
-  }, [formData.time, formData.date, schedules]);
+  }, [formData.time, formData.date, schedules, globalTableConfigs]);
 
   const fetchSchedules = async () => {
     if (!client?.id) {
@@ -527,27 +530,68 @@ export default function ReservationBooking() {
     setAvailableCapacity(currentSchedule.capacity - totalPartySize);
   };
 
-  // Generate party size options based on current schedule and available capacity
-  const getPartySizeOptions = () => {
+  // Update party size options based on current schedule and available tables
+  const updatePartySizeOptions = async () => {
+    const currentSchedule = getCurrentSchedule();
+    
     if (!currentSchedule) {
-      return Array.from({ length: 10 }, (_, i) => i + 1);
+      setPartySizeOptions(Array.from({ length: 10 }, (_, i) => i + 1));
+      return;
     }
     
     const min = currentSchedule.min_party_size;
     let max = currentSchedule.max_party_size;
     
-    // If we have a selected time and know the available capacity, limit max to available capacity
+    // If table configurations exist and we have date/time selected, check real-time availability
+    if (globalTableConfigs.length > 0 && formData.date && formData.time) {
+      const { getActiveTableConfigs, calculateTableAvailability, findSuitableTable } = await import('@/utils/reservationTableLogic');
+      const activeConfigs = getActiveTableConfigs(currentSchedule, globalTableConfigs);
+      
+      if (activeConfigs.length > 0) {
+        // Fetch existing reservations
+        const { data: existingReservations } = await supabase
+          .from('reservations')
+          .select('reservation_time, party_size, table_config_id')
+          .eq('client_id', client?.id)
+          .eq('reservation_date', formData.date)
+          .in('status', ['pending', 'confirmed']);
+
+        const slotStartMinutes = parseInt(formData.time.split(':')[0]) * 60 + 
+                                 parseInt(formData.time.split(':')[1]);
+        const slotEndMinutes = slotStartMinutes + (currentSchedule.duration_minutes || 120);
+
+        const availableTables = calculateTableAvailability(
+          activeConfigs,
+          (existingReservations as any) || [],
+          slotStartMinutes,
+          slotEndMinutes
+        );
+
+        // Only include party sizes that have available tables
+        const options = [];
+        for (let i = min; i <= max; i++) {
+          const suitableTable = findSuitableTable(i, availableTables);
+          if (suitableTable) {
+            options.push(i);
+          }
+        }
+        
+        setPartySizeOptions(options.length > 0 ? options : [min]);
+        return;
+      }
+    }
+    
+    // Fallback to simple capacity check
     if (availableCapacity !== null && formData.time) {
       max = Math.min(max, availableCapacity);
     }
     
-    // Show options from min to max only
     const options = [];
     for (let i = min; i <= max; i++) {
       options.push(i);
     }
     
-    return options.length > 0 ? options : [min]; // Ensure at least one option
+    setPartySizeOptions(options.length > 0 ? options : [min]);
   };
 
   // Get special groups info message
@@ -661,7 +705,7 @@ export default function ReservationBooking() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {getPartySizeOptions().map((num) => (
+                  {partySizeOptions.map((num) => (
                     <SelectItem key={num} value={num.toString()}>
                       {num} {num === 1 ? 'persona' : 'personas'}
                     </SelectItem>
