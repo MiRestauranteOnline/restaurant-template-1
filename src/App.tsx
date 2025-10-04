@@ -10,12 +10,16 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import LoadingSpinner from "./components/LoadingSpinner";
 import MenuPage from "./pages/MenuPage";
 import MenuPageRustic from "./pages/MenuPageRustic";
+import MenuPageMinimalistic from "./pages/MenuPageMinimalistic";
 import AboutPage from "./pages/AboutPage";
 import AboutPageRustic from "./pages/AboutPageRustic";
+import AboutPageMinimalistic from "./pages/AboutPageMinimalistic";
 import ContactPage from "./pages/ContactPage";
 import ContactPageRustic from "./pages/ContactPageRustic";
+import ContactPageMinimalistic from "./pages/ContactPageMinimalistic";
 import ReviewsPage from "./pages/ReviewsPage";
 import ReviewsPageRustic from "./pages/ReviewsPageRustic";
+import ReviewsPageMinimalistic from "./pages/ReviewsPageMinimalistic";
 import NotFound from "./pages/NotFound";
 import WhatsAppPopup from "./components/WhatsAppPopup";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,6 +29,7 @@ import ErrorPage from "./components/ErrorPage";
 const TEMPLATE_REGISTRY: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
   'modern-restaurant': lazy(() => import('@/templates/modern-restaurant')),
   'rustic-restaurant': lazy(() => import('@/templates/rustic-restaurant')),
+  'minimalistic-restaurant': lazy(() => import('@/templates/minimalistic-restaurant')),
 };
 
 const queryClient = new QueryClient();
@@ -157,7 +162,8 @@ const TemplateAwareAboutPage = () => {
     return <LoadingSpinner />;
   }
 
-  return templateSlug === 'rustic-restaurant' ? <AboutPageRustic /> : <AboutPage />;
+  return templateSlug === 'rustic-restaurant' ? <AboutPageRustic /> : 
+         templateSlug === 'minimalistic-restaurant' ? <AboutPageMinimalistic /> : <AboutPage />;
 };
 
 // Template-aware Menu page wrapper
@@ -199,7 +205,8 @@ const TemplateAwareMenuPage = () => {
     return <LoadingSpinner />;
   }
 
-  return templateSlug === 'rustic-restaurant' ? <MenuPageRustic /> : <MenuPage />;
+  return templateSlug === 'rustic-restaurant' ? <MenuPageRustic /> : 
+         templateSlug === 'minimalistic-restaurant' ? <MenuPageMinimalistic /> : <MenuPage />;
 };
 
 // Template-aware Contact page wrapper
@@ -241,7 +248,8 @@ const TemplateAwareContactPage = () => {
     return <LoadingSpinner />;
   }
 
-  return templateSlug === 'rustic-restaurant' ? <ContactPageRustic /> : <ContactPage />;
+  return templateSlug === 'rustic-restaurant' ? <ContactPageRustic /> : 
+         templateSlug === 'minimalistic-restaurant' ? <ContactPageMinimalistic /> : <ContactPage />;
 };
 
 // Template-aware Reviews page wrapper
@@ -283,7 +291,8 @@ const TemplateAwareReviewsPage = () => {
     return <LoadingSpinner />;
   }
 
-  return templateSlug === 'rustic-restaurant' ? <ReviewsPageRustic /> : <ReviewsPage />;
+  return templateSlug === 'rustic-restaurant' ? <ReviewsPageRustic /> : 
+         templateSlug === 'minimalistic-restaurant' ? <ReviewsPageMinimalistic /> : <ReviewsPage />;
 };
 
 // Theme wrapper component that waits for client data

@@ -1,0 +1,83 @@
+import { Button } from '@/components/ui/button';
+import { useClient } from '@/contexts/ClientContext';
+import { getCachedAdminContent } from '@/utils/cachedContent';
+import { useMenuSectionTracking } from '@/hooks/useMenuSectionTracking';
+
+const MenuMinimalistic = () => {
+  const { menuItems, client } = useClient();
+  
+  const cachedAdminContent = getCachedAdminContent();
+  const menuTitle = (client?.other_customizations as any)?.menu_title || 'Our Menu';
+  const menuDescription = (client?.other_customizations as any)?.menu_description || 
+    'Explore our selection of carefully crafted dishes.';
+  const currency = client?.other_customizations?.currency || '$';
+
+  // Track which section is visible
+  useMenuSectionTracking();
+
+  // Show only first 6 featured items
+  const featuredItems = menuItems.filter(item => item.is_active).slice(0, 6);
+
+  if (featuredItems.length === 0) return null;
+
+  return (
+    <section id="menu" className="py-24 lg:py-32 bg-muted/30">
+      <div className="container mx-auto px-4">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-16 fade-in">
+            <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium mb-4">
+              Menu
+            </p>
+            <h2 className="text-4xl md:text-5xl font-heading font-light mb-4">
+              {menuTitle}
+            </h2>
+            <div className="w-12 h-px bg-accent mx-auto mb-6" />
+            <p className="text-foreground/60 text-lg max-w-2xl mx-auto">
+              {menuDescription}
+            </p>
+          </div>
+
+          {/* Menu Items */}
+          <div className="space-y-6 mb-12">
+            {featuredItems.map((item, index) => (
+              <div 
+                key={item.id}
+                className="fade-in pb-6 border-b border-border/50 last:border-0 group"
+                style={{ animationDelay: `${index * 0.05}s` }}
+              >
+                <div className="flex justify-between items-start gap-4">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-heading mb-2 group-hover:text-accent transition-colors">
+                      {item.name}
+                    </h3>
+                    {item.description && (
+                      <p className="text-foreground/60 text-sm leading-relaxed">
+                        {item.description}
+                      </p>
+                    )}
+                  </div>
+                  <span className="text-xl font-heading text-accent shrink-0">
+                    {currency}{Number(item.price).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* View Full Menu Button */}
+          <div className="text-center">
+            <Button 
+              className="btn-primary px-8 py-3 text-sm rounded-none tracking-wider uppercase"
+              onClick={() => window.location.href = '/menu'}
+            >
+              View Full Menu
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default MenuMinimalistic;
