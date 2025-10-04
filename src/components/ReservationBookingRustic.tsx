@@ -83,6 +83,7 @@ export default function ReservationBookingRustic() {
     
     const min = currentSchedule.min_party_size;
     let max = currentSchedule.max_party_size;
+    let newOptions: number[] = [];
     
     // If table configurations exist and we have date/time selected, check real-time availability
     if (globalTableConfigs.length > 0 && formData.date && formData.time) {
@@ -110,15 +111,22 @@ export default function ReservationBookingRustic() {
         );
 
         // Only include party sizes that have available tables
-        const options = [];
         for (let i = min; i <= max; i++) {
           const suitableTable = findSuitableTable(i, availableTables);
           if (suitableTable) {
-            options.push(i);
+            newOptions.push(i);
           }
         }
         
-        setPartySizeOptions(options.length > 0 ? options : [min]);
+        setPartySizeOptions(newOptions);
+        
+        // Reset party size if current selection is not in available options
+        if (formData.partySize && !newOptions.includes(parseInt(formData.partySize))) {
+          setFormData(prev => ({
+            ...prev,
+            partySize: newOptions.length > 0 ? newOptions[0].toString() : ''
+          }));
+        }
         return;
       }
     }
@@ -128,12 +136,19 @@ export default function ReservationBookingRustic() {
       max = Math.min(max, availableCapacity);
     }
     
-    const options = [];
     for (let i = min; i <= max; i++) {
-      options.push(i);
+      newOptions.push(i);
     }
     
-    setPartySizeOptions(options.length > 0 ? options : [min]);
+    setPartySizeOptions(newOptions);
+    
+    // Reset party size if current selection is not in available options
+    if (formData.partySize && !newOptions.includes(parseInt(formData.partySize))) {
+      setFormData(prev => ({
+        ...prev,
+        partySize: newOptions.length > 0 ? newOptions[0].toString() : ''
+      }));
+    }
   };
 
   useEffect(() => {
