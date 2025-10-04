@@ -3,8 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useClient } from '@/contexts/ClientContext';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { X, ZoomIn } from 'lucide-react';
+import { ZoomIn } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
 
 interface CarouselImage {
@@ -22,7 +21,6 @@ const ImageCarousel = () => {
   const { client, adminContent } = useClient();
   const [images, setImages] = useState<CarouselImage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   
   // Don't render if carousel is disabled
   if (adminContent?.carousel_enabled === false) {
@@ -104,21 +102,11 @@ const ImageCarousel = () => {
                       </div>
                     </DialogTrigger>
                     <DialogContent className="max-w-4xl max-h-[90vh] p-0 bg-transparent border-0">
-                      <div className="relative">
-                        <img
-                          src={image.image_url}
-                          alt={image.alt_text || `Imagen del restaurante ${image.display_order}`}
-                          className="w-full h-auto max-h-[85vh] object-contain rounded-lg"
-                        />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute top-4 right-4 bg-black/50 text-white hover:bg-black/70"
-                          onClick={() => setLightboxImage(null)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <img
+                        src={image.image_url}
+                        alt={image.alt_text || `Imagen del restaurante ${image.display_order}`}
+                        className="w-full h-auto max-h-[85vh] object-contain rounded-lg"
+                      />
                     </DialogContent>
                   </Dialog>
                 </div>
