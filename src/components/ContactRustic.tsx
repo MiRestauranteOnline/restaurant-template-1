@@ -81,9 +81,19 @@ const ContactRustic = () => {
                       </h3>
                       <div className="space-y-1">
                         {info.details.map((detail, idx) => (
-                          <p key={idx} className="text-foreground/70 text-sm leading-relaxed break-words">
-                            {detail}
-                          </p>
+                          info.title === "Email" ? (
+                            <a 
+                              key={idx}
+                              href={`mailto:${detail}`}
+                              className="text-foreground/70 text-sm hover:text-accent transition-colors leading-relaxed break-words block"
+                            >
+                              {detail}
+                            </a>
+                          ) : (
+                            <p key={idx} className="text-foreground/70 text-sm leading-relaxed break-words">
+                              {detail}
+                            </p>
+                          )
                         ))}
                       </div>
                     </div>

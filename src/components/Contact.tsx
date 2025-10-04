@@ -78,9 +78,19 @@ const Contact = () => {
                           {info.title}
                         </h3>
                         {info.details.map((detail, idx) => (
-                          <p key={idx} className="text-foreground/70 text-sm">
-                            {detail}
-                          </p>
+                          info.title === "Email" ? (
+                            <a 
+                              key={idx}
+                              href={`mailto:${detail}`}
+                              className="text-foreground/70 text-sm hover:text-accent transition-colors"
+                            >
+                              {detail}
+                            </a>
+                          ) : (
+                            <p key={idx} className="text-foreground/70 text-sm">
+                              {detail}
+                            </p>
+                          )
                         ))}
                       </div>
                     </div>

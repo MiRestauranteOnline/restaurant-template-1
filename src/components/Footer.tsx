@@ -130,7 +130,16 @@ const Footer = () => {
                     {section.title === "Contacto" ? (
                       <div className="flex items-center space-x-2">
                         <item.icon className="w-4 h-4 text-accent" />
-                        <span>{item.text}</span>
+                        {item.icon === Mail ? (
+                          <a 
+                            href={`mailto:${item.text}`}
+                            className="hover:text-accent transition-colors"
+                          >
+                            {item.text}
+                          </a>
+                        ) : (
+                          <span>{item.text}</span>
+                        )}
                       </div>
                     ) : section.title === "Enlaces" ? (
                       <a

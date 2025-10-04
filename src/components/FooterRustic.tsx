@@ -202,7 +202,16 @@ const FooterRustic = () => {
                     {section.title === "Contacto" ? (
                       <div className="flex items-start gap-3 group">
                         <item.icon className="w-5 h-5 text-accent flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-                        <span className="text-sm leading-relaxed">{item.text}</span>
+                        {item.icon === Mail ? (
+                          <a 
+                            href={`mailto:${item.text}`}
+                            className="text-sm leading-relaxed hover:text-accent transition-colors"
+                          >
+                            {item.text}
+                          </a>
+                        ) : (
+                          <span className="text-sm leading-relaxed">{item.text}</span>
+                        )}
                       </div>
                     ) : section.title === "Enlaces" ? (
                       <a
