@@ -291,8 +291,6 @@ export default function ReservationBookingRustic() {
           reservation_date: formData.date,
           reservation_time: formData.time,
           party_size: parseInt(formData.partySize),
-          customer_name: formData.name,
-          customer_email: formData.email,
           customer_phone: formData.phone,
           special_requests: formData.specialRequests || null,
           table_config_id: tableConfigId,
