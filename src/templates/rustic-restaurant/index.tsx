@@ -13,7 +13,7 @@ import HomepageReviews from '@/components/HomepageReviews';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import ImageCarousel from '@/components/ImageCarousel';
-import ReservationBooking from '@/components/ReservationBooking';
+import ReservationBookingRustic from '@/components/ReservationBookingRustic';
 import StructuredData from '@/components/StructuredData';
 
 /**
@@ -44,7 +44,7 @@ const RusticRestaurant = () => {
       { order: 4, component: <MenuRustic key="menu" /> },
       { order: 5, component: <DeliveryServicesRustic key="delivery" /> },
       { order: 6, component: <Services key="services" /> },
-      { order: 6.5, component: <ReservationBooking key="reservation" /> },
+      { order: 6.5, component: <ReservationBookingRustic key="reservation" /> },
       { order: 7, component: <HomepageReviews key="reviews" /> },
       { order: 8, component: <Contact key="contact" /> },
     ];
