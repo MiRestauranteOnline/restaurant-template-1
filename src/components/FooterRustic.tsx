@@ -107,7 +107,7 @@ const FooterRustic = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 {showButton1 && (
                   <button 
-                    className="btn-primary px-8 py-4 rounded-xl text-lg shadow-md hover:shadow-xl transition-all"
+                    className="btn-primary px-8 py-4 rounded-xl text-lg shadow-md hover:shadow-xl transition-all hover:scale-105"
                     onClick={() => {
                       if (button1Link) {
                         window.open(button1Link, '_blank');
@@ -124,7 +124,7 @@ const FooterRustic = () => {
                 )}
                 {showButton2 && (
                   <button 
-                    className="btn-ghost px-8 py-4 rounded-xl text-lg border-2 hover:bg-accent/10 transition-all"
+                    className="btn-ghost px-8 py-4 rounded-xl text-lg hover:scale-105 transition-all"
                     onClick={() => {
                       if (button2Link) {
                         window.open(button2Link, '_blank');

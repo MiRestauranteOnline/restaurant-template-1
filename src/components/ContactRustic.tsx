@@ -113,7 +113,7 @@ const ContactRustic = () => {
                   <div className="space-y-3">
                     {client?.whatsapp && (
                       <Button 
-                        className="btn-primary w-full py-6 text-base rounded-xl shadow-md hover:shadow-xl transition-all"
+                        className="btn-primary w-full py-6 text-base rounded-xl shadow-md hover:shadow-xl transition-all hover:scale-105"
                         onClick={() => {
                           const whatsappNumber = client?.whatsapp ? 
                             `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
@@ -131,7 +131,7 @@ const ContactRustic = () => {
                     {client?.phone && (
                       <Button 
                         variant="outline"
-                        className="w-full py-6 text-base rounded-xl border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all"
+                        className="w-full py-6 text-base rounded-xl border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground hover:scale-105 transition-all"
                         onClick={() => {
                           const phoneNumber = client?.phone ? 
                             `${client.phone_country_code || '+51'}${client.phone}` : 

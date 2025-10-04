@@ -112,7 +112,7 @@ const DeliveryServicesRustic = () => {
                   
                   <Button
                     asChild
-                    className="w-full btn-primary px-6 py-3 text-base rounded-md border-2 group-hover:scale-105 transition-transform duration-300"
+                    className="w-full btn-primary px-6 py-3 text-base rounded-xl shadow-md hover:shadow-xl transition-all hover:scale-105"
                   >
                     <a 
                       href={service.url} 

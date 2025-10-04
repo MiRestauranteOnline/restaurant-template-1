@@ -56,14 +56,14 @@ const HeroRustic = () => {
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
-                className="btn-primary px-8 py-3 text-lg rounded-md"
+                className="btn-primary px-8 py-3 text-lg rounded-xl shadow-md hover:shadow-xl transition-all hover:scale-105"
                 onClick={() => window.location.href = '/menu'}
               >
                 Ver Menú
               </Button>
               <Button 
                 variant="contrast" 
-                className="px-8 py-3 text-lg rounded-md border-2"
+                className="px-8 py-3 text-lg rounded-xl border-2 hover:scale-105 transition-all"
                 onClick={() => {
                   if (rightButtonLink.startsWith('#')) {
                     document.querySelector(rightButtonLink)?.scrollIntoView({ behavior: 'smooth' });

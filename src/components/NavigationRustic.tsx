@@ -196,7 +196,7 @@ const NavigationRustic = () => {
             {/* 🔒 PROTECTED: Dynamic phone/WhatsApp from Supabase - DO NOT MODIFY LOGIC */}
             {(client?.phone || cachedClient?.phone) && !(clientSettings?.hide_phone_button_menu ?? cachedSettings?.hide_phone_button_menu ?? false) && (
               <Button 
-                className="btn-ghost px-5 py-2 rounded-xl text-sm font-medium transition-all hover:scale-105"
+                className="btn-ghost px-5 py-2 rounded-xl text-sm font-medium hover:scale-105 transition-all"
                 onClick={() => {
                   trackButtonClick('phone', { source: 'navigation_desktop' });
                   const phoneNumber = client?.phone ? 
@@ -306,7 +306,7 @@ const NavigationRustic = () => {
               <div className="pt-4 space-y-3">
                 {(client?.phone || cachedClient?.phone) && !(clientSettings?.hide_phone_button_menu ?? cachedSettings?.hide_phone_button_menu ?? false) && (
                   <Button 
-                    className="btn-ghost w-full rounded-xl py-3 text-base"
+                    className="btn-ghost w-full rounded-xl py-3 text-base hover:scale-105 transition-all"
                     onClick={() => {
                       trackButtonClick('phone', { source: 'navigation_mobile' });
                       const phoneNumber = client?.phone ? 
@@ -320,7 +320,7 @@ const NavigationRustic = () => {
                 )}
                 {(client?.whatsapp || cachedClient?.whatsapp) && !(clientSettings?.hide_whatsapp_button_menu ?? cachedSettings?.hide_whatsapp_button_menu ?? false) && (
                   <Button 
-                    className="btn-primary w-full rounded-xl py-3 text-base shadow-md"
+                    className="btn-primary w-full rounded-xl py-3 text-base shadow-md hover:shadow-xl transition-all hover:scale-105"
                     onClick={() => {
                       trackButtonClick('whatsapp', { source: 'navigation_mobile' });
                       const whatsappNumber = client?.whatsapp ? 
@@ -335,7 +335,7 @@ const NavigationRustic = () => {
                 )}
                 {(clientSettings?.custom_cta_button_link || cachedSettings?.custom_cta_button_link) && (
                   <Button 
-                    className="btn-secondary w-full rounded-xl py-3 text-base shadow-md"
+                    className="btn-secondary w-full rounded-xl py-3 text-base shadow-md hover:shadow-xl transition-all hover:scale-105"
                     onClick={() => {
                       const link = clientSettings?.custom_cta_button_link || cachedSettings?.custom_cta_button_link;
                       if (link?.startsWith('http')) {

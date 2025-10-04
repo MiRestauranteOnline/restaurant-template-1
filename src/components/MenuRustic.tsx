@@ -104,7 +104,7 @@ const MenuRustic = () => {
 
         <div className="text-left fade-in">
           <Button 
-            className="btn-primary px-8 py-3 text-lg rounded-md border-2"
+            className="btn-primary px-8 py-3 text-lg rounded-xl shadow-md hover:shadow-xl transition-all hover:scale-105"
             onClick={() => window.location.href = '/menu'}
           >
             Ver Menú Completo
