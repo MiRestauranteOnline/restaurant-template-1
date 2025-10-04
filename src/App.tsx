@@ -295,6 +295,15 @@ const TemplateAwareReviewsPage = () => {
          templateSlug === 'minimalistic-restaurant' ? <ReviewsPageMinimalistic /> : <ReviewsPage />;
 };
 
+// Redirect component for external URLs
+const ExternalRedirect = ({ to }: { to: string }) => {
+  useEffect(() => {
+    window.location.replace(to);
+  }, [to]);
+  
+  return <LoadingSpinner />;
+};
+
 // Theme wrapper component that waits for client data
 const ThemedApp = () => {
   console.log('🔍 ThemedApp: Component mounting');
@@ -328,6 +337,7 @@ const ThemedApp = () => {
       <AnalyticsProvider>
         <Routes>
           <Route path="/" element={<TemplateSwitcher />} />
+          <Route path="/login" element={<ExternalRedirect to="https://mirestaurante.online/auth" />} />
           <Route path="/menu" element={<TemplateAwareMenuPage />} />
           <Route path="/about" element={<TemplateAwareAboutPage />} />
           <Route path="/contact" element={<TemplateAwareContactPage />} />
