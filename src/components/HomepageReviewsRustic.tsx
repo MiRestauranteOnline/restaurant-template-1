@@ -32,68 +32,62 @@ const HomepageReviewsRustic = () => {
   return (
     <section id="reviews" className="py-20 lg:py-32 bg-background">
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left side - Reviews */}
-          <div>
-            <div className="grid md:grid-cols-2 gap-6">
-              {homepageReviews.map((review, index) => (
-                <Card 
-                  key={review.id} 
-                  className="bg-card border-2 border-border card-hover fade-in"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <CardContent className="p-6">
-                    <div className="flex items-center mb-4">
-                      <div className="flex space-x-1 mr-3">
-                        {renderStars(review.star_rating)}
-                      </div>
-                      <span className="text-sm text-foreground/60">
-                        {new Date(review.created_at).toLocaleDateString('es-ES', { 
-                          month: 'long',
-                          day: 'numeric'
-                        })}
-                      </span>
-                    </div>
-                    
-                    <p className="text-foreground/80 mb-4 leading-relaxed">
-                      "{review.review_text}"
-                    </p>
-                    
-                    <div className="border-t-2 border-accent/20 pt-4">
-                      <p className="font-medium text-foreground">
-                        {review.reviewer_name}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+        <div className="text-left max-w-3xl mb-16 fade-in">
+          <span className="text-accent font-medium tracking-wider uppercase text-sm border-l-4 border-accent pl-4">
+            {(adminContent as any)?.testimonials_label || 'Testimonios'}
+          </span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading mt-4 mb-6 border-l-4 border-foreground/10 pl-4">
+            <span className="block">{reviewsTitleFirstLine}</span>
+            {reviewsTitleSecondLine && (
+              <span className="block text-gradient mt-2">{reviewsTitleSecondLine}</span>
+            )}
+          </h2>
+          <p className="text-xl text-foreground/80 leading-relaxed pl-4">
+            Cada opinión refleja nuestro compromiso con la excelencia culinaria y el servicio excepcional.
+          </p>
+        </div>
 
-            <div className="mt-8">
-              <div className="inline-flex items-center space-x-2 text-accent">
-                <div className="flex space-x-1">
-                  {renderStars(5)}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {homepageReviews.map((review, index) => (
+            <Card 
+              key={review.id} 
+              className="card-hover bg-card border-2 border-border overflow-hidden group relative"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center mb-4 pb-4 border-b-2 border-accent/20">
+                  <div className="flex space-x-1 mr-3">
+                    {renderStars(review.star_rating)}
+                  </div>
+                  <span className="text-sm text-foreground/60">
+                    {new Date(review.created_at).toLocaleDateString('es-ES', { 
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </span>
                 </div>
-                <span className="text-lg font-medium">{averageRating.toFixed(1)}/5</span>
-                <span className="text-foreground/60">de {reviews.length} reseñas</span>
-              </div>
-            </div>
-          </div>
+                
+                <p className="text-foreground/80 mb-6 leading-relaxed min-h-[100px]">
+                  "{review.review_text}"
+                </p>
+                
+                <div className="pt-4">
+                  <p className="font-heading text-lg font-bold text-foreground group-hover:text-accent transition-colors">
+                    {review.reviewer_name}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-          {/* Right side - Header content */}
-          <div className="text-left fade-in lg:pl-8">
-            <span className="text-accent font-medium tracking-wider uppercase text-sm border-l-4 border-accent pl-4">
-              {(adminContent as any)?.testimonials_label || 'Testimonios'}
-            </span>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading mt-4 mb-6 border-l-4 border-foreground/10 pl-4">
-              <span className="block">{reviewsTitleFirstLine}</span>
-              {reviewsTitleSecondLine && (
-                <span className="block text-gradient mt-2">{reviewsTitleSecondLine}</span>
-              )}
-            </h2>
-            <p className="text-xl text-foreground/80 leading-relaxed pl-4">
-              Cada opinión refleja nuestro compromiso con la excelencia culinaria y el servicio excepcional.
-            </p>
+        <div className="mt-12 flex items-center gap-4">
+          <div className="inline-flex items-center space-x-2 bg-accent/10 px-6 py-3 rounded-md border-2 border-accent/20">
+            <div className="flex space-x-1">
+              {renderStars(5)}
+            </div>
+            <span className="text-2xl font-heading font-bold text-accent">{averageRating.toFixed(1)}/5</span>
+            <span className="text-foreground/60">de {reviews.length} reseñas</span>
           </div>
         </div>
       </div>
