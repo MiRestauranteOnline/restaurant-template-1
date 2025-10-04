@@ -29,12 +29,11 @@ const NavigationMinimalistic = () => {
   }, []);
 
   const navLinks = [
-    { label: 'Home', href: '/' },
-    { label: 'Menu', href: '/menu' },
-    { label: 'About', href: '/about' },
-    ...(hasReviews ? [{ label: 'Reviews', href: '/reviews' }] : []),
-    ...(showDeliveryInNav ? [{ label: 'Delivery', href: '/#delivery' }] : []),
-    { label: 'Contact', href: '/contact' },
+    { label: 'Inicio', href: '/' },
+    { label: 'Sobre Nosotros', href: '/about' },
+    { label: 'Menú', href: '/menu' },
+    { label: 'Reseñas', href: '/reviews' },
+    { label: 'Contacto', href: '/contact' },
   ];
 
   return (
@@ -62,7 +61,9 @@ const NavigationMinimalistic = () => {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm tracking-[0.2em] uppercase text-foreground/70 hover:text-accent transition-colors"
+                className={`text-sm tracking-[0.2em] uppercase text-foreground/70 hover:text-accent transition-colors ${
+                  link.href === '/reviews' && !hasReviews ? 'invisible' : ''
+                }`}
               >
                 {link.label}
               </a>

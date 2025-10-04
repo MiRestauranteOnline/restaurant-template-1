@@ -36,7 +36,7 @@ const ContactMinimalistic = () => {
           </div>
 
           {/* Contact Info */}
-          <div className="text-center space-y-6 fade-in">
+          <div className="text-center space-y-8 fade-in">
             {client?.address && (
               <div className="flex flex-col items-center gap-3">
                 <MapPin className="w-6 h-6 text-accent" />
@@ -45,6 +45,38 @@ const ContactMinimalistic = () => {
                 </p>
               </div>
             )}
+
+            {/* Contact Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {client?.whatsapp && (
+                <button 
+                  className="btn-primary px-8 py-3 text-sm rounded-none tracking-wider uppercase"
+                  onClick={() => {
+                    const whatsappNumber = client?.whatsapp ? 
+                      `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
+                      '51987654321';
+                    const message = (adminContent as any)?.whatsapp_reservation_message || 'Hola, me gustaría hacer una reserva';
+                    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+                  }}
+                >
+                  {(adminContent as any)?.homepage_cta_button1_text || 'WhatsApp'}
+                </button>
+              )}
+              
+              {client?.phone && (
+                <button 
+                  className="btn-ghost px-8 py-3 text-sm rounded-none tracking-wider uppercase"
+                  onClick={() => {
+                    const phoneNumber = client?.phone ? 
+                      `${client.phone_country_code || '+51'}${client.phone}` : 
+                      '+51987654321';
+                    window.open(`tel:${phoneNumber}`, '_self');
+                  }}
+                >
+                  {(adminContent as any)?.homepage_cta_button2_text || 'Llamar'}
+                </button>
+              )}
+            </div>
 
             {/* Map */}
             {client?.coordinates && (
