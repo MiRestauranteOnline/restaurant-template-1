@@ -479,21 +479,24 @@ export default function ReservationBookingRustic() {
   return (
     <section className="py-20 lg:py-32 bg-background">
       <div className="container mx-auto px-4">
-        <div className="text-left max-w-3xl mb-16 fade-in">
-          <span className="text-accent font-medium tracking-wider uppercase text-sm border-l-4 border-accent pl-4">
-            Experiencia Exclusiva
-          </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading mt-4 mb-6 border-l-4 border-foreground/10 pl-4">
-            <span className="block">Reserva tu</span>
-            <span className="block text-gradient mt-2">Mesa</span>
-          </h2>
-          <p className="text-xl text-foreground/80 leading-relaxed pl-4">
-            Disponible: {availableDays}
-          </p>
-        </div>
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+          {/* Left side - Header content */}
+          <div className="text-left fade-in">
+            <span className="text-accent font-medium tracking-wider uppercase text-sm border-l-4 border-accent pl-4">
+              Experiencia Exclusiva
+            </span>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading mt-4 mb-6 border-l-4 border-foreground/10 pl-4">
+              <span className="block">Reserva tu</span>
+              <span className="block text-gradient mt-2">Mesa</span>
+            </h2>
+            <p className="text-xl text-foreground/80 leading-relaxed pl-4">
+              Disponible: {availableDays}
+            </p>
+          </div>
 
-        <div className="max-w-2xl">
-          <form onSubmit={handleSubmit} className="space-y-6 bg-card p-8 rounded-lg border-2 border-border">
+          {/* Right side - Form */}
+          <div>
+            <form onSubmit={handleSubmit} className="space-y-6 bg-card p-8 rounded-lg border-2 border-border">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <Label htmlFor="date">Fecha</Label>
@@ -637,6 +640,7 @@ export default function ReservationBookingRustic() {
               </p>
             )}
           </form>
+          </div>
         </div>
       </div>
     </section>
