@@ -15,6 +15,7 @@ import FooterRustic from '@/components/FooterRustic';
 import ImageCarouselRustic from '@/components/ImageCarouselRustic';
 import ReservationBookingRustic from '@/components/ReservationBookingRustic';
 import StructuredData from '@/components/StructuredData';
+import { Separator } from '@/components/ui/separator';
 
 /**
  * RUSTIC RESTAURANT TEMPLATE
@@ -44,6 +45,21 @@ const RusticRestaurant = () => {
       { order: 4, component: <MenuRustic key="menu" /> },
       { order: 5, component: <DeliveryServicesRustic key="delivery" /> },
       { order: 6, component: <ServicesRustic key="services" /> },
+      { order: 6.4, component: (
+        <div key="divider" className="container mx-auto px-4 py-12">
+          <div className="flex items-center gap-4">
+            <Separator className="flex-1 bg-border/50" />
+            <div className="flex gap-2">
+              <div className="w-2 h-2 rounded-full bg-accent/40"></div>
+              <div className="w-2 h-2 rounded-full bg-accent/60"></div>
+              <div className="w-2 h-2 rounded-full bg-accent"></div>
+              <div className="w-2 h-2 rounded-full bg-accent/60"></div>
+              <div className="w-2 h-2 rounded-full bg-accent/40"></div>
+            </div>
+            <Separator className="flex-1 bg-border/50" />
+          </div>
+        </div>
+      ) },
       { order: 6.5, component: <ReservationBookingRustic key="reservation" /> },
       { order: 7, component: <HomepageReviewsRustic key="reviews" /> },
       { order: 8, component: <ContactRustic key="contact" /> },
