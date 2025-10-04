@@ -1330,6 +1330,7 @@ export type Database = {
           capacity: number
           client_id: string
           created_at: string
+          custom_table_configs: Json | null
           day_of_week: number
           duration_minutes: number
           end_time: string
@@ -1347,6 +1348,7 @@ export type Database = {
           capacity: number
           client_id: string
           created_at?: string
+          custom_table_configs?: Json | null
           day_of_week: number
           duration_minutes?: number
           end_time: string
@@ -1364,6 +1366,7 @@ export type Database = {
           capacity?: number
           client_id?: string
           created_at?: string
+          custom_table_configs?: Json | null
           day_of_week?: number
           duration_minutes?: number
           end_time?: string
@@ -1400,6 +1403,7 @@ export type Database = {
           reservation_time: string
           special_requests: string | null
           status: string
+          table_config_id: string | null
           updated_at: string
         }
         Insert: {
@@ -1414,6 +1418,7 @@ export type Database = {
           reservation_time: string
           special_requests?: string | null
           status?: string
+          table_config_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -1428,6 +1433,7 @@ export type Database = {
           reservation_time?: string
           special_requests?: string | null
           status?: string
+          table_config_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1436,6 +1442,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservations_table_config_id_fkey"
+            columns: ["table_config_id"]
+            isOneToOne: false
+            referencedRelation: "table_configurations"
             referencedColumns: ["id"]
           },
         ]
@@ -1641,6 +1654,53 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "support_tickets_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      table_configurations: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          max_party_size: number
+          min_party_size: number
+          quantity: number
+          seats: number
+          table_name: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_party_size: number
+          min_party_size: number
+          quantity: number
+          seats: number
+          table_name: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_party_size?: number
+          min_party_size?: number
+          quantity?: number
+          seats?: number
+          table_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "table_configurations_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
