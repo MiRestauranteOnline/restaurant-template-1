@@ -7,7 +7,7 @@ import Navigation from '@/components/Navigation';
 import HeroRustic from '@/components/HeroRustic';
 import AboutRustic from '@/components/AboutRustic';
 import MenuRustic from '@/components/MenuRustic';
-import DeliveryServices from '@/components/DeliveryServices';
+import DeliveryServicesRustic from '@/components/DeliveryServicesRustic';
 import Services from '@/components/Services';
 import HomepageReviews from '@/components/HomepageReviews';
 import Contact from '@/components/Contact';
@@ -42,7 +42,7 @@ const RusticRestaurant = () => {
       { order: adminContent?.carousel_display_order || 2, component: <ImageCarousel key="carousel" /> },
       { order: 3, component: <AboutRustic key="about" /> },
       { order: 4, component: <MenuRustic key="menu" /> },
-      { order: 5, component: <DeliveryServices key="delivery" /> },
+      { order: 5, component: <DeliveryServicesRustic key="delivery" /> },
       { order: 6, component: <Services key="services" /> },
       { order: 6.5, component: <ReservationBooking key="reservation" /> },
       { order: 7, component: <HomepageReviews key="reviews" /> },
