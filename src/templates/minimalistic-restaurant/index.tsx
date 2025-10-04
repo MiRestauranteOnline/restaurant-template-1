@@ -14,6 +14,7 @@ import FooterMinimalistic from '@/components/FooterMinimalistic';
 import ImageCarouselMinimalistic from '@/components/ImageCarouselMinimalistic';
 import ReservationBookingMinimalistic from '@/components/ReservationBookingMinimalistic';
 import StructuredData from '@/components/StructuredData';
+import HeadScripts from '@/components/HeadScripts';
 
 /**
  * MINIMALISTIC RESTAURANT TEMPLATE
@@ -42,6 +43,7 @@ const MinimalisticRestaurant = () => {
 
   return (
     <>
+      <HeadScripts />
       <StructuredData />
       <div className="min-h-screen bg-background">
         <NavigationMinimalistic />

@@ -15,6 +15,7 @@ import FooterRustic from '@/components/FooterRustic';
 import ImageCarouselRustic from '@/components/ImageCarouselRustic';
 import ReservationBookingRustic from '@/components/ReservationBookingRustic';
 import StructuredData from '@/components/StructuredData';
+import HeadScripts from '@/components/HeadScripts';
 import { Separator } from '@/components/ui/separator';
 
 /**
@@ -70,6 +71,7 @@ const RusticRestaurant = () => {
 
   return (
     <>
+      <HeadScripts />
       <StructuredData />
       <div className="min-h-screen bg-background">
         <NavigationRustic />
