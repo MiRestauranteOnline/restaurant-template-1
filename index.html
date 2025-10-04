@@ -53,20 +53,22 @@
       // Immediate font application from cache to prevent layout shifts
       (function() {
         try {
-          // Get subdomain for demos/localhost
+          // Get domain for cache lookup (same logic as the app)
           const hostname = window.location.hostname;
-          const subdomain = (hostname === 'localhost' || hostname.includes('lovable') || hostname.includes('lovableproject.com')) ? 'demos' : hostname.split('.')[0];
+          const domain = (hostname === 'localhost' || hostname.includes('lovable') || hostname.includes('lovableproject.com')) 
+            ? 'demos' 
+            : hostname.split('.')[0];
           
-          // Load cached font settings immediately
-          const cacheKey = `fonts_${subdomain}`;
+          // Try to load from client_styles cache (main cache)
+          const cacheKey = `client_styles_${domain}`;
           const cached = localStorage.getItem(cacheKey);
           
           if (cached) {
             const parsed = JSON.parse(cached);
-            const data = parsed && typeof parsed === 'object' && 'data' in parsed ? parsed.data : parsed;
+            const data = parsed.data;
             const root = document.documentElement;
             
-            // Apply fonts and weights immediately to prevent any shifts
+            // Apply fonts synchronously BEFORE any rendering
             if (data.title_font) {
               const serifFonts = ['Playfair Display', 'Cormorant Garamond', 'Merriweather', 'Crimson Text', 'Libre Baskerville', 'Lora', 'Source Serif Pro'];
               const isSerif = serifFonts.includes(data.title_font);
@@ -89,7 +91,7 @@
               root.style.setProperty('--font-heading-weight', data.title_font_weight);
             }
             
-            // Force immediate style recalculation
+            // Force immediate style recalculation to ensure fonts apply before first render
             root.offsetHeight;
           }
         } catch (error) {

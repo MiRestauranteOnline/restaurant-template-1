@@ -51,6 +51,11 @@ export interface FastLoadData {
   header_background_enabled?: boolean;
   header_background_style?: string;
   
+  // Font settings - critical for preventing FOUC
+  title_font?: string;
+  body_font?: string;
+  title_font_weight?: string;
+  
   // Navigation critical data
   has_reviews: boolean;
   delivery_services: Array<{

@@ -157,6 +157,11 @@ serve(async (req) => {
       header_background_enabled: clientSettings?.header_background_enabled,
       header_background_style: clientSettings?.header_background_style,
       
+      // Font settings - critical for preventing FOUC
+      title_font: clientSettings?.title_font,
+      body_font: clientSettings?.body_font,
+      title_font_weight: clientSettings?.title_font_weight,
+      
       // Navigation critical data
       has_reviews: reviews && reviews.length > 0,
       delivery_services: deliveryServices,

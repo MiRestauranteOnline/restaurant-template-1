@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { getFastLoadData, generateFastLoadData } from '@/utils/fastLoadData';
 import { ensureFastLoadDataExists } from '@/utils/triggerFastLoad';
-import { loadAndApplyFonts, cacheFonts, applyEarlyFonts, type FontSettings } from '@/utils/fontManager';
+import { loadAndApplyFonts, loadGoogleFonts, cacheFonts, applyEarlyFonts, type FontSettings } from '@/utils/fontManager';
 
 // Utility function to convert hex to HSL
 const hexToHsl = (hex: string) => {
@@ -186,12 +186,16 @@ const applyEarlyStyles = (domain: string) => {
     // Apply cached primary color immediately with text style
     applyDynamicColors(cachedData.primary_color, cachedData.primary_button_text_style);
     
-    // Apply cached fonts immediately
+    // Apply cached fonts synchronously (fonts already applied by inline script in index.html)
+    // Just ensure they're loaded in the background for when the actual font files arrive
     if (cachedData.title_font || cachedData.body_font) {
-      loadAndApplyFonts({
+      // Load fonts asynchronously without blocking
+      loadGoogleFonts({
         titleFont: cachedData.title_font,
         bodyFont: cachedData.body_font,
         titleFontWeight: cachedData.title_font_weight
+      }).catch(() => {
+        // Silently fail - fonts are already applied via CSS variables
       });
     }
     
