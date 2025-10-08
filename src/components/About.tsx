@@ -117,24 +117,24 @@ const About = () => {
               <p>{aboutMission}</p>
             </div>
 
-            <div className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-border">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mt-12 pt-8 border-t border-border">
               <div className="text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary rounded-full mb-4">
                   <div className="text-2xl font-heading font-bold text-accent">{stats.experience.number}</div>
                 </div>
-                <div className="text-sm text-foreground/60 uppercase tracking-wider">{stats.experience.label}</div>
+                <div className="text-xs sm:text-sm text-foreground/60 uppercase tracking-wider break-words px-2">{stats.experience.label}</div>
               </div>
               <div className="text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary rounded-full mb-4">
                   <div className="text-2xl font-heading font-bold text-accent">{stats.clients.number}</div>
                 </div>
-                <div className="text-sm text-foreground/60 uppercase tracking-wider">{stats.clients.label}</div>
+                <div className="text-xs sm:text-sm text-foreground/60 uppercase tracking-wider break-words px-2">{stats.clients.label}</div>
               </div>
               <div className="text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary rounded-full mb-4">
                   <div className="text-2xl font-heading font-bold text-accent">{stats.awards.number}</div>
                 </div>
-                <div className="text-sm text-foreground/60 uppercase tracking-wider">{stats.awards.label}</div>
+                <div className="text-xs sm:text-sm text-foreground/60 uppercase tracking-wider break-words px-2">{stats.awards.label}</div>
               </div>
             </div>
           </div>

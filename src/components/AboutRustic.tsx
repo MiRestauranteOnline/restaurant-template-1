@@ -83,18 +83,18 @@ const AboutRustic = () => {
       <div className="container mx-auto px-4">
         {/* Stats Bar at Top */}
         <div className="fade-in mb-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="text-center p-6 bg-background/50 backdrop-blur-sm border-2 border-border">
-              <div className="text-5xl font-heading font-bold text-accent mb-2">{stats.experience.number}</div>
-              <div className="text-sm text-foreground/70 uppercase tracking-widest">{stats.experience.label}</div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-4xl mx-auto">
+            <div className="text-center p-4 sm:p-6 bg-background/50 backdrop-blur-sm border-2 border-border">
+              <div className="text-4xl sm:text-5xl font-heading font-bold text-accent mb-2">{stats.experience.number}</div>
+              <div className="text-xs sm:text-sm text-foreground/70 uppercase tracking-widest break-words px-2">{stats.experience.label}</div>
             </div>
-            <div className="text-center p-6 bg-background/50 backdrop-blur-sm border-2 border-border">
-              <div className="text-5xl font-heading font-bold text-accent mb-2">{stats.clients.number}</div>
-              <div className="text-sm text-foreground/70 uppercase tracking-widest">{stats.clients.label}</div>
+            <div className="text-center p-4 sm:p-6 bg-background/50 backdrop-blur-sm border-2 border-border">
+              <div className="text-4xl sm:text-5xl font-heading font-bold text-accent mb-2">{stats.clients.number}</div>
+              <div className="text-xs sm:text-sm text-foreground/70 uppercase tracking-widest break-words px-2">{stats.clients.label}</div>
             </div>
-            <div className="text-center p-6 bg-background/50 backdrop-blur-sm border-2 border-border">
-              <div className="text-5xl font-heading font-bold text-accent mb-2">{stats.awards.number}</div>
-              <div className="text-sm text-foreground/70 uppercase tracking-widest">{stats.awards.label}</div>
+            <div className="text-center p-4 sm:p-6 bg-background/50 backdrop-blur-sm border-2 border-border">
+              <div className="text-4xl sm:text-5xl font-heading font-bold text-accent mb-2">{stats.awards.number}</div>
+              <div className="text-xs sm:text-sm text-foreground/70 uppercase tracking-widest break-words px-2">{stats.awards.label}</div>
             </div>
           </div>
         </div>
