@@ -6,11 +6,11 @@ const CACHE_PREFIX = 'client_styles_';
 const getCacheKey = (domain: string) => `${CACHE_PREFIX}${domain}`;
 
 const getDomainFromUrl = (): string => {
-  // For development and Lovable platform, use demos domain
+  // For development and Lovable platform, use demo domain
   if (window.location.hostname === 'localhost' || 
       window.location.hostname.includes('lovable') ||
       window.location.hostname.includes('lovableproject.com')) {
-    return 'demos'; // Default domain for template
+    return 'demo'; // Default domain for template
   }
   
   const hostname = window.location.hostname;

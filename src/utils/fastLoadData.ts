@@ -76,7 +76,7 @@ const getDomainFromUrl = (): string => {
   if (window.location.hostname === 'localhost' || 
       window.location.hostname.includes('lovable') ||
       window.location.hostname.includes('lovableproject.com')) {
-    return 'demos';
+    return 'demo';
   }
   
   const hostname = window.location.hostname;

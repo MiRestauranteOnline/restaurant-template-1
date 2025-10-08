@@ -1,7 +1,7 @@
 // Utility to manually trigger fast-load data generation
 import { supabase } from '@/integrations/supabase/client';
 
-export const triggerFastLoadGeneration = async (domain: string = 'demos') => {
+export const triggerFastLoadGeneration = async (domain: string = 'demo') => {
   try {
     const { data, error } = await supabase.functions.invoke('prebuild-client-data', {
       body: { domain }
@@ -26,11 +26,11 @@ export const ensureFastLoadDataExists = async () => {
     // Check if fast-load data exists
     const { error } = await supabase.storage
       .from('client-assets')
-      .download('fast-load/demos.json');
+      .download('fast-load/demo.json');
 
     if (error && error.message.includes('not found')) {
       console.log('No fast-load data found, generating...');
-      await triggerFastLoadGeneration('demos');
+      await triggerFastLoadGeneration('demo');
     }
   } catch (error) {
     console.warn('Error checking fast-load data:', error);

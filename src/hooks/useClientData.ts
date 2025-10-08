@@ -475,11 +475,11 @@ const globalDataCache: GlobalDataCache = {
 
 // Helper function for domain detection
 function getDomainFromUrl(): string {
-  // For development and Lovable platform, use demos domain
+  // For development and Lovable platform, use demo domain
   if (window.location.hostname === 'localhost' || 
       window.location.hostname.includes('lovable') ||
       window.location.hostname.includes('lovableproject.com')) {
-    return 'demos'; // Default domain for template
+    return 'demo'; // Default domain for template
   }
   
   const hostname = window.location.hostname;
@@ -676,11 +676,11 @@ export const useClientData = (domain?: string) => {
   }, [detectedDomain]);
 
   function getDomainFromUrl(): string {
-    // For development and Lovable platform, use demos domain
+    // For development and Lovable platform, use demo domain
     if (window.location.hostname === 'localhost' || 
         window.location.hostname.includes('lovable') ||
         window.location.hostname.includes('lovableproject.com')) {
-      return 'demos'; // Default domain for template
+      return 'demo'; // Default domain for template
     }
     
     const hostname = window.location.hostname;

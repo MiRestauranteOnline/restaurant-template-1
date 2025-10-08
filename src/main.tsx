@@ -7,9 +7,9 @@ import { preloadAllClientData } from "@/hooks/useClientData";
 // Clear old cache to force fresh data load
 const clearOldDomainCache = () => {
   try {
-    // Clear demos domain cache
-    localStorage.removeItem('fast_load_data_demos');
-    localStorage.removeItem('client_styles_demos');
+    // Clear demo domain cache
+    localStorage.removeItem('fast_load_data_demo');
+    localStorage.removeItem('client_styles_demo');
     console.log('🧹 Cleared old domain cache entries');
   } catch (error) {
     console.warn('Failed to clear old cache:', error);
