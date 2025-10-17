@@ -7,11 +7,11 @@ import { getCachedClientData } from '@/utils/cachedContent';
  * Scales all h1 and h2 elements by the specified percentage
  */
 export const useTitleScale = () => {
-  const { client } = useClient();
+  const { clientSettings } = useClient();
   const cachedClient = getCachedClientData();
   
   useEffect(() => {
-    const scale = client?.title_size_scale ?? cachedClient?.title_size_scale ?? 0;
+    const scale = clientSettings?.title_size_scale ?? cachedClient?.title_size_scale ?? 0;
     
     // Convert percentage to scale multiplier
     // -50% -> 0.5, 0% -> 1.0, 50% -> 1.5
@@ -19,5 +19,5 @@ export const useTitleScale = () => {
     
     // Apply the scale as a CSS custom property
     document.documentElement.style.setProperty('--title-size-scale', multiplier.toString());
-  }, [client?.title_size_scale, cachedClient?.title_size_scale]);
+  }, [clientSettings?.title_size_scale, cachedClient?.title_size_scale]);
 };
