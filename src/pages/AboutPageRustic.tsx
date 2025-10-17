@@ -91,7 +91,7 @@ const AboutPageRustic = () => {
 
         {/* About Component */}
         <main>
-          <AboutRustic />
+          {adminContent?.about_page_about_section_visible !== false && <AboutRustic />}
 
           {/* Decorative Divider */}
           <div className="container mx-auto px-4 py-12">
@@ -109,37 +109,39 @@ const AboutPageRustic = () => {
           </div>
 
           {/* Stats Section - Rustic Style */}
-          <section className="py-20 lg:py-32 bg-muted/30">
-            <div className="container mx-auto px-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {stats.map((stat, index) => (
-                  <Card 
-                    key={index} 
-                    className="text-left border-2 border-border card-hover bg-card overflow-hidden group"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <CardContent className="p-8">
-                      <div className="flex items-start gap-6 mb-4">
-                        <div className="flex-shrink-0 p-4 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors duration-300">
-                          <stat.icon className="w-10 h-10 text-accent" />
+          {adminContent?.about_page_stats_section_visible !== false && (
+            <section className="py-20 lg:py-32 bg-muted/30">
+              <div className="container mx-auto px-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {stats.map((stat, index) => (
+                    <Card 
+                      key={index} 
+                      className="text-left border-2 border-border card-hover bg-card overflow-hidden group"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      <CardContent className="p-8">
+                        <div className="flex items-start gap-6 mb-4">
+                          <div className="flex-shrink-0 p-4 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors duration-300">
+                            <stat.icon className="w-10 h-10 text-accent" />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="text-5xl font-heading font-bold mb-2 text-foreground group-hover:text-accent transition-colors">
+                              {stat.number}
+                            </h3>
+                            <div className="w-16 h-1 bg-accent/30 rounded-full mb-3"></div>
+                            <p className="text-foreground/70 text-lg leading-relaxed">{stat.label}</p>
+                          </div>
                         </div>
-                        <div className="flex-1">
-                          <h3 className="text-5xl font-heading font-bold mb-2 text-foreground group-hover:text-accent transition-colors">
-                            {stat.number}
-                          </h3>
-                          <div className="w-16 h-1 bg-accent/30 rounded-full mb-3"></div>
-                          <p className="text-foreground/70 text-lg leading-relaxed">{stat.label}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+          )}
 
           {/* Team Section - Rustic Style - Only show if team members exist */}
-          {teamMembers && teamMembers.length > 0 && (
+          {adminContent?.about_page_team_section_visible !== false && teamMembers && teamMembers.length > 0 && (
             <section className="py-20 lg:py-32 bg-background">
               <div className="container mx-auto px-4">
                 {/* Header */}

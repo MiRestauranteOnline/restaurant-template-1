@@ -31,17 +31,17 @@ const MinimalisticRestaurant = () => {
     const sectionList = [
       { order: 1, component: <HeroMinimalistic key="hero" /> },
       { order: adminContent?.carousel_display_order || 2, component: <ImageCarouselMinimalistic key="carousel" /> },
-      { order: 3, component: <AboutMinimalistic key="about" /> },
-      { order: 4, component: <MenuMinimalistic key="menu" /> },
+      ...(adminContent?.homepage_about_section_visible !== false ? [{ order: 3, component: <AboutMinimalistic key="about" /> }] : []),
+      ...(adminContent?.homepage_menu_section_visible !== false ? [{ order: 4, component: <MenuMinimalistic key="menu" /> }] : []),
       { order: 5, component: <DeliveryServicesMinimalistic key="delivery" /> },
-      { order: 6, component: <ServicesMinimalistic key="services" /> },
-      { order: 6.5, component: <ReservationBookingMinimalistic key="reservation" /> },
-      { order: 7, component: <HomepageReviewsMinimalistic key="reviews" /> },
-      { order: 8, component: <ContactMinimalistic key="contact" /> },
+      ...(adminContent?.homepage_services_section_visible !== false ? [{ order: 6, component: <ServicesMinimalistic key="services" /> }] : []),
+      ...(adminContent?.homepage_reservations_section_visible !== false ? [{ order: 6.5, component: <ReservationBookingMinimalistic key="reservation" /> }] : []),
+      ...(adminContent?.homepage_reviews_section_visible !== false ? [{ order: 7, component: <HomepageReviewsMinimalistic key="reviews" /> }] : []),
+      ...(adminContent?.homepage_contact_section_visible !== false ? [{ order: 8, component: <ContactMinimalistic key="contact" /> }] : []),
     ];
 
     return sectionList.sort((a, b) => a.order - b.order);
-  }, [adminContent?.carousel_display_order]);
+  }, [adminContent?.carousel_display_order, adminContent?.homepage_about_section_visible, adminContent?.homepage_menu_section_visible, adminContent?.homepage_services_section_visible, adminContent?.homepage_reservations_section_visible, adminContent?.homepage_reviews_section_visible, adminContent?.homepage_contact_section_visible]);
 
   return (
     <>

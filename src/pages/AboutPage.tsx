@@ -106,31 +106,33 @@ const AboutPage = () => {
 
         {/* About Component */}
         <main>
-          <About />
+          {adminContent?.about_page_about_section_visible !== false && <About />}
 
           {/* Stats Section */}
-          <section className="py-16 bg-muted/30">
-            <div className="container mx-auto px-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {stats.map((stat, index) => (
-                  <Card key={index} className="text-center border-2 hover:border-accent/50 transition-all duration-300">
-                    <CardContent className="p-8">
-                      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 mb-4">
-                        <stat.icon className="w-8 h-8 text-accent" />
-                      </div>
-                      <h3 className="text-4xl font-heading font-bold mb-2 text-foreground">
-                        {stat.number}
-                      </h3>
-                      <p className="text-foreground/70">{stat.label}</p>
-                    </CardContent>
-                  </Card>
-                ))}
+          {adminContent?.about_page_stats_section_visible !== false && (
+            <section className="py-16 bg-muted/30">
+              <div className="container mx-auto px-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {stats.map((stat, index) => (
+                    <Card key={index} className="text-center border-2 hover:border-accent/50 transition-all duration-300">
+                      <CardContent className="p-8">
+                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 mb-4">
+                          <stat.icon className="w-8 h-8 text-accent" />
+                        </div>
+                        <h3 className="text-4xl font-heading font-bold mb-2 text-foreground">
+                          {stat.number}
+                        </h3>
+                        <p className="text-foreground/70">{stat.label}</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+          )}
 
           {/* Team Section - Only show if team members exist */}
-          {teamMembers && teamMembers.length > 0 && (
+          {adminContent?.about_page_team_section_visible !== false && teamMembers && teamMembers.length > 0 && (
             <section className="py-16 bg-background">
               <div className="container mx-auto px-4">
                 <div className="text-center max-w-3xl mx-auto mb-16">

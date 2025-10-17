@@ -328,6 +328,26 @@ export interface AdminContent {
   carousel_enabled?: boolean;
   carousel_display_order?: number;
   
+  // Homepage visibility controls
+  homepage_about_section_visible?: boolean;
+  homepage_about_stats_visible?: boolean;
+  homepage_menu_section_visible?: boolean;
+  homepage_services_section_visible?: boolean;
+  homepage_reservations_section_visible?: boolean;
+  homepage_reviews_section_visible?: boolean;
+  homepage_contact_section_visible?: boolean;
+  homepage_contact_map_visible?: boolean;
+  
+  // About page visibility controls
+  about_page_about_section_visible?: boolean;
+  about_page_about_stats_visible?: boolean;
+  about_page_stats_section_visible?: boolean;
+  about_page_team_section_visible?: boolean;
+  
+  // Contact page visibility controls
+  contact_page_contact_section_visible?: boolean;
+  contact_page_map_visible?: boolean;
+  
   // Homepage content
   homepage_hero_title?: string;
   homepage_hero_description?: string;

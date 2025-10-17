@@ -169,7 +169,7 @@ const ContactPageMinimalistic = () => {
           </section>
 
           {/* Contact Component */}
-          <ContactMinimalistic />
+          {adminContent?.contact_page_contact_section_visible !== false && <ContactMinimalistic />}
         </main>
 
         <FooterMinimalistic />

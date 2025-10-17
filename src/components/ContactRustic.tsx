@@ -162,7 +162,7 @@ const ContactRustic = () => {
         </div>
 
         {/* Map Section - Full width below */}
-        {(client?.address || client?.coordinates || cachedClient?.address || cachedClient?.coordinates) && (
+        {adminContent?.homepage_contact_map_visible !== false && (client?.address || client?.coordinates || cachedClient?.address || cachedClient?.coordinates) && (
           <div className="mt-12 lg:mt-16 max-w-7xl mx-auto fade-in">
             <Card className="bg-card border-border overflow-hidden shadow-lg">
               <div className="relative h-96 lg:h-[500px]">

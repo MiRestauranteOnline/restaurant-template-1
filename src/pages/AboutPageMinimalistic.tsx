@@ -88,36 +88,38 @@ const AboutPageMinimalistic = () => {
 
         {/* About Component */}
         <main>
-          <AboutMinimalistic />
+          {adminContent?.about_page_about_section_visible !== false && <AboutMinimalistic />}
 
           {/* Stats Section - Minimalistic Style */}
-          <section className="py-16 lg:py-24 bg-muted/30">
-            <div className="container mx-auto px-4 max-w-6xl">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                {stats.map((stat, index) => (
-                  <div 
-                    key={index} 
-                    className="text-center fade-in group"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <div className="flex flex-col items-center gap-4">
-                      <div className="p-4 rounded-full bg-accent/10 group-hover:bg-accent/20 transition-colors">
-                        <stat.icon className="w-8 h-8 text-accent" />
+          {adminContent?.about_page_stats_section_visible !== false && (
+            <section className="py-16 lg:py-24 bg-muted/30">
+              <div className="container mx-auto px-4 max-w-6xl">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                  {stats.map((stat, index) => (
+                    <div 
+                      key={index} 
+                      className="text-center fade-in group"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      <div className="flex flex-col items-center gap-4">
+                        <div className="p-4 rounded-full bg-accent/10 group-hover:bg-accent/20 transition-colors">
+                          <stat.icon className="w-8 h-8 text-accent" />
+                        </div>
+                        <h3 className="text-5xl font-heading font-light text-foreground">
+                          {stat.number}
+                        </h3>
+                        <div className="w-12 h-px bg-accent/30" />
+                        <p className="text-foreground/60 text-sm tracking-wider uppercase">{stat.label}</p>
                       </div>
-                      <h3 className="text-5xl font-heading font-light text-foreground">
-                        {stat.number}
-                      </h3>
-                      <div className="w-12 h-px bg-accent/30" />
-                      <p className="text-foreground/60 text-sm tracking-wider uppercase">{stat.label}</p>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+          )}
 
           {/* Team Section - Minimalistic Style - Only show if team members exist */}
-          {teamMembers && teamMembers.length > 0 && (
+          {adminContent?.about_page_team_section_visible !== false && teamMembers && teamMembers.length > 0 && (
             <section className="py-16 lg:py-24 bg-background">
               <div className="container mx-auto px-4 max-w-6xl">
                 {/* Header */}

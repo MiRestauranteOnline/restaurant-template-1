@@ -177,7 +177,7 @@ const ContactPage = () => {
           </section>
 
           {/* Contact Component */}
-          <Contact />
+          {adminContent?.contact_page_contact_section_visible !== false && <Contact />}
         </main>
 
         <Footer />

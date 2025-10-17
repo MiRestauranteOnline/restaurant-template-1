@@ -80,7 +80,7 @@ const ContactMinimalistic = () => {
             </div>
 
             {/* Map */}
-            {(client?.address || client?.coordinates || cachedClient?.address || cachedClient?.coordinates) && (
+            {adminContent?.homepage_contact_map_visible !== false && (client?.address || client?.coordinates || cachedClient?.address || cachedClient?.coordinates) && (
               <div className="mt-12 aspect-[16/9] w-full overflow-hidden border border-border">
               <iframe
                 src={`https://maps.google.com/maps?q=${

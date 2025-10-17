@@ -186,7 +186,7 @@ const ContactPageRustic = () => {
           </section>
 
           {/* Contact Component */}
-          <ContactRustic />
+          {adminContent?.contact_page_contact_section_visible !== false && <ContactRustic />}
         </main>
 
         <FooterRustic />

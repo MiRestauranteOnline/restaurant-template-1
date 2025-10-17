@@ -102,7 +102,7 @@ const Contact = () => {
             </div>
 
             {/* Interactive Map */}
-            {(client?.address || client?.coordinates || cachedClient?.address || cachedClient?.coordinates) && (
+            {adminContent?.homepage_contact_map_visible !== false && (client?.address || client?.coordinates || cachedClient?.address || cachedClient?.coordinates) && (
               <div className="bg-muted rounded-2xl h-64 relative overflow-hidden">
                 <iframe
                   src={`https://maps.google.com/maps?q=${

@@ -44,10 +44,10 @@ const RusticRestaurant = () => {
     const sectionList = [
       { order: 1, component: <HeroRustic key="hero" /> },
       { order: adminContent?.carousel_display_order || 2, component: <ImageCarouselRustic key="carousel" /> },
-      { order: 3, component: <AboutRustic key="about" /> },
-      { order: 4, component: <MenuRustic key="menu" /> },
+      ...(adminContent?.homepage_about_section_visible !== false ? [{ order: 3, component: <AboutRustic key="about" /> }] : []),
+      ...(adminContent?.homepage_menu_section_visible !== false ? [{ order: 4, component: <MenuRustic key="menu" /> }] : []),
       { order: 5, component: <DeliveryServicesRustic key="delivery" /> },
-      { order: 6, component: <ServicesRustic key="services" /> },
+      ...(adminContent?.homepage_services_section_visible !== false ? [{ order: 6, component: <ServicesRustic key="services" /> }] : []),
       { order: 6.4, component: (
         <div key="divider" className="container mx-auto px-4 py-12">
           <div className="flex items-center gap-4">
@@ -63,13 +63,13 @@ const RusticRestaurant = () => {
           </div>
         </div>
       ) },
-      { order: 6.5, component: <ReservationBookingRustic key="reservation" /> },
-      { order: 7, component: <HomepageReviewsRustic key="reviews" /> },
-      { order: 8, component: <ContactRustic key="contact" /> },
+      ...(adminContent?.homepage_reservations_section_visible !== false ? [{ order: 6.5, component: <ReservationBookingRustic key="reservation" /> }] : []),
+      ...(adminContent?.homepage_reviews_section_visible !== false ? [{ order: 7, component: <HomepageReviewsRustic key="reviews" /> }] : []),
+      ...(adminContent?.homepage_contact_section_visible !== false ? [{ order: 8, component: <ContactRustic key="contact" /> }] : []),
     ];
 
     return sectionList.sort((a, b) => a.order - b.order);
-  }, [adminContent?.carousel_display_order]);
+  }, [adminContent?.carousel_display_order, adminContent?.homepage_about_section_visible, adminContent?.homepage_menu_section_visible, adminContent?.homepage_services_section_visible, adminContent?.homepage_reservations_section_visible, adminContent?.homepage_reviews_section_visible, adminContent?.homepage_contact_section_visible]);
 
   return (
     <>
