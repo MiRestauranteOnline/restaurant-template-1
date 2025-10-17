@@ -6,10 +6,12 @@ import { getCachedAdminContent } from '@/utils/cachedContent';
 import StructuredData from '@/components/StructuredData';
 import HeadScripts from '@/components/HeadScripts';
 import { useTitleScale } from '@/hooks/useTitleScale';
+import { useHeroOverlay } from '@/hooks/useHeroOverlay';
 
 const ReviewsPageMinimalistic = () => {
   const { reviews, adminContent, loading } = useClient();
   useTitleScale(); // Apply dynamic title scaling
+  useHeroOverlay(); // Apply dynamic hero overlay opacity
   
   // Get cached content to prevent layout shifts
   const cachedAdminContent = getCachedAdminContent();
@@ -88,11 +90,12 @@ const ReviewsPageMinimalistic = () => {
           {/* Hero Section */}
           <section className="relative pt-20 min-h-[40vh] flex items-center justify-center overflow-hidden">
             <div 
-              className="absolute inset-0 bg-cover bg-center opacity-10"
+              className="absolute inset-0 bg-cover bg-center"
               style={{ backgroundImage: `url('${reviewsHeroBackground}')` }}
               role="img"
               aria-label="Reviews page background"
             />
+            <div className="absolute inset-0 hero-overlay" />
             
             <div className="relative z-10 container mx-auto px-4 py-16 text-center">
               <div className="max-w-2xl mx-auto space-y-4">
@@ -128,11 +131,12 @@ const ReviewsPageMinimalistic = () => {
         {/* Hero Section - Minimalistic Style */}
         <section className="relative pt-20 min-h-[40vh] flex items-center justify-center overflow-hidden">
           <div 
-            className="absolute inset-0 bg-cover bg-center opacity-10"
+            className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url('${reviewsHeroBackground}')` }}
             role="img"
             aria-label="Reviews page background"
           />
+          <div className="absolute inset-0 hero-overlay" />
           
           <div className="relative z-10 container mx-auto px-4 py-16 text-center">
             <div className="max-w-2xl mx-auto space-y-4">

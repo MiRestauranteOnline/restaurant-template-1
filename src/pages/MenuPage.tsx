@@ -7,10 +7,12 @@ import heroPasta from '@/assets/hero-pasta.jpg';
 import StructuredData from '@/components/StructuredData';
 import HeadScripts from '@/components/HeadScripts';
 import { useTitleScale } from '@/hooks/useTitleScale';
+import { useHeroOverlay } from '@/hooks/useHeroOverlay';
 
 const MenuPage = () => {
   const { menuItems, menuCategories, client, adminContent, loading } = useClient();
   useTitleScale(); // Apply dynamic title scaling
+  useHeroOverlay(); // Apply dynamic hero overlay opacity
   
   // Get cached content to prevent layout shifts
   const cachedAdminContent = getCachedAdminContent();
