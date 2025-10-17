@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useClient } from '@/contexts/ClientContext';
 import { getTemplateStatus, getGuardMessage } from '../template-guard.config';
 import { useTitleScale } from '@/hooks/useTitleScale';
+import { useHeroOverlay } from '@/hooks/useHeroOverlay';
 
 // Components
 import NavigationRustic from '@/components/NavigationRustic';
@@ -27,8 +28,9 @@ import { Separator } from '@/components/ui/separator';
  */
 
 const RusticRestaurant = () => {
-  const { adminContent } = useClient();
+  const { client, adminContent } = useClient();
   useTitleScale(); // Apply dynamic title scaling
+  useHeroOverlay(); // Apply dynamic hero overlay opacity
 
   // Log template guard status in development
   useEffect(() => {

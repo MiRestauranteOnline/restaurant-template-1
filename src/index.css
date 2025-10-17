@@ -67,6 +67,9 @@
     
     /* Dynamic title scaling - controlled by database */
     --title-size-scale: 1;
+    
+    /* Dynamic hero overlay opacity - controlled by database (0-1 range) */
+    --hero-overlay-opacity: 0.7;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -178,7 +181,7 @@
 @layer components {
   /* Hero section styling */
   .hero-overlay {
-    background: var(--gradient-overlay);
+    background-color: hsl(var(--background) / var(--hero-overlay-opacity));
   }
   
   /* Theme-aware hero text colors */

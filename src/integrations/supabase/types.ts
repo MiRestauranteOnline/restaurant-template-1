@@ -780,6 +780,7 @@ export type Database = {
           delivery_info: Json | null
           header_background_enabled: boolean | null
           header_background_style: string | null
+          hero_overlay_opacity: number | null
           hide_phone_button_menu: boolean | null
           hide_whatsapp_button_menu: boolean | null
           id: string
@@ -803,6 +804,7 @@ export type Database = {
           delivery_info?: Json | null
           header_background_enabled?: boolean | null
           header_background_style?: string | null
+          hero_overlay_opacity?: number | null
           hide_phone_button_menu?: boolean | null
           hide_whatsapp_button_menu?: boolean | null
           id?: string
@@ -826,6 +828,7 @@ export type Database = {
           delivery_info?: Json | null
           header_background_enabled?: boolean | null
           header_background_style?: string | null
+          hero_overlay_opacity?: number | null
           hide_phone_button_menu?: boolean | null
           hide_whatsapp_button_menu?: boolean | null
           id?: string

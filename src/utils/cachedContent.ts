@@ -98,6 +98,7 @@ export const getCachedClientData = () => {
     coordinates: cached.coordinates,
     use_coordinates: cached.use_coordinates,
     title_size_scale: cached.title_size_scale || 0,
+    hero_overlay_opacity: cached.hero_overlay_opacity ?? 70,
   };
 };
 

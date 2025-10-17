@@ -453,6 +453,7 @@ export interface ClientSettings {
   title_font?: string;
   body_font?: string;
   title_size_scale?: number;
+  hero_overlay_opacity?: number;
   hide_whatsapp_button_menu?: boolean;
   hide_phone_button_menu?: boolean;
   custom_cta_button_link?: string;

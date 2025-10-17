@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useClient } from '@/contexts/ClientContext';
 import { useTitleScale } from '@/hooks/useTitleScale';
+import { useHeroOverlay } from '@/hooks/useHeroOverlay';
 
 // Components
 import NavigationMinimalistic from '@/components/NavigationMinimalistic';
@@ -26,6 +27,7 @@ import HeadScripts from '@/components/HeadScripts';
 const MinimalisticRestaurant = () => {
   const { adminContent } = useClient();
   useTitleScale(); // Apply dynamic title scaling
+  useHeroOverlay(); // Apply dynamic hero overlay opacity
 
   const sections = useMemo(() => {
     const sectionList = [
