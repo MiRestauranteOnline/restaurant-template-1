@@ -100,10 +100,14 @@ const Contact = () => {
             </div>
 
             {/* Interactive Map */}
-            {client?.coordinates && (
+            {(client?.address || client?.coordinates) && (
               <div className="bg-muted rounded-2xl h-64 relative overflow-hidden">
                 <iframe
-                  src={`https://maps.google.com/maps?q=${client.coordinates.lat},${client.coordinates.lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                  src={`https://maps.google.com/maps?q=${
+                    client.address 
+                      ? encodeURIComponent(client.address)
+                      : `${client.coordinates.lat},${client.coordinates.lng}`
+                  }&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}

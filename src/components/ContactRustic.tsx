@@ -160,12 +160,16 @@ const ContactRustic = () => {
         </div>
 
         {/* Map Section - Full width below */}
-        {client?.coordinates && (
+        {(client?.address || client?.coordinates) && (
           <div className="mt-12 lg:mt-16 max-w-7xl mx-auto fade-in">
             <Card className="bg-card border-border overflow-hidden shadow-lg">
               <div className="relative h-96 lg:h-[500px]">
                 <iframe
-                  src={`https://maps.google.com/maps?q=${client.coordinates.lat},${client.coordinates.lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                  src={`https://maps.google.com/maps?q=${
+                    client.address 
+                      ? encodeURIComponent(client.address)
+                      : `${client.coordinates.lat},${client.coordinates.lng}`
+                  }&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}

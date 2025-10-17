@@ -79,10 +79,14 @@ const ContactMinimalistic = () => {
             </div>
 
             {/* Map */}
-            {client?.coordinates && (
+            {(client?.address || client?.coordinates) && (
               <div className="mt-12 aspect-[16/9] w-full overflow-hidden border border-border">
-                <iframe
-                  src={`https://maps.google.com/maps?q=${client.coordinates.lat},${client.coordinates.lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+              <iframe
+                src={`https://maps.google.com/maps?q=${
+                  client.address 
+                    ? encodeURIComponent(client.address)
+                    : `${client.coordinates.lat},${client.coordinates.lng}`
+                }&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
