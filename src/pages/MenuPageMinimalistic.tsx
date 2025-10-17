@@ -5,9 +5,11 @@ import { getCachedAdminContent, getCachedClientData } from '@/utils/cachedConten
 import heroPasta from '@/assets/hero-pasta.jpg';
 import StructuredData from '@/components/StructuredData';
 import HeadScripts from '@/components/HeadScripts';
+import { useTitleScale } from '@/hooks/useTitleScale';
 
 const MenuPageMinimalistic = () => {
   const { menuItems, menuCategories, client, adminContent, loading } = useClient();
+  useTitleScale(); // Apply dynamic title scaling
   
   // Get cached content to prevent layout shifts
   const cachedAdminContent = getCachedAdminContent();

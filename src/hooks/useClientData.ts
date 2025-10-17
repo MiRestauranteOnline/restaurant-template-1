@@ -127,6 +127,9 @@ const saveCachedStyles = (domain: string, clientSettings: ClientSettings, client
       coordinates: client.coordinates || null,
       use_coordinates: client.use_coordinates || false,
       
+      // Typography customization
+      title_size_scale: clientSettings?.title_size_scale || 0,
+      
       // Navigation-related data to prevent layout shifts
       has_reviews: reviews ? reviews.length > 0 : false,
       show_reviews_nav: reviews ? reviews.length > 0 : false, // Explicit navigation config
@@ -275,6 +278,7 @@ export interface ClientData {
   address?: string;
   coordinates?: any;
   use_coordinates?: boolean;
+  title_size_scale?: number;
   opening_hours?: any;
   opening_hours_ordered?: any[];
   social_media_links?: any;
@@ -428,6 +432,7 @@ export interface ClientSettings {
   primary_button_text_style?: 'bright' | 'dark';
   title_font?: string;
   body_font?: string;
+  title_size_scale?: number;
   hide_whatsapp_button_menu?: boolean;
   hide_phone_button_menu?: boolean;
   custom_cta_button_link?: string;

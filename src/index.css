@@ -64,6 +64,9 @@
     --font-heading: 'Cormorant Garamond', serif;
     --font-body: 'Inter', sans-serif;
     --font-heading-weight: 400;
+    
+    /* Dynamic title scaling - controlled by database */
+    --title-size-scale: 1;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -143,6 +146,15 @@
     font-weight: var(--font-heading-weight);
     font-synthesis-weight: none;
     font-synthesis-style: none;
+  }
+  
+  /* Apply dynamic scaling to h1 and h2 only */
+  h1 {
+    font-size: calc(1em * var(--title-size-scale));
+  }
+  
+  h2 {
+    font-size: calc(1em * var(--title-size-scale));
   }
   
   /* Ensure heading class controls weight dynamically */

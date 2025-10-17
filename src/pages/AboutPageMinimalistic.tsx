@@ -6,9 +6,11 @@ import { useClient } from '@/contexts/ClientContext';
 import { getCachedAdminContent } from '@/utils/cachedContent';
 import StructuredData from '@/components/StructuredData';
 import HeadScripts from '@/components/HeadScripts';
+import { useTitleScale } from '@/hooks/useTitleScale';
 
 const AboutPageMinimalistic = () => {
   const { adminContent, teamMembers } = useClient();
+  useTitleScale(); // Apply dynamic title scaling
   
   // Get cached content to prevent layout shifts
   const cachedAdminContent = getCachedAdminContent();

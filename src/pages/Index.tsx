@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useClient } from '@/contexts/ClientContext';
+import { useTitleScale } from '@/hooks/useTitleScale';
 import Navigation from '@/components/Navigation';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
@@ -16,6 +17,7 @@ import HeadScripts from '@/components/HeadScripts';
 
 const RestaurantContent = () => {
   const { adminContent } = useClient();
+  useTitleScale(); // Apply dynamic title scaling
 
   const sections = useMemo(() => {
     const sectionList = [

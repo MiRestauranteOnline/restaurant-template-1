@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useClient } from '@/contexts/ClientContext';
 import { getTemplateStatus, getGuardMessage } from '../template-guard.config';
+import { useTitleScale } from '@/hooks/useTitleScale';
 
 // Components
 import NavigationRustic from '@/components/NavigationRustic';
@@ -27,6 +28,7 @@ import { Separator } from '@/components/ui/separator';
 
 const RusticRestaurant = () => {
   const { adminContent } = useClient();
+  useTitleScale(); // Apply dynamic title scaling
 
   // Log template guard status in development
   useEffect(() => {

@@ -517,6 +517,50 @@ export type Database = {
         }
         Relationships: []
       }
+      client_billing_info: {
+        Row: {
+          business_name: string | null
+          client_id: string
+          created_at: string
+          dni: string | null
+          document_type: string
+          fiscal_address: string | null
+          id: string
+          ruc: string | null
+          updated_at: string
+        }
+        Insert: {
+          business_name?: string | null
+          client_id: string
+          created_at?: string
+          dni?: string | null
+          document_type: string
+          fiscal_address?: string | null
+          id?: string
+          ruc?: string | null
+          updated_at?: string
+        }
+        Update: {
+          business_name?: string | null
+          client_id?: string
+          created_at?: string
+          dni?: string | null
+          document_type?: string
+          fiscal_address?: string | null
+          id?: string
+          ruc?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_billing_info_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_discount_assignments: {
         Row: {
           applied_at: string | null
@@ -704,6 +748,7 @@ export type Database = {
           show_whatsapp_popup: boolean | null
           title_font: string | null
           title_font_weight: string | null
+          title_size_scale: number | null
           updated_at: string
           whatsapp_messages: Json | null
         }
@@ -726,6 +771,7 @@ export type Database = {
           show_whatsapp_popup?: boolean | null
           title_font?: string | null
           title_font_weight?: string | null
+          title_size_scale?: number | null
           updated_at?: string
           whatsapp_messages?: Json | null
         }
@@ -748,6 +794,7 @@ export type Database = {
           show_whatsapp_popup?: boolean | null
           title_font?: string | null
           title_font_weight?: string | null
+          title_size_scale?: number | null
           updated_at?: string
           whatsapp_messages?: Json | null
         }
@@ -768,6 +815,7 @@ export type Database = {
           cancellation_date: string | null
           cancellation_reason: string | null
           coordinates: Json | null
+          country_code: string | null
           created_at: string
           custom_domain: string | null
           delivery: Json | null
@@ -779,14 +827,19 @@ export type Database = {
           id: string
           last_domain_check: string | null
           last_payment_attempt: string | null
+          locale: string | null
           monthly_bandwidth_limit_gb: number | null
           monthly_visits_limit: number | null
           next_billing_date: string | null
           opening_hours: Json | null
           opening_hours_ordered: Json | null
+          openpay_customer_id: string | null
+          openpay_subscription_id: string | null
           other_customizations: Json | null
           payment_failures_count: number | null
           payment_status: string | null
+          pending_plan_change: string | null
+          pending_plan_change_date: string | null
           phone: string | null
           phone_country_code: string | null
           plan_type: string | null
@@ -798,12 +851,16 @@ export type Database = {
           subdomain: string
           subscription_auto_recurring: boolean | null
           subscription_end_date: string | null
+          subscription_pause_date: string | null
+          subscription_resume_date: string | null
           subscription_start_date: string | null
           subscription_status: string | null
           template_id: string | null
           theme: string | null
+          timezone: string | null
           trial_end_date: string | null
           updated_at: string
+          use_coordinates: boolean | null
           vercel_dashboard_url: string | null
           vercel_project: string | null
           vercel_team: string | null
@@ -816,6 +873,7 @@ export type Database = {
           cancellation_date?: string | null
           cancellation_reason?: string | null
           coordinates?: Json | null
+          country_code?: string | null
           created_at?: string
           custom_domain?: string | null
           delivery?: Json | null
@@ -827,14 +885,19 @@ export type Database = {
           id?: string
           last_domain_check?: string | null
           last_payment_attempt?: string | null
+          locale?: string | null
           monthly_bandwidth_limit_gb?: number | null
           monthly_visits_limit?: number | null
           next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
+          openpay_customer_id?: string | null
+          openpay_subscription_id?: string | null
           other_customizations?: Json | null
           payment_failures_count?: number | null
           payment_status?: string | null
+          pending_plan_change?: string | null
+          pending_plan_change_date?: string | null
           phone?: string | null
           phone_country_code?: string | null
           plan_type?: string | null
@@ -846,12 +909,16 @@ export type Database = {
           subdomain: string
           subscription_auto_recurring?: boolean | null
           subscription_end_date?: string | null
+          subscription_pause_date?: string | null
+          subscription_resume_date?: string | null
           subscription_start_date?: string | null
           subscription_status?: string | null
           template_id?: string | null
           theme?: string | null
+          timezone?: string | null
           trial_end_date?: string | null
           updated_at?: string
+          use_coordinates?: boolean | null
           vercel_dashboard_url?: string | null
           vercel_project?: string | null
           vercel_team?: string | null
@@ -864,6 +931,7 @@ export type Database = {
           cancellation_date?: string | null
           cancellation_reason?: string | null
           coordinates?: Json | null
+          country_code?: string | null
           created_at?: string
           custom_domain?: string | null
           delivery?: Json | null
@@ -875,14 +943,19 @@ export type Database = {
           id?: string
           last_domain_check?: string | null
           last_payment_attempt?: string | null
+          locale?: string | null
           monthly_bandwidth_limit_gb?: number | null
           monthly_visits_limit?: number | null
           next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
+          openpay_customer_id?: string | null
+          openpay_subscription_id?: string | null
           other_customizations?: Json | null
           payment_failures_count?: number | null
           payment_status?: string | null
+          pending_plan_change?: string | null
+          pending_plan_change_date?: string | null
           phone?: string | null
           phone_country_code?: string | null
           plan_type?: string | null
@@ -894,12 +967,16 @@ export type Database = {
           subdomain?: string
           subscription_auto_recurring?: boolean | null
           subscription_end_date?: string | null
+          subscription_pause_date?: string | null
+          subscription_resume_date?: string | null
           subscription_start_date?: string | null
           subscription_status?: string | null
           template_id?: string | null
           theme?: string | null
+          timezone?: string | null
           trial_end_date?: string | null
           updated_at?: string
+          use_coordinates?: boolean | null
           vercel_dashboard_url?: string | null
           vercel_project?: string | null
           vercel_team?: string | null

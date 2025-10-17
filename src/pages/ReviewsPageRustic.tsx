@@ -7,9 +7,11 @@ import { useClient } from '@/contexts/ClientContext';
 import { getCachedAdminContent } from '@/utils/cachedContent';
 import StructuredData from '@/components/StructuredData';
 import HeadScripts from '@/components/HeadScripts';
+import { useTitleScale } from '@/hooks/useTitleScale';
 
 const ReviewsPageRustic = () => {
   const { reviews, adminContent, loading } = useClient();
+  useTitleScale(); // Apply dynamic title scaling
   
   // Get cached content to prevent layout shifts
   const cachedAdminContent = getCachedAdminContent();

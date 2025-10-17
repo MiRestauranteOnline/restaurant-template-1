@@ -7,9 +7,11 @@ import { getCachedAdminContent, getCachedClientData } from '@/utils/cachedConten
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
 import StructuredData from '@/components/StructuredData';
 import HeadScripts from '@/components/HeadScripts';
+import { useTitleScale } from '@/hooks/useTitleScale';
 
 const ContactPageMinimalistic = () => {
   const { client, adminContent } = useClient();
+  useTitleScale(); // Apply dynamic title scaling
   
   // Get cached content to prevent layout shifts
   const cachedAdminContent = getCachedAdminContent();
