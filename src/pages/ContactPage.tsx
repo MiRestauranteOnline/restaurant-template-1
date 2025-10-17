@@ -66,11 +66,13 @@ const ContactPage = () => {
       title: "Visítanos",
       content: client?.address || "Av. Larco 123, Miraflores, Lima",
       action: () => {
-        if (client?.coordinates) {
+        if (client?.address) {
+          window.open(`https://maps.google.com/?q=${encodeURIComponent(client.address)}`, '_blank');
+        } else if (client?.coordinates) {
           const coords = client.coordinates;
           window.open(`https://maps.google.com/?q=${coords.lat},${coords.lng}`, '_blank');
         } else {
-          window.open('https://maps.google.com/?q=-12.1267,-77.0365', '_blank');
+          window.open('https://maps.google.com', '_blank');
         }
       },
       buttonText: "Ver Mapa"
