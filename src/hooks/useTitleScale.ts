@@ -16,6 +16,8 @@ export const useTitleScale = () => {
     // Convert percentage to scale multiplier
     // -50% -> 0.5, 0% -> 1.0, 50% -> 1.5
     const multiplier = 1 + (scale / 100);
+
+    console.info('useTitleScale: applying scale', { scale, multiplier, source: clientSettings?.title_size_scale !== undefined ? 'clientSettings' : 'cache' });
     
     // Apply the scale as a CSS custom property
     document.documentElement.style.setProperty('--title-size-scale', multiplier.toString());

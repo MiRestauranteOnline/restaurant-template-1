@@ -282,5 +282,32 @@
     }
   }
 
-/* Template 1 - Premium Elegant Design System */
+  /* Dynamic scaling for heading sizes (overrides Tailwind text-* on h1/h2) */
+  h1.text-2xl, h2.text-2xl { --tw-head: 1.5rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+  h1.text-3xl, h2.text-3xl { --tw-head: 1.875rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+  h1.text-4xl, h2.text-4xl { --tw-head: 2.25rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+  h1.text-5xl, h2.text-5xl { --tw-head: 3rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+  h1.text-6xl, h2.text-6xl { --tw-head: 3.75rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+  h1.text-7xl, h2.text-7xl { --tw-head: 4.5rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+  h1.text-8xl, h2.text-8xl { --tw-head: 6rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+
+  /* Responsive overrides matching Tailwind breakpoints */
+  @media (min-width: 768px) {
+    h1.md\:text-3xl, h2.md\:text-3xl { --tw-head: 1.875rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+    h1.md\:text-4xl, h2.md\:text-4xl { --tw-head: 2.25rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+    h1.md\:text-5xl, h2.md\:text-5xl { --tw-head: 3rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+    h1.md\:text-6xl, h2.md\:text-6xl { --tw-head: 3.75rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+    h1.md\:text-7xl, h2.md\:text-7xl { --tw-head: 4.5rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+    h1.md\:text-8xl, h2.md\:text-8xl { --tw-head: 6rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+  }
+  @media (min-width: 1024px) {
+    h1.lg\:text-4xl, h2.lg\:text-4xl { --tw-head: 2.25rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+    h1.lg\:text-5xl, h2.lg\:text-5xl { --tw-head: 3rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+    h1.lg\:text-6xl, h2.lg\:text-6xl { --tw-head: 3.75rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+    h1.lg\:text-7xl, h2.lg\:text-7xl { --tw-head: 4.5rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+    h1.lg\:text-8xl, h2.lg\:text-8xl { --tw-head: 6rem; font-size: calc(var(--tw-head) * var(--title-size-scale)) !important; }
+  }
+
+  /* Template 1 - Premium Elegant Design System */
 }
+
