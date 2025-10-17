@@ -1,11 +1,12 @@
 import { MapPin } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
-import { getCachedAdminContent } from '@/utils/cachedContent';
+import { getCachedAdminContent, getCachedClientData } from '@/utils/cachedContent';
 
 const ContactMinimalistic = () => {
   const { client, adminContent } = useClient();
   
   const cachedAdminContent = getCachedAdminContent();
+  const cachedClient = getCachedClientData();
   const contactTitle = (adminContent as any)?.homepage_contact_section_title || 'Reserva Tu Experiencia';
   const contactDescription = (adminContent as any)?.homepage_contact_section_description || 
     'Contáctanos para reservar tu mesa y vivir una experiencia gastronómica única';
@@ -79,13 +80,13 @@ const ContactMinimalistic = () => {
             </div>
 
             {/* Map */}
-            {(client?.address || client?.coordinates) && (
+            {(client?.address || client?.coordinates || cachedClient?.address || cachedClient?.coordinates) && (
               <div className="mt-12 aspect-[16/9] w-full overflow-hidden border border-border">
               <iframe
                 src={`https://maps.google.com/maps?q=${
-                  client.address 
-                    ? encodeURIComponent(client.address)
-                    : `${client.coordinates.lat},${client.coordinates.lng}`
+                  (client?.address || cachedClient?.address)
+                    ? encodeURIComponent(client?.address || cachedClient?.address || '')
+                    : `${(client?.coordinates || cachedClient?.coordinates)?.lat},${(client?.coordinates || cachedClient?.coordinates)?.lng}`
                 }&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                   width="100%"
                   height="100%"

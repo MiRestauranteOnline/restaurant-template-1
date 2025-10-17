@@ -94,6 +94,8 @@ export const getCachedClientData = () => {
     whatsapp_country_code: cached.whatsapp_country_code,
     delivery: cached.delivery,
     theme: cached.theme,
+    address: cached.address,
+    coordinates: cached.coordinates,
   };
 };
 

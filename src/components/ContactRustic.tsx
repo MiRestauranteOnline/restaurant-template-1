@@ -3,9 +3,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
+import { getCachedClientData } from '@/utils/cachedContent';
 
 const ContactRustic = () => {
   const { client, clientSettings, adminContent } = useClient();
+  const cachedClient = getCachedClientData();
   
   const sectionDescription = adminContent?.homepage_contact_section_description || "¿Listo para disfrutar de sabores únicos? Te esperamos en Savoria.";
   const hideReservationBox = adminContent?.homepage_contact_hide_reservation_box || false;
@@ -160,15 +162,15 @@ const ContactRustic = () => {
         </div>
 
         {/* Map Section - Full width below */}
-        {(client?.address || client?.coordinates) && (
+        {(client?.address || client?.coordinates || cachedClient?.address || cachedClient?.coordinates) && (
           <div className="mt-12 lg:mt-16 max-w-7xl mx-auto fade-in">
             <Card className="bg-card border-border overflow-hidden shadow-lg">
               <div className="relative h-96 lg:h-[500px]">
                 <iframe
                   src={`https://maps.google.com/maps?q=${
-                    client.address 
-                      ? encodeURIComponent(client.address)
-                      : `${client.coordinates.lat},${client.coordinates.lng}`
+                    (client?.address || cachedClient?.address)
+                      ? encodeURIComponent(client?.address || cachedClient?.address || '')
+                      : `${(client?.coordinates || cachedClient?.coordinates)?.lat},${(client?.coordinates || cachedClient?.coordinates)?.lng}`
                   }&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                   width="100%"
                   height="100%"

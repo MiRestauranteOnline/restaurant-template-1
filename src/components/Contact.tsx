@@ -5,9 +5,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
+import { getCachedClientData } from '@/utils/cachedContent';
 
 const Contact = () => {
   const { client, clientSettings, adminContent } = useClient();
+  const cachedClient = getCachedClientData();
   
   const sectionTitle = adminContent?.homepage_contact_section_title || "Reserva Tu Experiencia";
   const sectionDescription = adminContent?.homepage_contact_section_description || "¿Listo para disfrutar de sabores únicos? Te esperamos en Savoria.";
@@ -100,13 +102,13 @@ const Contact = () => {
             </div>
 
             {/* Interactive Map */}
-            {(client?.address || client?.coordinates) && (
+            {(client?.address || client?.coordinates || cachedClient?.address || cachedClient?.coordinates) && (
               <div className="bg-muted rounded-2xl h-64 relative overflow-hidden">
                 <iframe
                   src={`https://maps.google.com/maps?q=${
-                    client.address 
-                      ? encodeURIComponent(client.address)
-                      : `${client.coordinates.lat},${client.coordinates.lng}`
+                    (client?.address || cachedClient?.address)
+                      ? encodeURIComponent(client?.address || cachedClient?.address || '')
+                      : `${(client?.coordinates || cachedClient?.coordinates)?.lat},${(client?.coordinates || cachedClient?.coordinates)?.lng}`
                   }&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                   width="100%"
                   height="100%"
