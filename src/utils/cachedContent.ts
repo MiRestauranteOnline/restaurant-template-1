@@ -96,6 +96,7 @@ export const getCachedClientData = () => {
     theme: cached.theme,
     address: cached.address,
     coordinates: cached.coordinates,
+    use_coordinates: cached.use_coordinates,
   };
 };
 

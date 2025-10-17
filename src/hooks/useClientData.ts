@@ -122,6 +122,11 @@ const saveCachedStyles = (domain: string, clientSettings: ClientSettings, client
       // Delivery services info
       delivery: client.delivery || {},
       
+      // Map-related data
+      address: client.address || null,
+      coordinates: client.coordinates || null,
+      use_coordinates: client.use_coordinates || false,
+      
       // Navigation-related data to prevent layout shifts
       has_reviews: reviews ? reviews.length > 0 : false,
       show_reviews_nav: reviews ? reviews.length > 0 : false, // Explicit navigation config
@@ -269,6 +274,7 @@ export interface ClientData {
   whatsapp_country_code?: string;
   address?: string;
   coordinates?: any;
+  use_coordinates?: boolean;
   opening_hours?: any;
   opening_hours_ordered?: any[];
   social_media_links?: any;

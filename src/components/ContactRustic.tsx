@@ -168,9 +168,9 @@ const ContactRustic = () => {
               <div className="relative h-96 lg:h-[500px]">
                 <iframe
                   src={`https://maps.google.com/maps?q=${
-                    (client?.address || cachedClient?.address)
-                      ? encodeURIComponent(client?.address || cachedClient?.address || '')
-                      : `${(client?.coordinates || cachedClient?.coordinates)?.lat},${(client?.coordinates || cachedClient?.coordinates)?.lng}`
+                    (client?.use_coordinates || cachedClient?.use_coordinates)
+                      ? `${(client?.coordinates || cachedClient?.coordinates)?.lat},${(client?.coordinates || cachedClient?.coordinates)?.lng}`
+                      : encodeURIComponent(client?.address || cachedClient?.address || '')
                   }&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                   width="100%"
                   height="100%"
