@@ -100,18 +100,22 @@ const Contact = () => {
             </div>
 
             {/* Interactive Map */}
-            <div className="bg-muted rounded-2xl h-64 relative overflow-hidden">
-              <iframe
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-77.0365,-12.1267,-77.0365,-12.1267&amp;layer=mapnik&amp;marker=-12.1267,-77.0365"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                loading="lazy"
-                title="Savoria Restaurant Location"
-                className="rounded-2xl"
-              />
-              <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-background/10 rounded-2xl" />
-            </div>
+            {client?.coordinates && (
+              <div className="bg-muted rounded-2xl h-64 relative overflow-hidden">
+                <iframe
+                  src={`https://maps.google.com/maps?q=${client.coordinates.lat},${client.coordinates.lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Restaurant Location"
+                  className="rounded-2xl"
+                />
+                <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-background/10 rounded-2xl" />
+              </div>
+            )}
           </div>
 
           {/* Contact Actions */}

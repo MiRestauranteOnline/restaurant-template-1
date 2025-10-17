@@ -160,21 +160,25 @@ const ContactRustic = () => {
         </div>
 
         {/* Map Section - Full width below */}
-        <div className="mt-12 lg:mt-16 max-w-7xl mx-auto fade-in">
-          <Card className="bg-card border-border overflow-hidden shadow-lg">
-            <div className="relative h-96 lg:h-[500px]">
-              <iframe
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-77.0365,-12.1267,-77.0365,-12.1267&amp;layer=mapnik&amp;marker=-12.1267,-77.0365"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                loading="lazy"
-                title="Savoria Restaurant Location"
-              />
-              <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-transparent to-background/20" />
-            </div>
-          </Card>
-        </div>
+        {client?.coordinates && (
+          <div className="mt-12 lg:mt-16 max-w-7xl mx-auto fade-in">
+            <Card className="bg-card border-border overflow-hidden shadow-lg">
+              <div className="relative h-96 lg:h-[500px]">
+                <iframe
+                  src={`https://maps.google.com/maps?q=${client.coordinates.lat},${client.coordinates.lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Restaurant Location"
+                />
+                <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-transparent to-background/20" />
+              </div>
+            </Card>
+          </div>
+        )}
       </div>
     </section>
   );
