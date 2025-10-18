@@ -113,16 +113,11 @@ const MenuPageRustic = () => {
                     onClick={() => {
                       const menuUrl = (adminContent as any)?.downloadable_menu_url || cachedAdminContent?.downloadable_menu_url;
                       if (menuUrl) {
-                        const link = document.createElement('a');
-                        link.href = menuUrl;
-                        link.download = 'menu.pdf';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
+                        window.open(menuUrl, '_blank', 'noopener,noreferrer');
                       }
                     }}
                   >
-                    Descargar Menú
+                    Ver Menú
                   </button>
                 </div>
               )}
