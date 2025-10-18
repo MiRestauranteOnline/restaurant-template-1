@@ -12,6 +12,7 @@ import Menu from '@/components/Menu';
 import DeliveryServices from '@/components/DeliveryServices';
 import Services from '@/components/Services';
 import HomepageReviews from '@/components/HomepageReviews';
+import FAQ from '@/components/FAQ';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import ImageCarousel from '@/components/ImageCarousel';
@@ -46,15 +47,16 @@ const ModernRestaurant = () => {
       { order: adminContent?.carousel_display_order || 2, component: <ImageCarousel key="carousel" /> },
       ...(adminContent?.homepage_about_section_visible !== false ? [{ order: 3, component: <About key="about" /> }] : []),
       ...(adminContent?.homepage_menu_section_visible !== false ? [{ order: 4, component: <Menu key="menu" /> }] : []),
-      { order: 5, component: <DeliveryServices key="delivery" /> },
+      ...(adminContent?.homepage_delivery_section_visible !== false ? [{ order: 5, component: <DeliveryServices key="delivery" /> }] : []),
       ...(adminContent?.homepage_services_section_visible !== false ? [{ order: 6, component: <Services key="services" /> }] : []),
       ...(adminContent?.homepage_reservations_section_visible !== false ? [{ order: 6.5, component: <ReservationBooking key="reservation" /> }] : []),
       ...(adminContent?.homepage_reviews_section_visible !== false ? [{ order: 7, component: <HomepageReviews key="reviews" /> }] : []),
+      ...(adminContent?.homepage_faq_section_visible !== false ? [{ order: 7.5, component: <FAQ key="faq" /> }] : []),
       ...(adminContent?.homepage_contact_section_visible !== false ? [{ order: 8, component: <Contact key="contact" /> }] : []),
     ];
 
     return sectionList.sort((a, b) => a.order - b.order);
-  }, [adminContent?.carousel_display_order, adminContent?.homepage_about_section_visible, adminContent?.homepage_menu_section_visible, adminContent?.homepage_services_section_visible, adminContent?.homepage_reservations_section_visible, adminContent?.homepage_reviews_section_visible, adminContent?.homepage_contact_section_visible]);
+  }, [adminContent?.carousel_display_order, adminContent?.homepage_about_section_visible, adminContent?.homepage_menu_section_visible, adminContent?.homepage_delivery_section_visible, adminContent?.homepage_services_section_visible, adminContent?.homepage_reservations_section_visible, adminContent?.homepage_reviews_section_visible, adminContent?.homepage_faq_section_visible, adminContent?.homepage_contact_section_visible]);
 
   return (
     <>
