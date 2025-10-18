@@ -568,11 +568,19 @@ export default function ReservationBooking() {
           slotEndMinutes
         );
 
-        // Get min and max across ALL table configurations
-        const configMin = Math.min(...activeConfigs.map(c => c.min_party_size));
-        const configMax = Math.max(...activeConfigs.map(c => c.max_party_size));
+        // Only consider tables that have available capacity
+        const tablesWithCapacity = availableTables.filter(t => t.available && t.available > 0);
+        
+        if (tablesWithCapacity.length === 0) {
+          setPartySizeOptions([]);
+          return;
+        }
 
-        // Check all party sizes across all table config ranges
+        // Get min and max from tables that actually have availability
+        const configMin = Math.min(...tablesWithCapacity.map(c => c.min_party_size));
+        const configMax = Math.max(...tablesWithCapacity.map(c => c.max_party_size));
+
+        // Check all party sizes within the available range
         for (let i = configMin; i <= configMax; i++) {
           const suitableTable = findSuitableTable(i, availableTables);
           if (suitableTable) {
