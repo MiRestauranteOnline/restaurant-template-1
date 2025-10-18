@@ -565,7 +565,7 @@ export default function ReservationBookingRustic() {
     }
 
     const slotMinutes = parseInt(formData.time.split(':')[0]) * 60 + parseInt(formData.time.split(':')[1]);
-    const slotEndMinutes = slotMinutes + 30;
+    const slotEndMinutes = slotMinutes + currentSchedule.duration_minutes;
     
     const totalPartySize = existingReservations.reduce((sum, res) => {
       const resTime = res.reservation_time;

@@ -60,7 +60,9 @@ export const calculateTableAvailability = (
       // Check time overlap
       const resStartMinutes = parseInt(res.reservation_time.split(':')[0]) * 60 + 
                              parseInt(res.reservation_time.split(':')[1]);
-      const resEndMinutes = resStartMinutes + 120; // Assuming 2 hour duration
+      // Use the same duration as the evaluated slot to determine overlap
+      const slotDuration = Math.max(0, slotEndMinutes - slotStartMinutes);
+      const resEndMinutes = resStartMinutes + slotDuration;
 
       return slotStartMinutes < resEndMinutes && slotEndMinutes > resStartMinutes;
     }).length;
