@@ -9,6 +9,9 @@ const FAQ = () => {
 
   if (!faqs || faqs.length === 0) return null;
 
+  // Sort FAQs by display_order
+  const sortedFaqs = [...faqs].sort((a, b) => a.display_order - b.display_order);
+
   return (
     <section id="faq" className="py-20 lg:py-32 bg-secondary/10">
       <div className="container mx-auto px-4">
@@ -23,7 +26,7 @@ const FAQ = () => {
           </div>
 
           <Accordion type="single" collapsible className="space-y-4">
-            {faqs.map((faq, index) => (
+            {sortedFaqs.map((faq, index) => (
               <AccordionItem 
                 key={faq.id} 
                 value={`item-${index}`}
