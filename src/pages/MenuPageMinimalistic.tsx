@@ -33,12 +33,14 @@ const MenuPageMinimalistic = () => {
   
   const currency = client?.other_customizations?.currency || '$';
 
-  // Group menu items by category
+  // Group menu items by category and sort by display_order
   const groupedItems = menuCategories.reduce((acc, category) => {
-    const categoryItems = menuItems.filter(item => 
-      (item.category_id === category.id || (!item.category_id && item.category === category.name))
-      && item.is_active
-    );
+    const categoryItems = menuItems
+      .filter(item => 
+        (item.category_id === category.id || (!item.category_id && item.category === category.name))
+        && item.is_active
+      )
+      .sort((a, b) => a.display_order - b.display_order);
     if (categoryItems.length > 0) {
       acc[category.name] = categoryItems;
     }

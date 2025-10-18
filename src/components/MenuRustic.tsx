@@ -17,8 +17,11 @@ const MenuRustic = () => {
   const menuTitleFirstLine = (adminContent as any)?.homepage_menu_section_title_first_line || "Selecciones";
   const menuTitleSecondLine = (adminContent as any)?.homepage_menu_section_title_second_line || "Especiales";
 
-  // Get items marked for homepage display (limit 8)
-  const homepageItems = menuItems.filter(item => item.show_on_homepage).slice(0, 8);
+  // Get items marked for homepage display (limit 8) - sorted by display_order
+  const homepageItems = menuItems
+    .filter(item => item.show_on_homepage)
+    .sort((a, b) => a.display_order - b.display_order)
+    .slice(0, 8);
 
   // Only show items from database - no fallbacks
   const displayMenuItems = homepageItems;

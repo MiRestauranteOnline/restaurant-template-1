@@ -306,6 +306,7 @@ export interface MenuItem {
   show_image_home: boolean;
   show_image_menu: boolean;
   show_on_homepage: boolean;
+  display_order: number;
   created_at: string;
   updated_at: string;
 }

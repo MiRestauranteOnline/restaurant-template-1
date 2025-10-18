@@ -18,8 +18,11 @@ const MenuMinimalistic = () => {
   // Track which section is visible
   useMenuSectionTracking();
 
-  // Get items marked for homepage display (limit to 8 like rustic template)
-  const featuredItems = menuItems.filter(item => item.show_on_homepage && item.is_active).slice(0, 8);
+  // Get items marked for homepage display (limit to 8 like rustic template) - sorted by display_order
+  const featuredItems = menuItems
+    .filter(item => item.show_on_homepage && item.is_active)
+    .sort((a, b) => a.display_order - b.display_order)
+    .slice(0, 8);
 
   if (featuredItems.length === 0) return null;
 
