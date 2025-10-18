@@ -14,6 +14,7 @@ import ImageCarousel from '@/components/ImageCarousel';
 import ReservationBooking from '@/components/ReservationBooking';
 import StructuredData from '@/components/StructuredData';
 import HeadScripts from '@/components/HeadScripts';
+import FAQ from '@/components/FAQ';
 
 const RestaurantContent = () => {
   const { adminContent } = useClient();
@@ -29,6 +30,7 @@ const RestaurantContent = () => {
       { order: 6, component: <Services key="services" /> },
       { order: 6.5, component: <ReservationBooking key="reservation" /> },
       { order: 7, component: <HomepageReviews key="reviews" /> },
+      { order: 7.5, component: <FAQ key="faq" /> },
       { order: 8, component: <Contact key="contact" /> },
     ];
 

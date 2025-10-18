@@ -17,6 +17,7 @@ import ImageCarouselMinimalistic from '@/components/ImageCarouselMinimalistic';
 import ReservationBookingMinimalistic from '@/components/ReservationBookingMinimalistic';
 import StructuredData from '@/components/StructuredData';
 import HeadScripts from '@/components/HeadScripts';
+import FAQMinimalistic from '@/components/FAQMinimalistic';
 
 /**
  * MINIMALISTIC RESTAURANT TEMPLATE
@@ -39,6 +40,7 @@ const MinimalisticRestaurant = () => {
       ...(adminContent?.homepage_services_section_visible !== false ? [{ order: 6, component: <ServicesMinimalistic key="services" /> }] : []),
       ...(adminContent?.homepage_reservations_section_visible !== false ? [{ order: 6.5, component: <ReservationBookingMinimalistic key="reservation" /> }] : []),
       ...(adminContent?.homepage_reviews_section_visible !== false ? [{ order: 7, component: <HomepageReviewsMinimalistic key="reviews" /> }] : []),
+      { order: 7.5, component: <FAQMinimalistic key="faq" /> },
       ...(adminContent?.homepage_contact_section_visible !== false ? [{ order: 8, component: <ContactMinimalistic key="contact" /> }] : []),
     ];
 

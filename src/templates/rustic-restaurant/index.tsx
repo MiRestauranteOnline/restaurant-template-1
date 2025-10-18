@@ -19,6 +19,7 @@ import ReservationBookingRustic from '@/components/ReservationBookingRustic';
 import StructuredData from '@/components/StructuredData';
 import HeadScripts from '@/components/HeadScripts';
 import { Separator } from '@/components/ui/separator';
+import FAQRustic from '@/components/FAQRustic';
 
 /**
  * RUSTIC RESTAURANT TEMPLATE
@@ -67,6 +68,7 @@ const RusticRestaurant = () => {
       ) },
       ...(adminContent?.homepage_reservations_section_visible !== false ? [{ order: 6.5, component: <ReservationBookingRustic key="reservation" /> }] : []),
       ...(adminContent?.homepage_reviews_section_visible !== false ? [{ order: 7, component: <HomepageReviewsRustic key="reviews" /> }] : []),
+      { order: 7.5, component: <FAQRustic key="faq" /> },
       ...(adminContent?.homepage_contact_section_visible !== false ? [{ order: 8, component: <ContactRustic key="contact" /> }] : []),
     ];
 

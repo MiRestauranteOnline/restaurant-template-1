@@ -476,6 +476,17 @@ export interface PremiumFeatures {
   updated_at: string;
 }
 
+export interface FAQ {
+  id: string;
+  client_id: string;
+  question: string;
+  answer: string;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 // Global data cache for instant access
 interface GlobalDataCache {
   client: ClientData | null;
@@ -484,6 +495,7 @@ interface GlobalDataCache {
   menuCategories: MenuCategory[];
   teamMembers: TeamMember[];
   reviews: Review[];
+  faqs: FAQ[];
   clientSettings: ClientSettings | null;
   premiumFeatures: PremiumFeatures | null;
   loading: boolean;
@@ -498,6 +510,7 @@ const globalDataCache: GlobalDataCache = {
   menuCategories: [],
   teamMembers: [],
   reviews: [],
+  faqs: [],
   clientSettings: null,
   premiumFeatures: null,
   loading: true,
@@ -585,7 +598,7 @@ export const preloadAllClientData = async (domain?: string) => {
 
     if (clientData?.id) {
       // Fetch ALL data in parallel for instant access
-      const [menuResponse, categoriesResponse, settingsResponse, adminContentResponse, teamResponse, reviewsResponse, premiumFeaturesResponse] = await Promise.all([
+      const [menuResponse, categoriesResponse, settingsResponse, adminContentResponse, teamResponse, reviewsResponse, faqsResponse, premiumFeaturesResponse] = await Promise.all([
         supabase
           .from('menu_items')
           .select('*')
@@ -627,6 +640,13 @@ export const preloadAllClientData = async (domain?: string) => {
           .order('display_order', { ascending: true }),
 
         supabase
+          .from('faqs')
+          .select('*')
+          .eq('client_id', clientData.id)
+          .eq('is_active', true)
+          .order('display_order', { ascending: true }),
+
+        supabase
           .from('premium_features' as any)
           .select('*')
           .eq('client_id', clientData.id)
@@ -642,6 +662,7 @@ export const preloadAllClientData = async (domain?: string) => {
       globalDataCache.menuCategories = categoriesResponse.data || [];
       globalDataCache.teamMembers = teamResponse.data || [];
       globalDataCache.reviews = reviewsResponse.data || [];
+      globalDataCache.faqs = faqsResponse.data || [];
       globalDataCache.adminContent = adminContentResponse.data || null;
       globalDataCache.clientSettings = settingsResponse.data as ClientSettings || null;
       globalDataCache.premiumFeatures = (premiumFeaturesResponse.data as any) || null;
@@ -679,6 +700,7 @@ export const useClientData = (domain?: string) => {
   const [menuCategories, setMenuCategories] = useState<MenuCategory[]>(globalDataCache.menuCategories);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>(globalDataCache.teamMembers);
   const [reviews, setReviews] = useState<Review[]>(globalDataCache.reviews);
+  const [faqs, setFaqs] = useState<FAQ[]>(globalDataCache.faqs);
   const [clientSettings, setClientSettings] = useState<ClientSettings | null>(globalDataCache.clientSettings);
   const [premiumFeatures, setPremiumFeatures] = useState<PremiumFeatures | null>(globalDataCache.premiumFeatures);
   const [loading, setLoading] = useState(globalDataCache.loading);
@@ -697,6 +719,7 @@ export const useClientData = (domain?: string) => {
         setMenuCategories(globalDataCache.menuCategories);
         setTeamMembers(globalDataCache.teamMembers);
         setReviews(globalDataCache.reviews);
+        setFaqs(globalDataCache.faqs);
         setClientSettings(globalDataCache.clientSettings);
         setPremiumFeatures(globalDataCache.premiumFeatures);
         setLoading(globalDataCache.loading);
@@ -975,6 +998,7 @@ export const useClientData = (domain?: string) => {
     menuCategories,
     teamMembers,
     reviews,
+    faqs,
     clientSettings,
     premiumFeatures,
     loading,
