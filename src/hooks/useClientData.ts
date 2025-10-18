@@ -337,6 +337,8 @@ export interface AdminContent {
   homepage_reviews_section_visible?: boolean;
   homepage_contact_section_visible?: boolean;
   homepage_contact_map_visible?: boolean;
+  homepage_delivery_section_visible?: boolean;
+  homepage_faq_section_visible?: boolean;
   
   // About page visibility controls
   about_page_about_section_visible?: boolean;

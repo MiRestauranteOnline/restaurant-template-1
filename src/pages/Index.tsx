@@ -26,16 +26,16 @@ const RestaurantContent = () => {
       { order: adminContent?.carousel_display_order || 2, component: <ImageCarousel key="carousel" /> },
       { order: 3, component: <About key="about" /> },
       { order: 4, component: <Menu key="menu" /> },
-      { order: 5, component: <DeliveryServices key="delivery" /> },
+      ...(adminContent?.homepage_delivery_section_visible !== false ? [{ order: 5, component: <DeliveryServices key="delivery" /> }] : []),
       { order: 6, component: <Services key="services" /> },
       { order: 6.5, component: <ReservationBooking key="reservation" /> },
       { order: 7, component: <HomepageReviews key="reviews" /> },
-      { order: 7.5, component: <FAQ key="faq" /> },
+      ...(adminContent?.homepage_faq_section_visible !== false ? [{ order: 7.5, component: <FAQ key="faq" /> }] : []),
       { order: 8, component: <Contact key="contact" /> },
     ];
 
     return sectionList.sort((a, b) => a.order - b.order);
-  }, [adminContent?.carousel_display_order]);
+  }, [adminContent?.carousel_display_order, adminContent?.homepage_delivery_section_visible, adminContent?.homepage_faq_section_visible]);
 
   return (
     <>

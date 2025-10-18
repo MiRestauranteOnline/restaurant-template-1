@@ -77,6 +77,8 @@ export type Database = {
           homepage_cta_title: string | null
           homepage_delivery_section_description: string | null
           homepage_delivery_section_title: string | null
+          homepage_delivery_section_visible: boolean | null
+          homepage_faq_section_visible: boolean | null
           homepage_hero_background_url: string | null
           homepage_hero_description: string | null
           homepage_hero_right_button_link: string | null
@@ -218,6 +220,8 @@ export type Database = {
           homepage_cta_title?: string | null
           homepage_delivery_section_description?: string | null
           homepage_delivery_section_title?: string | null
+          homepage_delivery_section_visible?: boolean | null
+          homepage_faq_section_visible?: boolean | null
           homepage_hero_background_url?: string | null
           homepage_hero_description?: string | null
           homepage_hero_right_button_link?: string | null
@@ -359,6 +363,8 @@ export type Database = {
           homepage_cta_title?: string | null
           homepage_delivery_section_description?: string | null
           homepage_delivery_section_title?: string | null
+          homepage_delivery_section_visible?: boolean | null
+          homepage_faq_section_visible?: boolean | null
           homepage_hero_background_url?: string | null
           homepage_hero_description?: string | null
           homepage_hero_right_button_link?: string | null
