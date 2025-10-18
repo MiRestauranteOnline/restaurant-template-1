@@ -571,6 +571,8 @@ export default function ReservationBooking() {
         // Only consider tables that have available capacity
         const tablesWithCapacity = availableTables.filter(t => t.available && t.available > 0);
         
+        console.log('Available tables with capacity:', tablesWithCapacity);
+        
         if (tablesWithCapacity.length === 0) {
           setPartySizeOptions([]);
           return;
@@ -579,14 +581,20 @@ export default function ReservationBooking() {
         // Get min and max from tables that actually have availability
         const configMin = Math.min(...tablesWithCapacity.map(c => c.min_party_size));
         const configMax = Math.max(...tablesWithCapacity.map(c => c.max_party_size));
+        
+        console.log(`Party size range: ${configMin} to ${configMax}`);
 
         // Check all party sizes within the available range
+        // IMPORTANT: Pass tablesWithCapacity (not availableTables) to ensure we only check truly available tables
         for (let i = configMin; i <= configMax; i++) {
-          const suitableTable = findSuitableTable(i, availableTables);
+          const suitableTable = findSuitableTable(i, tablesWithCapacity);
+          console.log(`Party size ${i}: suitable table = ${suitableTable ? 'found' : 'not found'}`);
           if (suitableTable) {
             newOptions.push(i);
           }
         }
+        
+        console.log('Final party size options:', newOptions);
         
         // If no options available, show empty (don't fallback to min)
         setPartySizeOptions(newOptions);
