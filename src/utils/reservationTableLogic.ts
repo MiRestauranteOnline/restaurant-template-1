@@ -24,6 +24,7 @@ interface Reservation {
   reservation_time: string;
   party_size: number;
   table_config_id: string | null;
+  duration_minutes: number;
 }
 
 /**
@@ -57,13 +58,13 @@ export const calculateTableAvailability = (
       // Only count reservations assigned to this table type
       if (res.table_config_id !== config.id) return false;
 
-      // Check time overlap
+      // Check time overlap using the reservation's stored duration
       const resStartMinutes = parseInt(res.reservation_time.split(':')[0]) * 60 + 
                              parseInt(res.reservation_time.split(':')[1]);
-      // Use the same duration as the evaluated slot to determine overlap
-      const slotDuration = Math.max(0, slotEndMinutes - slotStartMinutes);
-      const resEndMinutes = resStartMinutes + slotDuration;
+      const resEndMinutes = resStartMinutes + res.duration_minutes;
 
+      // Bidirectional overlap check: slot overlaps with reservation if:
+      // slot starts before reservation ends AND slot ends after reservation starts
       return slotStartMinutes < resEndMinutes && slotEndMinutes > resStartMinutes;
     }).length;
 

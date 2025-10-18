@@ -1566,6 +1566,7 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone: string
+          duration_minutes: number
           id: string
           party_size: number
           reservation_date: string
@@ -1581,6 +1582,7 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone: string
+          duration_minutes?: number
           id?: string
           party_size: number
           reservation_date: string
@@ -1596,6 +1598,7 @@ export type Database = {
           customer_email?: string
           customer_name?: string
           customer_phone?: string
+          duration_minutes?: number
           id?: string
           party_size?: number
           reservation_date?: string
@@ -1834,6 +1837,7 @@ export type Database = {
         Row: {
           client_id: string
           created_at: string
+          duration_minutes: number
           id: string
           is_active: boolean
           max_party_size: number
@@ -1846,6 +1850,7 @@ export type Database = {
         Insert: {
           client_id: string
           created_at?: string
+          duration_minutes?: number
           id?: string
           is_active?: boolean
           max_party_size: number
@@ -1858,6 +1863,7 @@ export type Database = {
         Update: {
           client_id?: string
           created_at?: string
+          duration_minutes?: number
           id?: string
           is_active?: boolean
           max_party_size?: number

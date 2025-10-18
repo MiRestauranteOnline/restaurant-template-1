@@ -298,7 +298,7 @@ export default function ReservationBooking() {
           // Fetch existing reservations to calculate availability
           const { data: existingReservations } = await supabase
             .from('reservations')
-            .select('reservation_time, party_size, table_config_id')
+            .select('reservation_time, party_size, table_config_id, duration_minutes')
             .eq('client_id', client?.id)
             .eq('reservation_date', formData.date)
             .in('status', ['pending', 'confirmed']);
@@ -334,6 +334,7 @@ export default function ReservationBooking() {
         customer_phone: formData.phone,
         special_requests: formData.specialRequests || null,
         table_config_id: tableConfigId,
+        duration_minutes: currentSchedule?.duration_minutes || 120,
         status: 'pending'
       };
 
@@ -552,7 +553,7 @@ export default function ReservationBooking() {
         // Fetch existing reservations
         const { data: existingReservations } = await supabase
           .from('reservations')
-          .select('reservation_time, party_size, table_config_id')
+          .select('reservation_time, party_size, table_config_id, duration_minutes')
           .eq('client_id', client?.id)
           .eq('reservation_date', formData.date)
           .in('status', ['pending', 'confirmed']);
