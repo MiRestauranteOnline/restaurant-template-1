@@ -4,7 +4,10 @@ import { useClient } from '@/contexts/ClientContext';
 const FAQMinimalistic = () => {
   const { faqs } = useClient();
 
-  if (faqs.length === 0) return null;
+  console.log('FAQMinimalistic Component - FAQs data:', faqs);
+  console.log('FAQMinimalistic Component - FAQs length:', faqs?.length);
+
+  if (!faqs || faqs.length === 0) return null;
 
   return (
     <section id="faq" className="py-24 lg:py-32 bg-background">

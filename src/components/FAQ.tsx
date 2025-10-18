@@ -4,7 +4,10 @@ import { useClient } from '@/contexts/ClientContext';
 const FAQ = () => {
   const { faqs } = useClient();
 
-  if (faqs.length === 0) return null;
+  console.log('FAQ Component - FAQs data:', faqs);
+  console.log('FAQ Component - FAQs length:', faqs?.length);
+
+  if (!faqs || faqs.length === 0) return null;
 
   return (
     <section id="faq" className="py-20 lg:py-32 bg-secondary/10">
