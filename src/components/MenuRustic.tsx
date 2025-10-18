@@ -62,7 +62,7 @@ const MenuRustic = () => {
               >
                 <div className="grid md:grid-cols-2 gap-0">
                   <div className="relative h-64 md:h-auto overflow-hidden">
-                    {item.image_url ? (
+                    {item.image_url && item.show_image_home ? (
                       <img
                         src={item.image_url}
                         alt={item.name}

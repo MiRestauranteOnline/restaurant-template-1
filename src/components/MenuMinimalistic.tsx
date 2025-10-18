@@ -53,6 +53,16 @@ const MenuMinimalistic = () => {
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
                 <div className="flex justify-between items-start gap-4">
+                  {item.image_url && item.show_image_home && (
+                    <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                      <img
+                        src={item.image_url}
+                        alt={item.name}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
                   <div className="flex-1">
                     <h3 className="text-xl font-heading mb-2 group-hover:text-accent transition-colors">
                       {item.name}

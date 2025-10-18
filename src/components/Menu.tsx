@@ -61,7 +61,7 @@ const Menu = () => {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="menu-card-image relative overflow-hidden">
-                  {item.image_url ? (
+                  {item.image_url && item.show_image_home ? (
                     <img
                       src={item.image_url}
                       alt={item.name}
