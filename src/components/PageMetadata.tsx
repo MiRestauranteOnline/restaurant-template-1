@@ -12,8 +12,6 @@ const PageMetadata = ({ pageType }: PageMetadataProps) => {
     // Find metadata for this page type
     const metadata = pageMetadata.find(m => m.page_type === pageType);
 
-    console.log('🔍 PageMetadata:', { pageType, metadata, keywords: metadata?.keywords });
-
     if (!metadata) return;
 
     // Update document title
