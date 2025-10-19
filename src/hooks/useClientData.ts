@@ -496,6 +496,7 @@ export interface PageMetadata {
   page_type: 'home' | 'menu' | 'contact' | 'about' | 'reviews';
   meta_title?: string;
   meta_description?: string;
+  keywords?: string;
   og_title?: string;
   og_description?: string;
   twitter_title?: string;

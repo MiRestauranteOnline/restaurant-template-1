@@ -865,6 +865,7 @@ export type Database = {
           brand_colors: Json | null
           cancellation_date: string | null
           cancellation_reason: string | null
+          cloudflare_zone_id: string | null
           coordinates: Json | null
           country_code: string | null
           created_at: string
@@ -895,6 +896,7 @@ export type Database = {
           phone_country_code: string | null
           plan_type: string | null
           referral_source: string | null
+          reservations_email: string | null
           restaurant_name: string
           social_media_links: Json | null
           ssl_issued_date: string | null
@@ -923,6 +925,7 @@ export type Database = {
           brand_colors?: Json | null
           cancellation_date?: string | null
           cancellation_reason?: string | null
+          cloudflare_zone_id?: string | null
           coordinates?: Json | null
           country_code?: string | null
           created_at?: string
@@ -953,6 +956,7 @@ export type Database = {
           phone_country_code?: string | null
           plan_type?: string | null
           referral_source?: string | null
+          reservations_email?: string | null
           restaurant_name: string
           social_media_links?: Json | null
           ssl_issued_date?: string | null
@@ -981,6 +985,7 @@ export type Database = {
           brand_colors?: Json | null
           cancellation_date?: string | null
           cancellation_reason?: string | null
+          cloudflare_zone_id?: string | null
           coordinates?: Json | null
           country_code?: string | null
           created_at?: string
@@ -1011,6 +1016,7 @@ export type Database = {
           phone_country_code?: string | null
           plan_type?: string | null
           referral_source?: string | null
+          reservations_email?: string | null
           restaurant_name?: string
           social_media_links?: Json | null
           ssl_issued_date?: string | null
@@ -1189,6 +1195,65 @@ export type Database = {
           whatsapp_clicks?: number
         }
         Relationships: []
+      }
+      email_dns_requests: {
+        Row: {
+          client_id: string
+          created_at: string
+          dkim_selector: string
+          dkim_value: string
+          error_message: string | null
+          id: string
+          mx1_priority: number
+          mx1_record: string
+          mx2_priority: number
+          mx2_record: string
+          processed_at: string | null
+          spf_record: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          dkim_selector?: string
+          dkim_value: string
+          error_message?: string | null
+          id?: string
+          mx1_priority?: number
+          mx1_record?: string
+          mx2_priority?: number
+          mx2_record?: string
+          processed_at?: string | null
+          spf_record?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          dkim_selector?: string
+          dkim_value?: string
+          error_message?: string | null
+          id?: string
+          mx1_priority?: number
+          mx1_record?: string
+          mx2_priority?: number
+          mx2_record?: string
+          processed_at?: string | null
+          spf_record?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_dns_requests_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       faqs: {
         Row: {
@@ -1444,6 +1509,59 @@ export type Database = {
           },
         ]
       }
+      page_metadata: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          keywords: string | null
+          meta_description: string
+          meta_title: string
+          og_description: string | null
+          og_title: string | null
+          page_type: string
+          twitter_description: string | null
+          twitter_title: string | null
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          keywords?: string | null
+          meta_description: string
+          meta_title: string
+          og_description?: string | null
+          og_title?: string | null
+          page_type: string
+          twitter_description?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          keywords?: string | null
+          meta_description?: string
+          meta_title?: string
+          og_description?: string | null
+          og_title?: string | null
+          page_type?: string
+          twitter_description?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_metadata_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       premium_features: {
         Row: {
           analytics_enabled: boolean | null
@@ -1568,6 +1686,7 @@ export type Database = {
           customer_phone: string
           duration_minutes: number
           id: string
+          internal_notes: string | null
           party_size: number
           reservation_date: string
           reservation_time: string
@@ -1584,6 +1703,7 @@ export type Database = {
           customer_phone: string
           duration_minutes?: number
           id?: string
+          internal_notes?: string | null
           party_size: number
           reservation_date: string
           reservation_time: string
@@ -1600,6 +1720,7 @@ export type Database = {
           customer_phone?: string
           duration_minutes?: number
           id?: string
+          internal_notes?: string | null
           party_size?: number
           reservation_date?: string
           reservation_time?: string

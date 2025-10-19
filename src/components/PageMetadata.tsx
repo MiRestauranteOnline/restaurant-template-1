@@ -21,7 +21,7 @@ const PageMetadata = ({ pageType }: PageMetadataProps) => {
 
     // Remove existing meta tags for this page
     const existingMetaTags = document.querySelectorAll(
-      'meta[name="description"], meta[property="og:title"], meta[property="og:description"], meta[name="twitter:title"], meta[name="twitter:description"]'
+      'meta[name="description"], meta[name="keywords"], meta[property="og:title"], meta[property="og:description"], meta[name="twitter:title"], meta[name="twitter:description"]'
     );
     existingMetaTags.forEach(tag => tag.remove());
 
@@ -31,6 +31,14 @@ const PageMetadata = ({ pageType }: PageMetadataProps) => {
       metaDescription.name = 'description';
       metaDescription.content = metadata.meta_description;
       document.head.appendChild(metaDescription);
+    }
+
+    // Add keywords
+    if (metadata.keywords) {
+      const metaKeywords = document.createElement('meta');
+      metaKeywords.name = 'keywords';
+      metaKeywords.content = metadata.keywords;
+      document.head.appendChild(metaKeywords);
     }
 
     // Add Open Graph title
@@ -76,7 +84,7 @@ const PageMetadata = ({ pageType }: PageMetadataProps) => {
     // Cleanup function
     return () => {
       const metaTags = document.querySelectorAll(
-        'meta[name="description"], meta[property="og:title"], meta[property="og:description"], meta[name="twitter:title"], meta[name="twitter:description"], meta[property="og:site_name"]'
+        'meta[name="description"], meta[name="keywords"], meta[property="og:title"], meta[property="og:description"], meta[name="twitter:title"], meta[name="twitter:description"], meta[property="og:site_name"]'
       );
       metaTags.forEach(tag => tag.remove());
     };
