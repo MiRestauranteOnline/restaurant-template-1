@@ -66,23 +66,18 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Get admin content to check page visibility
-    const { data: adminContent, error: adminError } = await supabase
-      .from('admin_content')
-      .select(`
-        homepage_about_section_visible,
-        homepage_menu_section_visible,
-        homepage_contact_section_visible,
-        homepage_reviews_section_visible
-      `)
-      .eq('client_id', client.id)
-      .single();
+    // Check what content exists for this client to determine which pages to include
+    const [reviewsResult, menuItemsResult, teamMembersResult] = await Promise.all([
+      supabase.from('reviews').select('id', { count: 'exact', head: true }).eq('client_id', client.id).eq('is_active', true),
+      supabase.from('menu_items').select('id', { count: 'exact', head: true }).eq('client_id', client.id).eq('is_active', true),
+      supabase.from('team_members').select('id', { count: 'exact', head: true }).eq('client_id', client.id).eq('is_active', true),
+    ]);
 
-    if (adminError) {
-      console.error('❌ Error fetching admin content:', adminError);
-    }
+    const hasReviews = (reviewsResult.count || 0) > 0;
+    const hasMenuItems = (menuItemsResult.count || 0) > 0;
+    const hasTeamMembers = (teamMembersResult.count || 0) > 0;
 
-    console.log('📄 Admin content visibility:', adminContent);
+    console.log('📊 Content check:', { hasReviews, hasMenuItems, hasTeamMembers });
 
     // Determine the base URL
     const baseUrl = client.domain && client.domain_verified 
@@ -91,7 +86,7 @@ Deno.serve(async (req) => {
 
     console.log('🌐 Base URL:', baseUrl);
 
-    // Build sitemap URLs based on visibility
+    // Build sitemap URLs based on actual content existence
     const urls = [
       {
         loc: baseUrl,
@@ -103,27 +98,27 @@ Deno.serve(async (req) => {
         loc: `${baseUrl}/menu`,
         changefreq: 'weekly',
         priority: '0.8',
-        visible: adminContent?.homepage_menu_section_visible !== false
+        visible: hasMenuItems // Only if menu items exist
       },
       {
         loc: `${baseUrl}/about`,
         changefreq: 'monthly',
         priority: '0.7',
-        visible: adminContent?.homepage_about_section_visible !== false
+        visible: hasTeamMembers // Only if team members exist
       },
       {
         loc: `${baseUrl}/contact`,
         changefreq: 'monthly',
         priority: '0.7',
-        visible: adminContent?.homepage_contact_section_visible !== false
+        visible: true // Contact page always available
       },
       {
         loc: `${baseUrl}/reviews`,
         changefreq: 'weekly',
         priority: '0.6',
-        visible: adminContent?.homepage_reviews_section_visible !== false
+        visible: hasReviews // Only if reviews exist
       }
-    ].filter(url => url.visible); // Only include visible pages
+    ].filter(url => url.visible); // Only include pages with content
 
     console.log(`✅ Generated ${urls.length} URLs for sitemap`);
 
