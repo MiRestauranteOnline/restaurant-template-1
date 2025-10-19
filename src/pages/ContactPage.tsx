@@ -89,7 +89,7 @@ const ContactPage = () => {
   return (
     <>
       <HeadScripts />
-      <PageMetadata pageType="contact" />
+      <PageMetadata pageType="contact" heroImageUrl={contactHeroBackground} />
       <StructuredData />
       <div className="min-h-screen bg-background">
         <Navigation />

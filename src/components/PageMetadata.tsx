@@ -3,9 +3,10 @@ import { useClient } from '@/contexts/ClientContext';
 
 interface PageMetadataProps {
   pageType: 'home' | 'menu' | 'contact' | 'about' | 'reviews';
+  heroImageUrl?: string;
 }
 
-const PageMetadata = ({ pageType }: PageMetadataProps) => {
+const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
   const { pageMetadata, client } = useClient();
 
   useEffect(() => {
@@ -21,7 +22,7 @@ const PageMetadata = ({ pageType }: PageMetadataProps) => {
 
     // Remove existing meta tags for this page
     const existingMetaTags = document.querySelectorAll(
-      'meta[name="description"], meta[name="keywords"], meta[property="og:title"], meta[property="og:description"], meta[name="twitter:title"], meta[name="twitter:description"]'
+      'meta[name="description"], meta[name="keywords"], meta[property="og:title"], meta[property="og:description"], meta[property="og:image"], meta[property="og:url"], meta[property="og:type"], meta[name="twitter:title"], meta[name="twitter:description"], meta[name="twitter:image"], meta[name="twitter:card"], link[rel="canonical"]'
     );
     existingMetaTags.forEach(tag => tag.remove());
 
@@ -81,14 +82,54 @@ const PageMetadata = ({ pageType }: PageMetadataProps) => {
       document.head.appendChild(ogSiteName);
     }
 
+    // Add canonical URL
+    const canonical = document.createElement('link');
+    canonical.rel = 'canonical';
+    canonical.href = window.location.origin + window.location.pathname;
+    document.head.appendChild(canonical);
+
+    // Add Open Graph URL
+    const ogUrl = document.createElement('meta');
+    ogUrl.setAttribute('property', 'og:url');
+    ogUrl.content = window.location.origin + window.location.pathname;
+    document.head.appendChild(ogUrl);
+
+    // Add Open Graph type
+    const ogType = document.createElement('meta');
+    ogType.setAttribute('property', 'og:type');
+    ogType.content = 'website';
+    document.head.appendChild(ogType);
+
+    // Add Open Graph image (use hero image if provided)
+    if (heroImageUrl) {
+      const ogImage = document.createElement('meta');
+      ogImage.setAttribute('property', 'og:image');
+      ogImage.content = heroImageUrl.startsWith('http') ? heroImageUrl : window.location.origin + heroImageUrl;
+      document.head.appendChild(ogImage);
+    }
+
+    // Add Twitter card type
+    const twitterCard = document.createElement('meta');
+    twitterCard.name = 'twitter:card';
+    twitterCard.content = 'summary_large_image';
+    document.head.appendChild(twitterCard);
+
+    // Add Twitter image (use hero image if provided)
+    if (heroImageUrl) {
+      const twitterImage = document.createElement('meta');
+      twitterImage.name = 'twitter:image';
+      twitterImage.content = heroImageUrl.startsWith('http') ? heroImageUrl : window.location.origin + heroImageUrl;
+      document.head.appendChild(twitterImage);
+    }
+
     // Cleanup function
     return () => {
       const metaTags = document.querySelectorAll(
-        'meta[name="description"], meta[name="keywords"], meta[property="og:title"], meta[property="og:description"], meta[name="twitter:title"], meta[name="twitter:description"], meta[property="og:site_name"]'
+        'meta[name="description"], meta[name="keywords"], meta[property="og:title"], meta[property="og:description"], meta[property="og:image"], meta[property="og:url"], meta[property="og:type"], meta[name="twitter:title"], meta[name="twitter:description"], meta[name="twitter:image"], meta[name="twitter:card"], meta[property="og:site_name"], link[rel="canonical"]'
       );
       metaTags.forEach(tag => tag.remove());
     };
-  }, [pageMetadata, pageType, client?.restaurant_name]);
+  }, [pageMetadata, pageType, client?.restaurant_name, heroImageUrl]);
 
   return null;
 };

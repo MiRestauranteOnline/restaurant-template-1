@@ -58,7 +58,7 @@ const AboutPageMinimalistic = () => {
   return (
     <>
       <HeadScripts />
-      <PageMetadata pageType="about" />
+      <PageMetadata pageType="about" heroImageUrl={aboutHeroBackground} />
       <StructuredData />
       <div className="min-h-screen bg-background">
         <NavigationMinimalistic />

@@ -92,7 +92,7 @@ const ContactPageRustic = () => {
   return (
     <>
       <HeadScripts />
-      <PageMetadata pageType="contact" />
+      <PageMetadata pageType="contact" heroImageUrl={contactHeroBackground} />
       <StructuredData />
       <div className="min-h-screen bg-background">
         <NavigationRustic />

@@ -21,6 +21,9 @@ const RestaurantContent = () => {
   const { adminContent } = useClient();
   useTitleScale(); // Apply dynamic title scaling
 
+  // Get hero background for SEO
+  const heroBackground = adminContent?.homepage_hero_background_url;
+
   const sections = useMemo(() => {
     const sectionList = [
       { order: 1, component: <Hero key="hero" /> },
@@ -41,7 +44,7 @@ const RestaurantContent = () => {
   return (
     <>
       <HeadScripts />
-      <PageMetadata pageType="home" />
+      <PageMetadata pageType="home" heroImageUrl={heroBackground} />
       <StructuredData />
       <div className="min-h-screen bg-background">
         <Navigation />

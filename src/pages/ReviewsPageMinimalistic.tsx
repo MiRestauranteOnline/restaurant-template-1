@@ -50,7 +50,7 @@ const ReviewsPageMinimalistic = () => {
     return (
       <>
         <HeadScripts />
-        <PageMetadata pageType="reviews" />
+        <PageMetadata pageType="reviews" heroImageUrl={reviewsHeroBackground} />
         <StructuredData />
         <div className="min-h-screen bg-background">
           <NavigationMinimalistic />
@@ -85,7 +85,7 @@ const ReviewsPageMinimalistic = () => {
     return (
       <>
         <HeadScripts />
-        <PageMetadata pageType="reviews" />
+        <PageMetadata pageType="reviews" heroImageUrl={reviewsHeroBackground} />
         <StructuredData />
         <div className="min-h-screen bg-background">
           <NavigationMinimalistic />
@@ -127,7 +127,7 @@ const ReviewsPageMinimalistic = () => {
   return (
     <>
       <HeadScripts />
-      <PageMetadata pageType="reviews" />
+      <PageMetadata pageType="reviews" heroImageUrl={reviewsHeroBackground} />
       <StructuredData />
       <div className="min-h-screen bg-background">
         <NavigationMinimalistic />

@@ -36,7 +36,7 @@ const ReviewsPage = () => {
     return (
       <>
         <HeadScripts />
-        <PageMetadata pageType="reviews" />
+        <PageMetadata pageType="reviews" heroImageUrl={reviewsHeroBackground} />
         <StructuredData />
         <div className="min-h-screen bg-background">
           <Navigation />
@@ -70,7 +70,7 @@ const ReviewsPage = () => {
     return (
       <>
         <HeadScripts />
-        <PageMetadata pageType="reviews" />
+        <PageMetadata pageType="reviews" heroImageUrl={reviewsHeroBackground} />
         <StructuredData />
         <div className="min-h-screen bg-background">
           <Navigation />
@@ -109,7 +109,7 @@ const ReviewsPage = () => {
   return (
     <>
       <HeadScripts />
-      <PageMetadata pageType="reviews" />
+      <PageMetadata pageType="reviews" heroImageUrl={reviewsHeroBackground} />
       <StructuredData />
       <div className="min-h-screen bg-background">
         <Navigation />

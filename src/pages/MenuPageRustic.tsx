@@ -77,7 +77,7 @@ const MenuPageRustic = () => {
   return (
     <>
       <HeadScripts />
-      <PageMetadata pageType="menu" />
+      <PageMetadata pageType="menu" heroImageUrl={menuHeroBackground} />
       <StructuredData />
       <div className="min-h-screen bg-background">
         <NavigationRustic />
