@@ -18,6 +18,7 @@ import ReservationBookingMinimalistic from '@/components/ReservationBookingMinim
 import StructuredData from '@/components/StructuredData';
 import HeadScripts from '@/components/HeadScripts';
 import FAQMinimalistic from '@/components/FAQMinimalistic';
+import PageMetadata from '@/components/PageMetadata';
 
 /**
  * MINIMALISTIC RESTAURANT TEMPLATE
@@ -50,6 +51,7 @@ const MinimalisticRestaurant = () => {
   return (
     <>
       <HeadScripts />
+      <PageMetadata pageType="home" />
       <StructuredData />
       <div className="min-h-screen bg-background">
         <NavigationMinimalistic />

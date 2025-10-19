@@ -20,6 +20,7 @@ import StructuredData from '@/components/StructuredData';
 import HeadScripts from '@/components/HeadScripts';
 import { Separator } from '@/components/ui/separator';
 import FAQRustic from '@/components/FAQRustic';
+import PageMetadata from '@/components/PageMetadata';
 
 /**
  * RUSTIC RESTAURANT TEMPLATE
@@ -78,6 +79,7 @@ const RusticRestaurant = () => {
   return (
     <>
       <HeadScripts />
+      <PageMetadata pageType="home" />
       <StructuredData />
       <div className="min-h-screen bg-background">
         <NavigationRustic />

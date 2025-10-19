@@ -18,6 +18,7 @@ import Footer from '@/components/Footer';
 import ImageCarousel from '@/components/ImageCarousel';
 import ReservationBooking from '@/components/ReservationBooking';
 import StructuredData from '@/components/StructuredData';
+import PageMetadata from '@/components/PageMetadata';
 
 /**
  * MODERN RESTAURANT TEMPLATE
@@ -60,6 +61,7 @@ const ModernRestaurant = () => {
 
   return (
     <>
+      <PageMetadata pageType="home" />
       <StructuredData />
       <div className="min-h-screen bg-background">
         <Navigation />
