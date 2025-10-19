@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ClientProvider, useClient } from "@/contexts/ClientContext";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import HeadScripts from '@/components/HeadScripts';
+import FaviconManager from '@/components/FaviconManager';
 import { lazy, Suspense, useEffect, useState } from 'react';
 import LoadingSpinner from "./components/LoadingSpinner";
 import MenuPage from "./pages/MenuPage";
@@ -334,6 +335,7 @@ const ThemedApp = () => {
   return (
     <>
       <HeadScripts />
+      <FaviconManager />
       <AnalyticsProvider>
         <Routes>
           <Route path="/" element={<TemplateSwitcher />} />

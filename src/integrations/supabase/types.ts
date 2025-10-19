@@ -876,6 +876,7 @@ export type Database = {
           domain_verification_date: string | null
           domain_verified: boolean | null
           email: string | null
+          favicon_url: string | null
           id: string
           last_domain_check: string | null
           last_payment_attempt: string | null
@@ -936,6 +937,7 @@ export type Database = {
           domain_verification_date?: string | null
           domain_verified?: boolean | null
           email?: string | null
+          favicon_url?: string | null
           id?: string
           last_domain_check?: string | null
           last_payment_attempt?: string | null
@@ -996,6 +998,7 @@ export type Database = {
           domain_verification_date?: string | null
           domain_verified?: boolean | null
           email?: string | null
+          favicon_url?: string | null
           id?: string
           last_domain_check?: string | null
           last_payment_attempt?: string | null

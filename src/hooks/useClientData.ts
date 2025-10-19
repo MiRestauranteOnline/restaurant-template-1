@@ -291,6 +291,7 @@ export interface ClientData {
   timezone?: string;
   country_code?: string;
   locale?: string;
+  favicon_url?: string;
   created_at: string;
   updated_at: string;
 }
