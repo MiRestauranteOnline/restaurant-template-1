@@ -39,8 +39,8 @@ const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
       return window.location.origin + window.location.pathname;
     })();
 
-    // Update document title - use constructed format or fallback to database meta_title
-    document.title = constructedTitle;
+    // Update document title - use database meta_title if available, otherwise use constructed format
+    document.title = metadata?.meta_title || constructedTitle;
 
     // Remove existing meta tags for this page
     const existingMetaTags = document.querySelectorAll(
@@ -49,7 +49,7 @@ const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
     existingMetaTags.forEach(tag => tag.remove());
 
     // Add meta description
-    if (metadata.meta_description) {
+    if (metadata?.meta_description) {
       const metaDescription = document.createElement('meta');
       metaDescription.name = 'description';
       metaDescription.content = metadata.meta_description;
@@ -57,7 +57,7 @@ const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
     }
 
     // Add keywords
-    if (metadata.keywords) {
+    if (metadata?.keywords) {
       const metaKeywords = document.createElement('meta');
       metaKeywords.name = 'keywords';
       metaKeywords.content = metadata.keywords;
@@ -65,7 +65,7 @@ const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
     }
 
     // Add Open Graph title
-    if (metadata.og_title) {
+    if (metadata?.og_title) {
       const ogTitle = document.createElement('meta');
       ogTitle.setAttribute('property', 'og:title');
       ogTitle.content = metadata.og_title;
@@ -73,7 +73,7 @@ const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
     }
 
     // Add Open Graph description
-    if (metadata.og_description) {
+    if (metadata?.og_description) {
       const ogDescription = document.createElement('meta');
       ogDescription.setAttribute('property', 'og:description');
       ogDescription.content = metadata.og_description;
@@ -81,7 +81,7 @@ const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
     }
 
     // Add Twitter title
-    if (metadata.twitter_title) {
+    if (metadata?.twitter_title) {
       const twitterTitle = document.createElement('meta');
       twitterTitle.name = 'twitter:title';
       twitterTitle.content = metadata.twitter_title;
@@ -89,7 +89,7 @@ const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
     }
 
     // Add Twitter description
-    if (metadata.twitter_description) {
+    if (metadata?.twitter_description) {
       const twitterDescription = document.createElement('meta');
       twitterDescription.name = 'twitter:description';
       twitterDescription.content = metadata.twitter_description;
