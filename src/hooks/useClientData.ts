@@ -490,6 +490,20 @@ export interface FAQ {
   updated_at: string;
 }
 
+export interface PageMetadata {
+  id: string;
+  client_id: string;
+  page_type: 'home' | 'menu' | 'contact' | 'about' | 'reviews';
+  meta_title?: string;
+  meta_description?: string;
+  og_title?: string;
+  og_description?: string;
+  twitter_title?: string;
+  twitter_description?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 // Global data cache for instant access
 interface GlobalDataCache {
   client: ClientData | null;
@@ -501,6 +515,7 @@ interface GlobalDataCache {
   faqs: FAQ[];
   clientSettings: ClientSettings | null;
   premiumFeatures: PremiumFeatures | null;
+  pageMetadata: PageMetadata[];
   loading: boolean;
   error: string | null;
   domain: string;
@@ -516,6 +531,7 @@ const globalDataCache: GlobalDataCache = {
   faqs: [],
   clientSettings: null,
   premiumFeatures: null,
+  pageMetadata: [],
   loading: true,
   error: null,
   domain: ''
@@ -601,7 +617,7 @@ export const preloadAllClientData = async (domain?: string) => {
 
     if (clientData?.id) {
       // Fetch ALL data in parallel for instant access
-      const [menuResponse, categoriesResponse, settingsResponse, adminContentResponse, teamResponse, reviewsResponse, faqsResponse, premiumFeaturesResponse] = await Promise.all([
+      const [menuResponse, categoriesResponse, settingsResponse, adminContentResponse, teamResponse, reviewsResponse, faqsResponse, premiumFeaturesResponse, pageMetadataResponse] = await Promise.all([
         supabase
           .from('menu_items')
           .select('*')
@@ -653,7 +669,12 @@ export const preloadAllClientData = async (domain?: string) => {
           .from('premium_features' as any)
           .select('*')
           .eq('client_id', clientData.id)
-          .maybeSingle()
+          .maybeSingle(),
+
+        supabase
+          .from('page_metadata' as any)
+          .select('*')
+          .eq('client_id', clientData.id)
       ]);
 
       // Store all data in global cache with normalized category_id
@@ -669,6 +690,7 @@ export const preloadAllClientData = async (domain?: string) => {
       globalDataCache.adminContent = adminContentResponse.data || null;
       globalDataCache.clientSettings = settingsResponse.data as ClientSettings || null;
       globalDataCache.premiumFeatures = (premiumFeaturesResponse.data as any) || null;
+      globalDataCache.pageMetadata = (pageMetadataResponse.data as any) || [];
 
       // Apply dynamic colors immediately
       if (settingsResponse.data) {
@@ -706,6 +728,7 @@ export const useClientData = (domain?: string) => {
   const [faqs, setFaqs] = useState<FAQ[]>(globalDataCache.faqs);
   const [clientSettings, setClientSettings] = useState<ClientSettings | null>(globalDataCache.clientSettings);
   const [premiumFeatures, setPremiumFeatures] = useState<PremiumFeatures | null>(globalDataCache.premiumFeatures);
+  const [pageMetadata, setPageMetadata] = useState<PageMetadata[]>(globalDataCache.pageMetadata);
   const [loading, setLoading] = useState(globalDataCache.loading);
   const [error, setError] = useState<string | null>(globalDataCache.error);
 
@@ -725,6 +748,7 @@ export const useClientData = (domain?: string) => {
         setFaqs(globalDataCache.faqs);
         setClientSettings(globalDataCache.clientSettings);
         setPremiumFeatures(globalDataCache.premiumFeatures);
+        setPageMetadata(globalDataCache.pageMetadata);
         setLoading(globalDataCache.loading);
         setError(globalDataCache.error);
       }
@@ -1004,6 +1028,7 @@ export const useClientData = (domain?: string) => {
     faqs,
     clientSettings,
     premiumFeatures,
+    pageMetadata,
     loading,
     error,
     domain: detectedDomain

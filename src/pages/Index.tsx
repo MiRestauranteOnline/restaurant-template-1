@@ -14,6 +14,7 @@ import ImageCarousel from '@/components/ImageCarousel';
 import ReservationBooking from '@/components/ReservationBooking';
 import StructuredData from '@/components/StructuredData';
 import HeadScripts from '@/components/HeadScripts';
+import PageMetadata from '@/components/PageMetadata';
 import FAQ from '@/components/FAQ';
 
 const RestaurantContent = () => {
@@ -40,6 +41,7 @@ const RestaurantContent = () => {
   return (
     <>
       <HeadScripts />
+      <PageMetadata pageType="home" />
       <StructuredData />
       <div className="min-h-screen bg-background">
         <Navigation />
