@@ -13,7 +13,18 @@ const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
     // Find metadata for this page type
     const metadata = pageMetadata.find(m => m.page_type === pageType);
 
-    if (!metadata) return;
+    // Construct dynamic page title
+    const pageNames: Record<typeof pageType, string> = {
+      home: 'Home',
+      menu: 'Menu',
+      contact: 'Contact',
+      about: 'About',
+      reviews: 'Reviews'
+    };
+    
+    const constructedTitle = client?.restaurant_name 
+      ? `${client.restaurant_name} | ${pageNames[pageType]}`
+      : pageNames[pageType];
 
     // Determine the canonical URL based on domain setup
     const canonicalUrl = (() => {
@@ -28,10 +39,8 @@ const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
       return window.location.origin + window.location.pathname;
     })();
 
-    // Update document title
-    if (metadata.meta_title) {
-      document.title = metadata.meta_title;
-    }
+    // Update document title - use constructed format or fallback to database meta_title
+    document.title = constructedTitle;
 
     // Remove existing meta tags for this page
     const existingMetaTags = document.querySelectorAll(
