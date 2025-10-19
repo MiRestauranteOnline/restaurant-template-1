@@ -59,6 +59,38 @@ export default function ReservationBooking() {
     fetchSchedules();
   }, [client]);
 
+  // Real-time updates: Listen for new reservations to refresh availability
+  useEffect(() => {
+    if (!client?.id || !formData.date) return;
+
+    const channel = supabase
+      .channel('reservation-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'reservations',
+          filter: `client_id=eq.${client.id}`
+        },
+        (payload) => {
+          console.log('New reservation detected, refreshing availability');
+          // Refresh times and capacity
+          if (formData.date) {
+            getAvailableTimes().then(setAvailableTimes);
+            if (formData.time) {
+              updateAvailableCapacity();
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [client?.id, formData.date, formData.time]);
+
   const [availableDates, setAvailableDates] = useState<{ value: string; label: string }[]>([]);
 
   useEffect(() => {
@@ -151,7 +183,7 @@ export default function ReservationBooking() {
       // Check if there's any available capacity for this date
       const { data: existingReservations } = await supabase
         .from('reservations')
-        .select('reservation_time, party_size')
+        .select('reservation_time, party_size, duration_minutes')
         .eq('client_id', client.id)
         .eq('reservation_date', dateStr)
         .in('status', ['pending', 'confirmed']);
@@ -169,10 +201,10 @@ export default function ReservationBooking() {
         const newResStartMinutes = currentHour * 60 + currentMinute;
         const newResEndMinutes = newResStartMinutes + schedule.duration_minutes;
         
-        const totalPartySize = (existingReservations || []).reduce((sum, res) => {
+        const totalPartySize = (existingReservations || []).reduce((sum, res: any) => {
           const resTime = res.reservation_time;
           const resStartMinutes = parseInt(resTime.split(':')[0]) * 60 + parseInt(resTime.split(':')[1]);
-          const resEndMinutes = resStartMinutes + schedule.duration_minutes;
+          const resEndMinutes = resStartMinutes + (res.duration_minutes || schedule.duration_minutes);
           // Check if NEW reservation window overlaps with EXISTING reservation window
           const overlaps = newResStartMinutes < resEndMinutes && newResEndMinutes > resStartMinutes;
           return overlaps ? sum + res.party_size : sum;
@@ -243,7 +275,7 @@ export default function ReservationBooking() {
     // Fetch existing reservations for the selected date
     const { data: existingReservations } = await supabase
       .from('reservations')
-      .select('reservation_time, party_size')
+      .select('reservation_time, party_size, duration_minutes')
       .eq('client_id', client?.id)
       .eq('reservation_date', formData.date)
       .in('status', ['pending', 'confirmed']);
@@ -257,10 +289,10 @@ export default function ReservationBooking() {
       
       // Calculate available capacity by checking overlapping reservations
       // A new reservation would run from newResStartMinutes to newResEndMinutes
-      const totalPartySize = existingReservations.reduce((sum, res) => {
+      const totalPartySize = existingReservations.reduce((sum, res: any) => {
         const resTime = res.reservation_time;
         const resStartMinutes = parseInt(resTime.split(':')[0]) * 60 + parseInt(resTime.split(':')[1]);
-        const resEndMinutes = resStartMinutes + schedule.duration_minutes;
+        const resEndMinutes = resStartMinutes + (res.duration_minutes || schedule.duration_minutes);
         
         // Check if the NEW reservation window overlaps with this EXISTING reservation window
         // Overlap occurs if: new_start < existing_end AND new_end > existing_start
@@ -285,6 +317,14 @@ export default function ReservationBooking() {
     setLoading(true);
 
     try {
+      // PRE-INSERT CHECK: Re-verify availability right before inserting to prevent race conditions
+      const availableTimes = await getAvailableTimes();
+      if (!availableTimes.includes(formData.time)) {
+        toast.error('Este horario acaba de llenarse. Por favor selecciona otro.');
+        setLoading(false);
+        return;
+      }
+
       const { getActiveTableConfigs, findSuitableTable, calculateTableAvailability } = await import('@/utils/reservationTableLogic');
       const currentSchedule = getCurrentSchedule();
       
