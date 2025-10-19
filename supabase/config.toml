@@ -88,3 +88,6 @@ verify_jwt = true
 
 [functions.check-domain-status]
 verify_jwt = true
+
+[functions.generate-sitemap]
+verify_jwt = false

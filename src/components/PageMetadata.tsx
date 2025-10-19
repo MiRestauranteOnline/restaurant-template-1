@@ -15,6 +15,19 @@ const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
 
     if (!metadata) return;
 
+    // Determine the canonical URL based on domain setup
+    const canonicalUrl = (() => {
+      if (client?.domain && client?.domain_verified) {
+        // Use custom domain if verified
+        return `https://${client.domain}${window.location.pathname}`;
+      } else if (client?.subdomain) {
+        // Use subdomain
+        return `https://${client.subdomain}.lovable.app${window.location.pathname}`;
+      }
+      // Fallback to current URL
+      return window.location.origin + window.location.pathname;
+    })();
+
     // Update document title
     if (metadata.meta_title) {
       document.title = metadata.meta_title;
@@ -85,13 +98,13 @@ const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
     // Add canonical URL
     const canonical = document.createElement('link');
     canonical.rel = 'canonical';
-    canonical.href = window.location.origin + window.location.pathname;
+    canonical.href = canonicalUrl;
     document.head.appendChild(canonical);
 
     // Add Open Graph URL
     const ogUrl = document.createElement('meta');
     ogUrl.setAttribute('property', 'og:url');
-    ogUrl.content = window.location.origin + window.location.pathname;
+    ogUrl.content = canonicalUrl;
     document.head.appendChild(ogUrl);
 
     // Add Open Graph type
@@ -129,7 +142,7 @@ const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
       );
       metaTags.forEach(tag => tag.remove());
     };
-  }, [pageMetadata, pageType, client?.restaurant_name, heroImageUrl]);
+  }, [pageMetadata, pageType, client?.restaurant_name, client?.domain, client?.domain_verified, client?.subdomain, heroImageUrl]);
 
   return null;
 };

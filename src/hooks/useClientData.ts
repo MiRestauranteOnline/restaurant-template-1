@@ -269,6 +269,8 @@ const applyEarlyStyles = (domain: string) => {
 export interface ClientData {
   id: string;
   subdomain: string;
+  domain?: string;
+  domain_verified?: boolean;
   restaurant_name: string;
   phone?: string;
   phone_country_code?: string;
