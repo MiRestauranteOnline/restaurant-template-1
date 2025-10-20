@@ -305,14 +305,6 @@ const ExternalRedirect = ({ to }: { to: string }) => {
   return <LoadingSpinner />;
 };
 
-// Sitemap proxy route to ensure /sitemap.xml always works even without host-level rewrites
-const SitemapProxy = () => {
-  useEffect(() => {
-    const target = `https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/generate-sitemap?domain=${encodeURIComponent(window.location.host)}`;
-    window.location.replace(target);
-  }, []);
-  return <LoadingSpinner />;
-};
 
 // Theme wrapper component that waits for client data
 const ThemedApp = () => {
@@ -349,7 +341,7 @@ const ThemedApp = () => {
           <Routes>
             <Route path="/" element={<TemplateSwitcher />} />
             <Route path="/login" element={<ExternalRedirect to="https://mirestaurante.online/auth" />} />
-            <Route path="/sitemap.xml" element={<SitemapProxy />} />
+            
             <Route path="/menu" element={<TemplateAwareMenuPage />} />
             <Route path="/about" element={<TemplateAwareAboutPage />} />
             <Route path="/contact" element={<TemplateAwareContactPage />} />

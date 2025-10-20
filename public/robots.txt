@@ -14,4 +14,4 @@ User-agent: *
 Allow: /
 
 Sitemap: /sitemap.xml
-Sitemap: https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/generate-sitemap
+

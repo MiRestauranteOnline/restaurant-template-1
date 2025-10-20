@@ -24,29 +24,35 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Determine subdomain or custom domain from host
-    let clientQuery;
-    if (host.includes('.lovable.app')) {
-      // Extract subdomain (e.g., "demo-restaurante" from "demo-restaurante.lovable.app")
-      const subdomain = host.split('.lovable.app')[0];
-      console.log('🔍 Looking up client by subdomain:', subdomain);
-      clientQuery = supabase
-        .from('clients')
-        .select('id, subdomain, domain, domain_verified, subscription_status')
-        .eq('subdomain', subdomain)
-        .single();
-    } else {
-      // Custom domain
-      console.log('🔍 Looking up client by custom domain:', host);
-      clientQuery = supabase
-        .from('clients')
-        .select('id, subdomain, domain, domain_verified, subscription_status')
-        .eq('domain', host)
-        .eq('domain_verified', true)
-        .single();
-    }
+    // Determine subdomain or custom domain from host (robust - avoid .single() errors)
+    let client: any = null;
+    let clientError: any = null;
 
-    const { data: client, error: clientError } = await clientQuery;
+    if (host) {
+      if (host.includes('.lovable.app')) {
+        // Extract subdomain (e.g., "demo-restaurante" from "demo-restaurante.lovable.app")
+        const subdomain = host.split('.lovable.app')[0];
+        console.log('🔍 Looking up client by subdomain:', subdomain);
+        const { data, error } = await supabase
+          .from('clients')
+          .select('id, subdomain, domain, domain_verified, subscription_status')
+          .eq('subdomain', subdomain)
+          .limit(1);
+        clientError = error;
+        client = Array.isArray(data) && data.length > 0 ? data[0] : null;
+      } else {
+        // Custom domain
+        console.log('🔍 Looking up client by custom domain:', host);
+        const { data, error } = await supabase
+          .from('clients')
+          .select('id, subdomain, domain, domain_verified, subscription_status')
+          .eq('domain', host)
+          .eq('domain_verified', true)
+          .limit(1);
+        clientError = error;
+        client = Array.isArray(data) && data.length > 0 ? data[0] : null;
+      }
+    }
 
     if (clientError || !client) {
       console.warn('⚠️ Client not found; generating fallback sitemap. Error:', clientError?.message);
@@ -90,37 +96,14 @@ Deno.serve(async (req) => {
 
     console.log('🌐 Base URL:', baseUrl);
 
-    // Build sitemap URLs - always include core pages, conditionally include content pages
+    // Build sitemap URLs - include all primary pages
     const urls = [
-      {
-        loc: baseUrl,
-        changefreq: 'daily',
-        priority: '1.0',
-      },
-      {
-        loc: `${baseUrl}/contact`,
-        changefreq: 'monthly',
-        priority: '0.7',
-      },
+      { loc: baseUrl, changefreq: 'daily', priority: '1.0' },
+      { loc: `${baseUrl}/menu`, changefreq: 'weekly', priority: '0.8' },
+      { loc: `${baseUrl}/about`, changefreq: 'monthly', priority: '0.7' },
+      { loc: `${baseUrl}/contact`, changefreq: 'monthly', priority: '0.7' },
+      { loc: `${baseUrl}/reviews`, changefreq: 'weekly', priority: '0.6' },
     ];
-
-    // Add menu page only if menu items exist
-    if (hasMenuItems) {
-      urls.push({
-        loc: `${baseUrl}/menu`,
-        changefreq: 'weekly',
-        priority: '0.8',
-      });
-    }
-
-    // Add reviews page only if reviews exist
-    if (hasReviews) {
-      urls.push({
-        loc: `${baseUrl}/reviews`,
-        changefreq: 'weekly',
-        priority: '0.6',
-      });
-    }
 
     console.log(`✅ Generated ${urls.length} URLs for sitemap`);
 
