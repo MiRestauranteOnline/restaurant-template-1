@@ -56,10 +56,10 @@ const SitemapXML = () => {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
             <BookOpen className="w-8 h-8 text-cyan-400" />
-            <h1 className="text-4xl font-bold text-cyan-400">Sitemap</h1>
+            <h1 className="text-4xl font-bold text-cyan-400">Mapa del Sitio</h1>
           </div>
           <p className="text-gray-400 text-lg">
-            XML Sitemap for {client?.restaurant_name || 'Mi Restaurante Online'}
+            Mapa XML del Sitio para {client?.restaurant_name || 'Mi Restaurante Online'}
           </p>
         </div>
 
@@ -67,15 +67,15 @@ const SitemapXML = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12">
           <div className="bg-[#142030] border border-cyan-900/30 rounded-lg p-6">
             <div className="text-3xl font-bold text-cyan-400 mb-2">{urls.length}</div>
-            <div className="text-sm text-gray-400">Total URLs</div>
+            <div className="text-sm text-gray-400">URLs Totales</div>
           </div>
           <div className="bg-[#142030] border border-cyan-900/30 rounded-lg p-6">
             <div className="text-3xl font-bold text-cyan-400 mb-2">{highPriorityCount}</div>
-            <div className="text-sm text-gray-400">High Priority</div>
+            <div className="text-sm text-gray-400">Alta Prioridad</div>
           </div>
           <div className="bg-[#142030] border border-cyan-900/30 rounded-lg p-6 col-span-2 md:col-span-1">
             <div className="text-3xl font-bold text-cyan-400 mb-2">{client?.restaurant_name?.slice(0, 2) || 'MR'}</div>
-            <div className="text-sm text-gray-400">Site Pages</div>
+            <div className="text-sm text-gray-400">Páginas del Sitio</div>
           </div>
         </div>
 
@@ -83,7 +83,7 @@ const SitemapXML = () => {
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-6">
             <FileText className="w-5 h-5 text-cyan-400" />
-            <h2 className="text-xl font-semibold text-cyan-400">Main Pages</h2>
+            <h2 className="text-xl font-semibold text-cyan-400">Páginas Principales</h2>
           </div>
           
           <div className="space-y-4">
@@ -101,14 +101,14 @@ const SitemapXML = () => {
                 <div className="flex flex-wrap gap-6 text-sm">
                   <span className="text-gray-400">
                     <span className={url.priority >= 0.8 ? 'text-cyan-400' : 'text-yellow-500'}>
-                      Priority: {url.priority.toFixed(1)}
+                      Prioridad: {url.priority.toFixed(1)}
                     </span>
                   </span>
                   <span className="text-gray-400">
-                    Update: <span className="text-gray-300">{url.changefreq}</span>
+                    Actualización: <span className="text-gray-300">{url.changefreq}</span>
                   </span>
                   <span className="text-gray-400">
-                    Modified: <span className="text-gray-300">{url.lastmod}</span>
+                    Modificado: <span className="text-gray-300">{url.lastmod}</span>
                   </span>
                 </div>
               </div>
@@ -118,8 +118,8 @@ const SitemapXML = () => {
 
         {/* Footer Info */}
         <div className="mt-12 text-center text-sm text-gray-500">
-          <p>This sitemap is dynamically generated based on available content.</p>
-          <p className="mt-2">Last updated: {new Date().toISOString().split('T')[0]}</p>
+          <p>Este mapa del sitio se genera dinámicamente según el contenido disponible.</p>
+          <p className="mt-2">Última actualización: {new Date().toISOString().split('T')[0]}</p>
         </div>
       </div>
     </div>
