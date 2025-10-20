@@ -88,13 +88,13 @@ Deno.serve(async (req) => {
 
       console.log(`Using zone ID: ${zoneId}`);
 
-      // Step 3: Get our server IP (you'll need to replace this with your actual IP)
-      const SERVER_IP = '185.158.133.1'; // Lovable's IP from the context
+      // Step 3: Cloudflare Pages deployment URL (used as CNAME target)
+      const PAGES_DEPLOYMENT = 'restaurant-template-1.pages.dev';
 
-      // Step 4: Create DNS records
+      // Step 4: Create DNS records (CNAME to Cloudflare Pages)
       const recordsToCreate = [
-        { type: 'A', name: '@', content: SERVER_IP },
-        { type: 'A', name: 'www', content: SERVER_IP },
+        { type: 'CNAME', name: '@', content: PAGES_DEPLOYMENT },
+        { type: 'CNAME', name: 'www', content: PAGES_DEPLOYMENT },
       ];
 
       const dnsResults = [];
