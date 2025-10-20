@@ -2,7 +2,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-forwarded-host',
 };
 
 Deno.serve(async (req) => {
@@ -14,12 +14,12 @@ Deno.serve(async (req) => {
   try {
     console.log('🗺️ Generate sitemap request received');
     
-    // Prefer original host forwarded by proxies/CDNs, fallback to direct host
-    const forwardedHost = req.headers.get('x-forwarded-host') || req.headers.get('x-forwarded-host'.toUpperCase());
-    const host = (forwardedHost || req.headers.get('host') || '').trim();
+    // Resolve target host: prefer explicit query param, then forwarded host, then host
+    const urlObj = new URL(req.url);
+    const domainParam = urlObj.searchParams.get('domain') || urlObj.searchParams.get('host');
+    const forwardedHost = req.headers.get('x-forwarded-host') || req.headers.get('X-Forwarded-Host');
+    const host = (domainParam || forwardedHost || req.headers.get('host') || '').trim();
     console.log('📍 Host (resolved):', host);
-
-    // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);

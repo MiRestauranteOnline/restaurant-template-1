@@ -305,6 +305,15 @@ const ExternalRedirect = ({ to }: { to: string }) => {
   return <LoadingSpinner />;
 };
 
+// Sitemap proxy route to ensure /sitemap.xml always works even without host-level rewrites
+const SitemapProxy = () => {
+  useEffect(() => {
+    const target = `https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/generate-sitemap?domain=${encodeURIComponent(window.location.host)}`;
+    window.location.replace(target);
+  }, []);
+  return <LoadingSpinner />;
+};
+
 // Theme wrapper component that waits for client data
 const ThemedApp = () => {
   console.log('🔍 ThemedApp: Component mounting');
@@ -337,16 +346,17 @@ const ThemedApp = () => {
       <HeadScripts />
       <FaviconManager />
       <AnalyticsProvider>
-        <Routes>
-          <Route path="/" element={<TemplateSwitcher />} />
-          <Route path="/login" element={<ExternalRedirect to="https://mirestaurante.online/auth" />} />
-          <Route path="/menu" element={<TemplateAwareMenuPage />} />
-          <Route path="/about" element={<TemplateAwareAboutPage />} />
-          <Route path="/contact" element={<TemplateAwareContactPage />} />
-          <Route path="/reviews" element={<TemplateAwareReviewsPage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+          <Routes>
+            <Route path="/" element={<TemplateSwitcher />} />
+            <Route path="/login" element={<ExternalRedirect to="https://mirestaurante.online/auth" />} />
+            <Route path="/sitemap.xml" element={<SitemapProxy />} />
+            <Route path="/menu" element={<TemplateAwareMenuPage />} />
+            <Route path="/about" element={<TemplateAwareAboutPage />} />
+            <Route path="/contact" element={<TemplateAwareContactPage />} />
+            <Route path="/reviews" element={<TemplateAwareReviewsPage />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         <WhatsAppPopup />
       </AnalyticsProvider>
     </>
