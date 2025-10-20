@@ -1,6 +1,9 @@
 {
-  "comment": "DEPRECATED: This project now uses Cloudflare Pages. See wrangler.toml and .cloudflare-pages.json",
-  "rewrites": [
+  "build": {
+    "command": "npm run build",
+    "output": "dist"
+  },
+  "routes": [
     {
       "source": "/sitemap.xml",
       "destination": "https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/generate-sitemap"
