@@ -22,6 +22,7 @@ import ReviewsPage from "./pages/ReviewsPage";
 import ReviewsPageRustic from "./pages/ReviewsPageRustic";
 import ReviewsPageMinimalistic from "./pages/ReviewsPageMinimalistic";
 import NotFound from "./pages/NotFound";
+import SitemapXML from "./pages/SitemapXML";
 import WhatsAppPopup from "./components/WhatsAppPopup";
 import { supabase } from "@/integrations/supabase/client";
 import ErrorPage from "./components/ErrorPage";
@@ -341,7 +342,7 @@ const ThemedApp = () => {
           <Routes>
             <Route path="/" element={<TemplateSwitcher />} />
             <Route path="/login" element={<ExternalRedirect to="https://mirestaurante.online/auth" />} />
-            
+            <Route path="/sitemap.xml" element={<SitemapXML />} />
             <Route path="/menu" element={<TemplateAwareMenuPage />} />
             <Route path="/about" element={<TemplateAwareAboutPage />} />
             <Route path="/contact" element={<TemplateAwareContactPage />} />
