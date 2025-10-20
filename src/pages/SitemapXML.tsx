@@ -11,9 +11,7 @@ const SitemapXML = () => {
     // Determine base URL
     const baseUrl = client?.domain && client?.domain_verified
       ? `https://${client.domain}`
-      : client?.subdomain
-        ? `https://${client.subdomain}.lovable.app`
-        : window.location.origin;
+      : window.location.origin;
 
     const today = new Date().toISOString().split('T')[0];
 
