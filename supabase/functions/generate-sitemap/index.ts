@@ -48,39 +48,44 @@ Deno.serve(async (req) => {
     const { data: client, error: clientError } = await clientQuery;
 
     if (clientError || !client) {
-      console.error('❌ Client not found:', clientError);
-      return new Response('Client not found', { 
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'text/plain' }
-      });
+      console.warn('⚠️ Client not found; generating fallback sitemap. Error:', clientError?.message);
+      // Proceed with fallback (no client-specific content)
     }
 
-    console.log('✅ Client found:', client.id);
-
-    // Check if subscription is active
-    if (client.subscription_status !== 'active') {
-      console.log('⚠️ Inactive subscription');
-      return new Response('Site not available', { 
-        status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'text/plain' }
-      });
+    if (client) {
+      console.log('✅ Client found:', client.id);
+    } else {
+      console.log('ℹ️ No client matched host; using fallback sitemap');
     }
 
-    // Check if content exists to determine which pages to include
-    const [reviewsResult, menuItemsResult] = await Promise.all([
-      supabase.from('reviews').select('id', { count: 'exact', head: true }).eq('client_id', client.id).eq('is_active', true),
-      supabase.from('menu_items').select('id', { count: 'exact', head: true }).eq('client_id', client.id).eq('is_active', true),
-    ]);
+    // For inactive or missing clients, we will generate a minimal sitemap (only core pages)
+    const isActiveClient = !!(client && client.subscription_status === 'active');
 
-    const hasReviews = (reviewsResult.count || 0) > 0;
-    const hasMenuItems = (menuItemsResult.count || 0) > 0;
+    // Check content existence only when client is identified and active
+    let hasReviews = false;
+    let hasMenuItems = false;
+
+    if (isActiveClient) {
+      const [reviewsResult, menuItemsResult] = await Promise.all([
+        supabase.from('reviews').select('id', { count: 'exact', head: true }).eq('client_id', client.id).eq('is_active', true),
+        supabase.from('menu_items').select('id', { count: 'exact', head: true }).eq('client_id', client.id).eq('is_active', true),
+      ]);
+
+      hasReviews = (reviewsResult.count || 0) > 0;
+      hasMenuItems = (menuItemsResult.count || 0) > 0;
+    }
 
     console.log('📊 Content check:', { hasReviews, hasMenuItems });
 
     // Determine the base URL
-    const baseUrl = client.domain && client.domain_verified 
-      ? `https://${client.domain}` 
-      : `https://${client.subdomain}.lovable.app`;
+    const fallbackBaseUrl = `https://${host}`;
+    const baseUrl = client
+      ? (client.domain && client.domain_verified
+          ? `https://${client.domain}`
+          : client.subdomain
+            ? `https://${client.subdomain}.lovable.app`
+            : fallbackBaseUrl)
+      : fallbackBaseUrl;
 
     console.log('🌐 Base URL:', baseUrl);
 
