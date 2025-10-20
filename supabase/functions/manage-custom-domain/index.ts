@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
       console.log(`Using zone ID: ${zoneId}`);
 
       // Step 3: Cloudflare Pages deployment URL (used as CNAME target)
-      const PAGES_DEPLOYMENT = 'restaurant-template-1.pages.dev';
+      const PAGES_DEPLOYMENT = 'mirestaurante-template.pages.dev';
 
       // Step 4: Create DNS records (CNAME to Cloudflare Pages)
       const recordsToCreate = [
