@@ -29,9 +29,11 @@ Deno.serve(async (req) => {
     let clientError: any = null;
 
     if (host) {
-      if (host.includes('.lovable.app')) {
-        // Extract subdomain (e.g., "demo-restaurante" from "demo-restaurante.lovable.app")
-        const subdomain = host.split('.lovable.app')[0];
+      if (host.includes('.lovable.app') || host.includes('.mirestaurante.online')) {
+        // Extract subdomain from either .lovable.app or .mirestaurante.online
+        const subdomain = host.includes('.lovable.app') 
+          ? host.split('.lovable.app')[0]
+          : host.split('.mirestaurante.online')[0];
         console.log('🔍 Looking up client by subdomain:', subdomain);
         const { data, error } = await supabase
           .from('clients')
@@ -84,14 +86,12 @@ Deno.serve(async (req) => {
 
     console.log('📊 Content check:', { hasReviews, hasMenuItems });
 
-    // Determine the base URL
+    // Determine the base URL (prioritize custom domain, then use current host format)
     const fallbackBaseUrl = `https://${host}`;
     const baseUrl = client
       ? (client.domain && client.domain_verified
           ? `https://${client.domain}`
-          : client.subdomain
-            ? `https://${client.subdomain}.lovable.app`
-            : fallbackBaseUrl)
+          : `https://${host}`) // Use the actual host (either .mirestaurante.online or .lovable.app)
       : fallbackBaseUrl;
 
     console.log('🌐 Base URL:', baseUrl);
