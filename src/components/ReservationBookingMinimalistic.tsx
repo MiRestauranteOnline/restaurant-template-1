@@ -29,6 +29,36 @@ const DAYS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', '
 
 const ReservationBookingMinimalistic = () => {
   const { client, adminContent } = useClient();
+  const cachedAdminContent = getCachedAdminContent();
+  
+  // Get all text labels from admin content with fallbacks
+  const dateLabel = (adminContent as any)?.reservation_date_label || (cachedAdminContent as any)?.reservation_date_label || 'Fecha';
+  const timeLabel = (adminContent as any)?.reservation_time_label || (cachedAdminContent as any)?.reservation_time_label || 'Hora';
+  const partySizeLabel = (adminContent as any)?.reservation_party_size_label || (cachedAdminContent as any)?.reservation_party_size_label || 'Número de Personas';
+  const nameLabel = (adminContent as any)?.reservation_name_label || (cachedAdminContent as any)?.reservation_name_label || 'Nombre Completo';
+  const emailLabel = (adminContent as any)?.reservation_email_label || (cachedAdminContent as any)?.reservation_email_label || 'Email';
+  const phoneLabel = (adminContent as any)?.reservation_phone_label || (cachedAdminContent as any)?.reservation_phone_label || 'Teléfono';
+  const specialRequestsLabel = (adminContent as any)?.reservation_special_requests_label || (cachedAdminContent as any)?.reservation_special_requests_label || 'Solicitudes Especiales (Opcional)';
+  const specialRequestsPlaceholder = (adminContent as any)?.reservation_special_requests_placeholder || (cachedAdminContent as any)?.reservation_special_requests_placeholder || 'Alergias, preferencias de asiento, celebraciones...';
+  const submitButtonText = (adminContent as any)?.reservation_submit_button || (cachedAdminContent as any)?.reservation_submit_button || 'Solicitar Reserva';
+  const loadingText = (adminContent as any)?.reservation_loading_text || (cachedAdminContent as any)?.reservation_loading_text || 'Procesando...';
+  const selectDatePlaceholder = (adminContent as any)?.reservation_select_date_placeholder || (cachedAdminContent as any)?.reservation_select_date_placeholder || 'Selecciona una fecha';
+  const loadingDatesText = (adminContent as any)?.reservation_loading_dates || (cachedAdminContent as any)?.reservation_loading_dates || 'Cargando fechas...';
+  const selectTimePlaceholder = (adminContent as any)?.reservation_select_time_placeholder || (cachedAdminContent as any)?.reservation_select_time_placeholder || 'Selecciona una hora';
+  const selectDateFirstText = (adminContent as any)?.reservation_select_date_first || (cachedAdminContent as any)?.reservation_select_date_first || 'Primero selecciona una fecha';
+  const noTimesAvailableText = (adminContent as any)?.reservation_no_times_available || (cachedAdminContent as any)?.reservation_no_times_available || 'No hay horarios disponibles';
+  const capacityAvailableText = (adminContent as any)?.reservation_capacity_available || (cachedAdminContent as any)?.reservation_capacity_available || 'Capacidad disponible';
+  const availableDaysText = (adminContent as any)?.reservation_available_days || (cachedAdminContent as any)?.reservation_available_days || 'Días disponibles';
+  const systemConfiguringText = (adminContent as any)?.reservation_system_configuring || (cachedAdminContent as any)?.reservation_system_configuring || 'El sistema de reservas se está configurando. Mientras tanto, puedes contactarnos directamente.';
+  const whatsappButtonText = (adminContent as any)?.whatsapp_button_text || (cachedAdminContent as any)?.whatsapp_button_text || 'WhatsApp';
+  const callButtonText = (adminContent as any)?.call_button_text || (cachedAdminContent as any)?.call_button_text || 'Llamar';
+  const smallGroupMessage = (adminContent as any)?.reservation_small_group_message || (cachedAdminContent as any)?.reservation_small_group_message || 'Para grupos pequeños, por favor contáctanos';
+  const largeGroupMessage = (adminContent as any)?.reservation_large_group_message || (cachedAdminContent as any)?.reservation_large_group_message || 'Para grupos grandes, por favor contáctanos';
+  const contactWhatsappText = (adminContent as any)?.reservation_contact_whatsapp || (cachedAdminContent as any)?.reservation_contact_whatsapp || 'Contactar por WhatsApp';
+  const personsText = (adminContent as any)?.persons_text || (cachedAdminContent as any)?.persons_text || 'personas';
+  const reservationTitle = (adminContent as any)?.homepage_reservation_title || cachedAdminContent?.homepage_reservation_title || 'Reserva Tu Mesa';
+  const reservationDescription = (adminContent as any)?.homepage_reservation_description || cachedAdminContent?.homepage_reservation_description || '¿Listo para disfrutar de una experiencia culinaria excepcional?';
+  
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [globalTableConfigs, setGlobalTableConfigs] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -44,12 +74,6 @@ const ReservationBookingMinimalistic = () => {
     phone: '',
     specialRequests: ''
   });
-
-  const cachedAdminContent = getCachedAdminContent();
-  const reservationTitle = (adminContent as any)?.homepage_reservation_title || cachedAdminContent?.homepage_reservation_title || 'Reserva Tu Mesa';
-  const reservationDescription = (adminContent as any)?.homepage_reservation_description || cachedAdminContent?.homepage_reservation_description || 
-    '¿Listo para disfrutar de una experiencia culinaria excepcional?';
-
   useEffect(() => {
     fetchSchedules();
   }, [client]);
@@ -426,7 +450,7 @@ const ReservationBookingMinimalistic = () => {
       return (
         <div className="p-4 bg-accent/10 border border-accent/20 rounded-sm">
           <p className="text-sm text-foreground/70 mb-2">
-            Para grupos {partySize < currentSchedule.min_party_size ? 'pequeños' : 'grandes'}, por favor contáctanos por WhatsApp:
+            {partySize < currentSchedule.min_party_size ? smallGroupMessage : largeGroupMessage}:
           </p>
           <a 
             href={`https://wa.me/${whatsapp.replace(/\D/g, '')}`}
@@ -434,7 +458,7 @@ const ReservationBookingMinimalistic = () => {
             rel="noopener noreferrer"
             className="inline-flex items-center text-accent hover:text-accent/80 font-medium text-sm"
           >
-            Contactar por WhatsApp
+            {contactWhatsappText}
           </a>
         </div>
       );
@@ -444,7 +468,7 @@ const ReservationBookingMinimalistic = () => {
       return (
         <div className="p-4 bg-accent/10 border border-accent/20 rounded-sm">
           <p className="text-sm text-foreground/70 mb-2">
-            Para grupos {partySize < currentSchedule.min_party_size ? 'pequeños' : 'grandes'}, por favor llámanos:
+            {partySize < currentSchedule.min_party_size ? smallGroupMessage : largeGroupMessage}:
           </p>
           <a 
             href={`tel:${phone}`}
@@ -460,7 +484,7 @@ const ReservationBookingMinimalistic = () => {
       return (
         <div className="p-4 bg-accent/10 border border-accent/20 rounded-sm">
           <p className="text-sm text-foreground/70 mb-3">
-            Para grupos {partySize < currentSchedule.min_party_size ? 'pequeños' : 'grandes'}, por favor contáctanos:
+            {partySize < currentSchedule.min_party_size ? smallGroupMessage : largeGroupMessage}:
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             {whatsapp && (
@@ -470,7 +494,7 @@ const ReservationBookingMinimalistic = () => {
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-4 py-2 bg-accent text-accent-foreground hover:bg-accent/90 rounded-sm transition-colors text-sm"
               >
-                WhatsApp
+                {whatsappButtonText}
               </a>
             )}
             {phone && (
@@ -478,7 +502,7 @@ const ReservationBookingMinimalistic = () => {
                 href={`tel:${phone}`}
                 className="inline-flex items-center justify-center px-4 py-2 border border-accent text-accent hover:bg-accent/10 rounded-sm transition-colors text-sm"
               >
-                Llamar
+                {callButtonText}
               </a>
             )}
           </div>
@@ -514,7 +538,7 @@ const ReservationBookingMinimalistic = () => {
                 {/* Date Selection */}
                 <div className="space-y-2">
                   <Label htmlFor="date" className="text-sm tracking-wider uppercase text-foreground/70">
-                    Fecha
+                    {dateLabel}
                   </Label>
                   <Select
                     value={formData.date}
@@ -522,7 +546,7 @@ const ReservationBookingMinimalistic = () => {
                     disabled={availableDates.length === 0}
                   >
                     <SelectTrigger id="date" className="bg-background border-border rounded-none">
-                      <SelectValue placeholder={availableDates.length === 0 ? "Cargando fechas..." : "Selecciona una fecha"} />
+                      <SelectValue placeholder={availableDates.length === 0 ? loadingDatesText : selectDatePlaceholder} />
                     </SelectTrigger>
                     <SelectContent>
                       {availableDates.map((date) => (
@@ -537,7 +561,7 @@ const ReservationBookingMinimalistic = () => {
                 {/* Time Selection */}
                 <div className="space-y-2">
                   <Label htmlFor="time" className="text-sm tracking-wider uppercase text-foreground/70">
-                    Hora
+                    {timeLabel}
                   </Label>
                   <Select
                     value={formData.time}
@@ -545,7 +569,7 @@ const ReservationBookingMinimalistic = () => {
                     disabled={!formData.date || availableTimes.length === 0}
                   >
                     <SelectTrigger id="time" className="bg-background border-border rounded-none">
-                      <SelectValue placeholder={!formData.date ? "Primero selecciona una fecha" : availableTimes.length === 0 ? "No hay horarios disponibles" : "Selecciona una hora"} />
+                      <SelectValue placeholder={!formData.date ? selectDateFirstText : availableTimes.length === 0 ? noTimesAvailableText : selectTimePlaceholder} />
                     </SelectTrigger>
                     <SelectContent>
                       {availableTimes.map((time) => (
@@ -560,7 +584,7 @@ const ReservationBookingMinimalistic = () => {
                 {/* Party Size */}
                 <div className="space-y-2">
                   <Label htmlFor="partySize" className="text-sm tracking-wider uppercase text-foreground/70">
-                    Número de Personas
+                    {partySizeLabel}
                   </Label>
                   <Input
                     id="partySize"
@@ -574,7 +598,7 @@ const ReservationBookingMinimalistic = () => {
                   />
                   {availableCapacity !== null && (
                     <p className="text-xs text-foreground/60">
-                      Capacidad disponible: {availableCapacity} personas
+                      {capacityAvailableText}: {availableCapacity} {personsText}
                     </p>
                   )}
                 </div>
@@ -585,7 +609,7 @@ const ReservationBookingMinimalistic = () => {
                 {/* Name */}
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-sm tracking-wider uppercase text-foreground/70">
-                    Nombre Completo
+                    {nameLabel}
                   </Label>
                   <Input
                     id="name"
@@ -600,7 +624,7 @@ const ReservationBookingMinimalistic = () => {
                 {/* Email */}
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm tracking-wider uppercase text-foreground/70">
-                    Email
+                    {emailLabel}
                   </Label>
                   <Input
                     id="email"
@@ -615,7 +639,7 @@ const ReservationBookingMinimalistic = () => {
                 {/* Phone */}
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="text-sm tracking-wider uppercase text-foreground/70">
-                    Teléfono
+                    {phoneLabel}
                   </Label>
                   <Input
                     id="phone"
@@ -630,14 +654,14 @@ const ReservationBookingMinimalistic = () => {
                 {/* Special Requests */}
                 <div className="space-y-2">
                   <Label htmlFor="specialRequests" className="text-sm tracking-wider uppercase text-foreground/70">
-                    Solicitudes Especiales (Opcional)
+                    {specialRequestsLabel}
                   </Label>
                   <Textarea
                     id="specialRequests"
                     value={formData.specialRequests}
                     onChange={(e) => setFormData(prev => ({ ...prev, specialRequests: e.target.value }))}
                     className="bg-background border-border rounded-none min-h-[100px]"
-                    placeholder="Alergias, preferencias de asiento, celebraciones..."
+                    placeholder={specialRequestsPlaceholder}
                   />
                 </div>
 
@@ -647,14 +671,14 @@ const ReservationBookingMinimalistic = () => {
                   disabled={loading || !formData.date || !formData.time || isPartySizeOutOfRange}
                   className="btn-primary w-full py-6 text-sm tracking-wider uppercase rounded-none"
                 >
-                  {loading ? 'Procesando...' : 'Solicitar Reserva'}
+                  {loading ? loadingText : submitButtonText}
                 </Button>
               </form>
             </div>
           ) : (
             <div className="bg-card/50 backdrop-blur-sm border border-border/50 p-8 text-center fade-in">
               <p className="text-foreground/70 mb-6">
-                El sistema de reservas se está configurando. Mientras tanto, puedes contactarnos directamente.
+                {systemConfiguringText}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 {client?.whatsapp && (
@@ -666,7 +690,7 @@ const ReservationBookingMinimalistic = () => {
                       window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
                     }}
                   >
-                    WhatsApp
+                    {whatsappButtonText}
                   </Button>
                 )}
                 
@@ -678,7 +702,7 @@ const ReservationBookingMinimalistic = () => {
                       window.open(`tel:${phoneNumber}`, '_self');
                     }}
                   >
-                    Llamar
+                    {callButtonText}
                   </Button>
                 )}
               </div>
@@ -688,7 +712,7 @@ const ReservationBookingMinimalistic = () => {
           {/* Available Days Info */}
           {hasSchedules && (
             <div className="mt-8 text-center text-sm text-foreground/60">
-              <p>Días disponibles: {availableDays}</p>
+              <p>{availableDaysText}: {availableDays}</p>
             </div>
           )}
         </div>

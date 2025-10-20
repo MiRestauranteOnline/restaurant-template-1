@@ -14,6 +14,13 @@ const NavigationMinimalistic = () => {
   const cachedAdmin = getCachedAdminContent();
   const cachedSettings = getCachedClientSettings();
   
+  // Get navigation labels from admin content
+  const navHomeText = (adminContent as any)?.nav_home_text || (cachedAdmin as any)?.nav_home_text || 'Inicio';
+  const navAboutText = (adminContent as any)?.nav_about_text || (cachedAdmin as any)?.nav_about_text || 'Sobre Nosotros';
+  const navMenuText = (adminContent as any)?.nav_menu_text || (cachedAdmin as any)?.nav_menu_text || 'Menú';
+  const navReviewsText = (adminContent as any)?.nav_reviews_text || (cachedAdmin as any)?.nav_reviews_text || 'Reseñas';
+  const navContactText = (adminContent as any)?.nav_contact_text || (cachedAdmin as any)?.nav_contact_text || 'Contacto';
+  
   const hasReviews = (adminContent as any)?.homepage_reviews_enabled || cachedNav?.has_reviews || false;
   const showDeliveryInNav = cachedNav?.delivery_services?.length > 0;
   const logoUrl = adminContent?.header_logo_url || cachedAdmin?.header_logo_url;
@@ -29,11 +36,11 @@ const NavigationMinimalistic = () => {
   }, []);
 
   const navLinks = [
-    { label: 'Inicio', href: '/' },
-    { label: 'Sobre Nosotros', href: '/about' },
-    { label: 'Menú', href: '/menu' },
-    { label: 'Reseñas', href: '/reviews' },
-    { label: 'Contacto', href: '/contact' },
+    { label: navHomeText, href: '/' },
+    { label: navAboutText, href: '/about' },
+    { label: navMenuText, href: '/menu' },
+    { label: navReviewsText, href: '/reviews' },
+    { label: navContactText, href: '/contact' },
   ];
 
   return (

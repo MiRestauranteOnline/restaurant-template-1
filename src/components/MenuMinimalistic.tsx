@@ -90,7 +90,7 @@ const MenuMinimalistic = () => {
               className="btn-primary px-8 py-3 text-sm rounded-none tracking-wider uppercase"
               onClick={() => window.location.href = '/menu'}
             >
-              {(adminContent as any)?.view_full_menu_button || 'Ver Menú Completo'}
+              {(adminContent as any)?.view_full_menu_button_text || (cachedAdminContent as any)?.view_full_menu_button_text || 'Ver Menú Completo'}
             </Button>
           </div>
         </div>

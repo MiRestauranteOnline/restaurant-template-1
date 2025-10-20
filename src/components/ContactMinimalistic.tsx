@@ -7,6 +7,7 @@ const ContactMinimalistic = () => {
   
   const cachedAdminContent = getCachedAdminContent();
   const cachedClient = getCachedClientData();
+  const mapTitle = (adminContent as any)?.contact_map_title || (cachedAdminContent as any)?.contact_map_title || 'Restaurant Location';
   const contactTitle = (adminContent as any)?.homepage_contact_section_title || 'Reserva Tu Experiencia';
   const contactDescription = (adminContent as any)?.homepage_contact_section_description || 
     'Contáctanos para reservar tu mesa y vivir una experiencia gastronómica única';
@@ -94,7 +95,7 @@ const ContactMinimalistic = () => {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Restaurant Location"
+                  title={mapTitle}
                 />
               </div>
             )}

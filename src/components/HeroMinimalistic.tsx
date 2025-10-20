@@ -27,6 +27,7 @@ const HeroMinimalistic = () => {
     client?.other_customizations?.hero_description ?? 
     'Experience the finest in contemporary dining with our carefully crafted dishes and impeccable service.';
   
+  const viewMenuButtonText = (adminContent as any)?.view_menu_button_text || (cachedAdminContent as any)?.view_menu_button_text || 'View Menu';
   const rightButtonText = adminContent?.homepage_hero_right_button_text ?? 'Reserve Table';
   const rightButtonLink = adminContent?.homepage_hero_right_button_link ?? '#contact';
   const backgroundImageUrl = 
@@ -64,7 +65,7 @@ const HeroMinimalistic = () => {
               className="btn-primary px-8 py-3 text-sm rounded-none tracking-wider uppercase"
               onClick={() => window.location.href = '/menu'}
             >
-              View Menu
+              {viewMenuButtonText}
             </Button>
             <Button 
               variant="outline" 

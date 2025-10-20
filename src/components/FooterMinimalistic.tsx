@@ -8,11 +8,19 @@ const FooterMinimalistic = () => {
   
   const cachedAdminContent = getCachedAdminContent();
   const cachedClient = getCachedClientData();
+  
+  // Get footer labels from admin content
+  const footerContactLabel = (adminContent as any)?.footer_contact_label || (cachedAdminContent as any)?.footer_contact_label || 'Contacto';
+  const footerHoursLabel = (adminContent as any)?.footer_hours_label || (cachedAdminContent as any)?.footer_hours_label || 'Horarios';
+  const footerLinksLabel = (adminContent as any)?.footer_links_label || (cachedAdminContent as any)?.footer_links_label || 'Enlaces';
+  const footerRightsText = (adminContent as any)?.footer_rights_text || (cachedAdminContent as any)?.footer_rights_text || 'Todos los derechos reservados.';
+  const footerLocationText = (adminContent as any)?.footer_location_text || (cachedAdminContent as any)?.footer_location_text || 'Hecho con ❤️ en Lima, Perú';
+  
   const logoUrl = adminContent?.footer_logo_url || cachedAdminContent?.footer_logo_url;
 
   const restaurantInfo = [
     {
-      title: "Contacto",
+      title: footerContactLabel,
       items: [
         ...(client?.phone || cachedClient?.phone ? [{ icon: Phone, text: client?.phone ? `${client.phone_country_code || '+51'} ${client.phone}` : "+51 987 654 321" }] : []),
         ...(client?.email ? [{ icon: Mail, text: client.email }] : []),
@@ -20,11 +28,11 @@ const FooterMinimalistic = () => {
       ]
     },
     {
-      title: "Horarios",
+      title: footerHoursLabel,
       items: formatOpeningHours(client?.opening_hours_ordered || client?.opening_hours)
     },
     {
-      title: "Enlaces",
+      title: footerLinksLabel,
       items: [
         { label: "Menú", href: "/menu" },
         { label: "Sobre Nosotros", href: "/about" },
@@ -231,11 +239,11 @@ const FooterMinimalistic = () => {
           <div className="border-t border-border/30 pt-8 text-center">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <p className="text-foreground/50 text-xs">
-                © {new Date().getFullYear()} {client?.restaurant_name || 'Restaurant'}. Todos los derechos reservados.
+                © {new Date().getFullYear()} {client?.restaurant_name || 'Restaurant'}. {footerRightsText}
               </p>
               <div className="flex flex-col sm:flex-row items-center gap-4 text-xs">
                 <span className="text-foreground/50">
-                  Hecho con ❤️ en Lima, Perú
+                  {footerLocationText}
                 </span>
                 <span className="text-foreground/50">
                   Sitio web por{' '}

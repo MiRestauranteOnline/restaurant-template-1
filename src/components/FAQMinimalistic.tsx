@@ -1,8 +1,15 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useClient } from '@/contexts/ClientContext';
+import { getCachedAdminContent } from '@/utils/cachedContent';
 
 const FAQMinimalistic = () => {
-  const { faqs } = useClient();
+  const { faqs, adminContent } = useClient();
+  const cachedAdminContent = getCachedAdminContent();
+  
+  const faqLabel = (adminContent as any)?.faq_label || (cachedAdminContent as any)?.faq_label || 'FAQ';
+  const faqTitleFirstLine = (adminContent as any)?.faq_section_title_first_line || (cachedAdminContent as any)?.faq_section_title_first_line || 'Preguntas';
+  const faqTitleSecondLine = (adminContent as any)?.faq_section_title_second_line || (cachedAdminContent as any)?.faq_section_title_second_line || 'Frecuentes';
+  const faqDescription = (adminContent as any)?.faq_section_description || (cachedAdminContent as any)?.faq_section_description || 'Encuentra respuestas a las preguntas más comunes sobre nuestros servicios';
 
   console.log('FAQMinimalistic Component - FAQs data:', faqs);
   console.log('FAQMinimalistic Component - FAQs length:', faqs?.length);
@@ -18,14 +25,14 @@ const FAQMinimalistic = () => {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-16 fade-in">
             <p className="text-sm tracking-[0.3em] uppercase text-accent font-medium mb-4">
-              FAQ
+              {faqLabel}
             </p>
             <h2 className="text-4xl md:text-5xl font-heading font-light mb-4">
-              Preguntas <span className="block text-accent mt-2">Frecuentes</span>
+              {faqTitleFirstLine} <span className="block text-accent mt-2">{faqTitleSecondLine}</span>
             </h2>
             <div className="w-12 h-px bg-accent mx-auto mb-6" />
             <p className="text-foreground/60 text-lg">
-              Encuentra respuestas a las preguntas más comunes sobre nuestros servicios
+              {faqDescription}
             </p>
           </div>
 

@@ -69,7 +69,7 @@ const DeliveryServicesMinimalistic = () => {
                     <service.icon />
                   </div>
                   <p className="text-sm tracking-[0.2em] uppercase text-foreground/70 group-hover:text-accent transition-colors">
-                    Order on {service.name}
+                    {(adminContent as any)?.order_on_button_text?.replace('{service}', service.name) || `Order on ${service.name}`}
                   </p>
                 </div>
               </a>
