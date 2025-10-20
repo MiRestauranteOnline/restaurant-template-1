@@ -66,18 +66,16 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Check what content exists for this client to determine which pages to include
-    const [reviewsResult, menuItemsResult, teamMembersResult] = await Promise.all([
+    // Check if content exists to determine which pages to include
+    const [reviewsResult, menuItemsResult] = await Promise.all([
       supabase.from('reviews').select('id', { count: 'exact', head: true }).eq('client_id', client.id).eq('is_active', true),
       supabase.from('menu_items').select('id', { count: 'exact', head: true }).eq('client_id', client.id).eq('is_active', true),
-      supabase.from('team_members').select('id', { count: 'exact', head: true }).eq('client_id', client.id).eq('is_active', true),
     ]);
 
     const hasReviews = (reviewsResult.count || 0) > 0;
     const hasMenuItems = (menuItemsResult.count || 0) > 0;
-    const hasTeamMembers = (teamMembersResult.count || 0) > 0;
 
-    console.log('📊 Content check:', { hasReviews, hasMenuItems, hasTeamMembers });
+    console.log('📊 Content check:', { hasReviews, hasMenuItems });
 
     // Determine the base URL
     const baseUrl = client.domain && client.domain_verified 
@@ -86,39 +84,37 @@ Deno.serve(async (req) => {
 
     console.log('🌐 Base URL:', baseUrl);
 
-    // Build sitemap URLs based on actual content existence
+    // Build sitemap URLs - always include core pages, conditionally include content pages
     const urls = [
       {
         loc: baseUrl,
         changefreq: 'daily',
         priority: '1.0',
-        visible: true // Homepage always visible
-      },
-      {
-        loc: `${baseUrl}/menu`,
-        changefreq: 'weekly',
-        priority: '0.8',
-        visible: hasMenuItems // Only if menu items exist
-      },
-      {
-        loc: `${baseUrl}/about`,
-        changefreq: 'monthly',
-        priority: '0.7',
-        visible: hasTeamMembers // Only if team members exist
       },
       {
         loc: `${baseUrl}/contact`,
         changefreq: 'monthly',
         priority: '0.7',
-        visible: true // Contact page always available
       },
-      {
+    ];
+
+    // Add menu page only if menu items exist
+    if (hasMenuItems) {
+      urls.push({
+        loc: `${baseUrl}/menu`,
+        changefreq: 'weekly',
+        priority: '0.8',
+      });
+    }
+
+    // Add reviews page only if reviews exist
+    if (hasReviews) {
+      urls.push({
         loc: `${baseUrl}/reviews`,
         changefreq: 'weekly',
         priority: '0.6',
-        visible: hasReviews // Only if reviews exist
-      }
-    ].filter(url => url.visible); // Only include pages with content
+      });
+    }
 
     console.log(`✅ Generated ${urls.length} URLs for sitemap`);
 
