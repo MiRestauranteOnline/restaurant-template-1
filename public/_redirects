@@ -1,0 +1,3 @@
+# Cloudflare Pages redirects
+# Redirect sitemap.xml requests to the Supabase edge function
+/sitemap.xml https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/generate-sitemap 200
