@@ -14,9 +14,10 @@ Deno.serve(async (req) => {
   try {
     console.log('🗺️ Generate sitemap request received');
     
-    // Extract the host to determine which client this is for
-    const host = req.headers.get('host') || '';
-    console.log('📍 Host:', host);
+    // Prefer original host forwarded by proxies/CDNs, fallback to direct host
+    const forwardedHost = req.headers.get('x-forwarded-host') || req.headers.get('x-forwarded-host'.toUpperCase());
+    const host = (forwardedHost || req.headers.get('host') || '').trim();
+    console.log('📍 Host (resolved):', host);
 
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
