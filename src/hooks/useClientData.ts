@@ -114,6 +114,7 @@ const saveCachedStyles = (domain: string, clientSettings: ClientSettings, client
       
       // Restaurant basic info to prevent layout shifts
       restaurant_name: client.restaurant_name || '',
+      favicon_url: client.favicon_url || null,
       phone: client.phone || null,
       phone_country_code: client.phone_country_code || null,
       whatsapp: client.whatsapp || null,

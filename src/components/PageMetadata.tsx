@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useClient } from '@/contexts/ClientContext';
+import { getCachedClientData } from '@/utils/cachedContent';
 
 interface PageMetadataProps {
   pageType: 'home' | 'menu' | 'contact' | 'about' | 'reviews';
@@ -22,8 +23,12 @@ const PageMetadata = ({ pageType, heroImageUrl }: PageMetadataProps) => {
       reviews: 'Reviews'
     };
     
-    const constructedTitle = client?.restaurant_name 
-      ? `${client.restaurant_name} | ${pageNames[pageType]}`
+    // Try to use cached restaurant name first for instant title display
+    const cachedData = getCachedClientData();
+    const restaurantName = client?.restaurant_name || cachedData?.restaurant_name;
+    
+    const constructedTitle = restaurantName 
+      ? `${restaurantName} | ${pageNames[pageType]}`
       : pageNames[pageType];
 
     // Determine the canonical URL based on domain setup

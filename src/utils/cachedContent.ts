@@ -88,6 +88,7 @@ export const getCachedClientData = () => {
   
   return {
     restaurant_name: cached.restaurant_name,
+    favicon_url: cached.favicon_url,
     phone: cached.phone,
     phone_country_code: cached.phone_country_code,
     whatsapp: cached.whatsapp,

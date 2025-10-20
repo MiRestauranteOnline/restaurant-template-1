@@ -1,18 +1,23 @@
 import { useEffect } from 'react';
 import { useClient } from '@/contexts/ClientContext';
+import { getCachedClientData } from '@/utils/cachedContent';
 
 const FaviconManager = () => {
   const { client } = useClient();
 
   useEffect(() => {
-    if (!client?.favicon_url) return;
+    // Try to use cached favicon first, then fall back to client data
+    const cachedData = getCachedClientData();
+    const faviconUrl = client?.favicon_url || cachedData?.favicon_url;
+    
+    if (!faviconUrl) return;
 
     // Remove existing favicon links
     const existingFavicons = document.querySelectorAll('link[rel*="icon"]');
     existingFavicons.forEach(link => link.remove());
 
     // Determine file type from URL
-    const url = client.favicon_url;
+    const url = faviconUrl;
     const extension = url.split('.').pop()?.toLowerCase();
     
     let mimeType = 'image/x-icon'; // default
@@ -44,12 +49,12 @@ const FaviconManager = () => {
 
     // Cleanup function
     return () => {
-      if (client?.favicon_url) {
-        const favicons = document.querySelectorAll(`link[href="${client.favicon_url}"]`);
+      if (faviconUrl) {
+        const favicons = document.querySelectorAll(`link[href="${faviconUrl}"]`);
         favicons.forEach(link => link.remove());
       }
     };
-  }, [client?.favicon_url]);
+  }, [client?.favicon_url]); // Keep dependency on client data to update when it loads
 
   return null; // This component doesn't render anything visible
 };
