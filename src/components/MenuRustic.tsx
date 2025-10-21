@@ -90,8 +90,8 @@ const MenuRustic = () => {
                         {item.name}
                       </h3>
                       <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-heading font-bold text-accent">
-                          {currency} {typeof item.price === 'number' ? item.price : item.price}
+                        <span className="text-3xl font-heading font-bold text-accent whitespace-nowrap tabular-nums">
+                          {currency}{'\u2060'}{typeof item.price === 'number' ? item.price : item.price}
                         </span>
                       </div>
                     </div>

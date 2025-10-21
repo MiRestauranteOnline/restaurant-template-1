@@ -88,12 +88,12 @@ const Menu = () => {
                 </div>
                 
                 <CardContent className="p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-heading font-semibold text-foreground group-hover:text-accent transition-colors">
+                  <div className="grid grid-cols-[1fr,auto] items-start gap-3 mb-2">
+                    <h3 className="text-lg font-heading font-semibold text-foreground group-hover:text-accent transition-colors min-w-0">
                       {item.name}
                     </h3>
-                    <span className="text-xl font-heading font-bold text-accent">
-                      {currency} {typeof item.price === 'number' ? item.price : item.price}
+                    <span className="text-xl font-heading font-bold text-accent whitespace-nowrap shrink-0 tabular-nums">
+                      {currency}{'\u2060'}{typeof item.price === 'number' ? item.price : item.price}
                     </span>
                   </div>
                   <p className="text-foreground/70 text-sm leading-relaxed">
