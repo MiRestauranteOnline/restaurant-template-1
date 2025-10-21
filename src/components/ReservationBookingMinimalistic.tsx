@@ -532,182 +532,148 @@ const ReservationBookingMinimalistic = () => {
           </div>
 
           {/* Reservation Form */}
-          {hasSchedules ? (
-            <div className="bg-card/50 backdrop-blur-sm border border-border/50 p-8 fade-in">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Date Selection */}
-                <div className="space-y-2">
-                  <Label htmlFor="date" className="text-sm tracking-wider uppercase text-foreground/70">
-                    {dateLabel}
-                  </Label>
-                  <Select
-                    value={formData.date}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, date: value, time: '' }))}
-                    disabled={availableDates.length === 0}
-                  >
-                    <SelectTrigger id="date" className="bg-background border-border rounded-none">
-                      <SelectValue placeholder={availableDates.length === 0 ? loadingDatesText : selectDatePlaceholder} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableDates.map((date) => (
-                        <SelectItem key={date.value} value={date.value}>
-                          {date.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Time Selection */}
-                <div className="space-y-2">
-                  <Label htmlFor="time" className="text-sm tracking-wider uppercase text-foreground/70">
-                    {timeLabel}
-                  </Label>
-                  <Select
-                    value={formData.time}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, time: value }))}
-                    disabled={!formData.date || availableTimes.length === 0}
-                  >
-                    <SelectTrigger id="time" className="bg-background border-border rounded-none">
-                      <SelectValue placeholder={!formData.date ? selectDateFirstText : availableTimes.length === 0 ? noTimesAvailableText : selectTimePlaceholder} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableTimes.map((time) => (
-                        <SelectItem key={time} value={time}>
-                          {time}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Party Size */}
-                <div className="space-y-2">
-                  <Label htmlFor="partySize" className="text-sm tracking-wider uppercase text-foreground/70">
-                    {partySizeLabel}
-                  </Label>
-                  <Input
-                    id="partySize"
-                    type="number"
-                    min="1"
-                    max="50"
-                    value={formData.partySize}
-                    onChange={(e) => setFormData(prev => ({ ...prev, partySize: e.target.value }))}
-                    className="bg-background border-border rounded-none"
-                    required
-                  />
-                  {availableCapacity !== null && (
-                    <p className="text-xs text-foreground/60">
-                      {capacityAvailableText}: {availableCapacity} {personsText}
-                    </p>
-                  )}
-                </div>
-
-                {/* Special Groups Message */}
-                {getContactMethodMessage()}
-
-                {/* Name */}
-                <div className="space-y-2">
-                  <Label htmlFor="name" className="text-sm tracking-wider uppercase text-foreground/70">
-                    {nameLabel}
-                  </Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    className="bg-background border-border rounded-none"
-                    required
-                  />
-                </div>
-
-                {/* Email */}
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm tracking-wider uppercase text-foreground/70">
-                    {emailLabel}
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                    className="bg-background border-border rounded-none"
-                    required
-                  />
-                </div>
-
-                {/* Phone */}
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-sm tracking-wider uppercase text-foreground/70">
-                    {phoneLabel}
-                  </Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                    className="bg-background border-border rounded-none"
-                    required
-                  />
-                </div>
-
-                {/* Special Requests */}
-                <div className="space-y-2">
-                  <Label htmlFor="specialRequests" className="text-sm tracking-wider uppercase text-foreground/70">
-                    {specialRequestsLabel}
-                  </Label>
-                  <Textarea
-                    id="specialRequests"
-                    value={formData.specialRequests}
-                    onChange={(e) => setFormData(prev => ({ ...prev, specialRequests: e.target.value }))}
-                    className="bg-background border-border rounded-none min-h-[100px]"
-                    placeholder={specialRequestsPlaceholder}
-                  />
-                </div>
-
-                {/* Submit Button */}
-                <Button
-                  type="submit"
-                  disabled={loading || !formData.date || !formData.time || isPartySizeOutOfRange}
-                  className="btn-primary w-full py-6 text-sm tracking-wider uppercase rounded-none"
+          <div className="bg-card/50 backdrop-blur-sm border border-border/50 p-8 fade-in">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Date Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="date" className="text-sm tracking-wider uppercase text-foreground/70">
+                  {dateLabel}
+                </Label>
+                <Select
+                  value={formData.date}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, date: value, time: '' }))}
+                  disabled={availableDates.length === 0}
                 >
-                  {loading ? loadingText : submitButtonText}
-                </Button>
-              </form>
-            </div>
-          ) : (
-            <div className="bg-card/50 backdrop-blur-sm border border-border/50 p-8 text-center fade-in">
-              <p className="text-foreground/70 mb-6">
-                {systemConfiguringText}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                {client?.whatsapp && (
-                  <Button 
-                    className="btn-primary px-8 py-3 text-sm rounded-none tracking-wider uppercase"
-                    onClick={() => {
-                      const whatsappNumber = `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}`;
-                      const message = (adminContent as any)?.whatsapp_reservation_message || 'Hola, me gustaría hacer una reserva';
-                      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
-                    }}
-                  >
-                    {whatsappButtonText}
-                  </Button>
-                )}
-                
-                {client?.phone && (
-                  <Button 
-                    className="btn-ghost px-8 py-3 text-sm rounded-none tracking-wider uppercase"
-                    onClick={() => {
-                      const phoneNumber = `${client.phone_country_code || '+51'}${client.phone}`;
-                      window.open(`tel:${phoneNumber}`, '_self');
-                    }}
-                  >
-                    {callButtonText}
-                  </Button>
+                  <SelectTrigger id="date" className="bg-background border-border rounded-none">
+                    <SelectValue placeholder={availableDates.length === 0 ? loadingDatesText : selectDatePlaceholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableDates.map((date) => (
+                      <SelectItem key={date.value} value={date.value}>
+                        {date.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Time Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="time" className="text-sm tracking-wider uppercase text-foreground/70">
+                  {timeLabel}
+                </Label>
+                <Select
+                  value={formData.time}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, time: value }))}
+                  disabled={!formData.date || availableTimes.length === 0}
+                >
+                  <SelectTrigger id="time" className="bg-background border-border rounded-none">
+                    <SelectValue placeholder={!formData.date ? selectDateFirstText : availableTimes.length === 0 ? noTimesAvailableText : selectTimePlaceholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableTimes.map((time) => (
+                      <SelectItem key={time} value={time}>
+                        {time}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Party Size */}
+              <div className="space-y-2">
+                <Label htmlFor="partySize" className="text-sm tracking-wider uppercase text-foreground/70">
+                  {partySizeLabel}
+                </Label>
+                <Input
+                  id="partySize"
+                  type="number"
+                  min="1"
+                  max="50"
+                  value={formData.partySize}
+                  onChange={(e) => setFormData(prev => ({ ...prev, partySize: e.target.value }))}
+                  className="bg-background border-border rounded-none"
+                  required
+                />
+                {availableCapacity !== null && (
+                  <p className="text-xs text-foreground/60">
+                    {capacityAvailableText}: {availableCapacity} {personsText}
+                  </p>
                 )}
               </div>
-            </div>
-          )}
+
+              {/* Special Groups Message */}
+              {getContactMethodMessage()}
+
+              {/* Name */}
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-sm tracking-wider uppercase text-foreground/70">
+                  {nameLabel}
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  className="bg-background border-border rounded-none"
+                  required
+                />
+              </div>
+
+              {/* Email */}
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm tracking-wider uppercase text-foreground/70">
+                  {emailLabel}
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  className="bg-background border-border rounded-none"
+                  required
+                />
+              </div>
+
+              {/* Phone */}
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-sm tracking-wider uppercase text-foreground/70">
+                  {phoneLabel}
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                  className="bg-background border-border rounded-none"
+                  required
+                />
+              </div>
+
+              {/* Special Requests */}
+              <div className="space-y-2">
+                <Label htmlFor="specialRequests" className="text-sm tracking-wider uppercase text-foreground/70">
+                  {specialRequestsLabel}
+                </Label>
+                <Textarea
+                  id="specialRequests"
+                  value={formData.specialRequests}
+                  onChange={(e) => setFormData(prev => ({ ...prev, specialRequests: e.target.value }))}
+                  className="bg-background border-border rounded-none min-h-[100px]"
+                  placeholder={specialRequestsPlaceholder}
+                />
+              </div>
+
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                disabled={loading || !formData.date || !formData.time || isPartySizeOutOfRange}
+                className="btn-primary w-full py-6 text-sm tracking-wider uppercase rounded-none"
+              >
+                {loading ? loadingText : submitButtonText}
+              </Button>
+            </form>
+          </div>
 
           {/* Available Days Info */}
           {hasSchedules && (
