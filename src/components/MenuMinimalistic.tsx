@@ -55,7 +55,7 @@ const MenuMinimalistic = () => {
                 className="fade-in pb-6 border-b border-border/50 last:border-0 group"
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
-                <div className="flex justify-between items-start gap-4">
+                <div className="grid grid-cols-[auto,1fr,auto] items-start gap-4">
                   {item.image_url && item.show_image_home && (
                     <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
                       <img
@@ -66,7 +66,7 @@ const MenuMinimalistic = () => {
                       />
                     </div>
                   )}
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <h3 className="text-xl font-heading mb-2 group-hover:text-accent transition-colors">
                       {item.name}
                     </h3>
@@ -76,8 +76,8 @@ const MenuMinimalistic = () => {
                       </p>
                     )}
                   </div>
-                  <span className="text-xl font-heading text-accent shrink-0 whitespace-nowrap">
-                    {currency}{Number(item.price).toFixed(2)}
+                  <span className="text-xl font-heading text-accent shrink-0 whitespace-nowrap inline-flex items-baseline tabular-nums leading-none text-right min-w-max">
+                    {currency}{'\u2060'}{Number(item.price).toFixed(2)}
                   </span>
                 </div>
               </div>
