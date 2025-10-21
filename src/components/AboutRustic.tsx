@@ -2,6 +2,7 @@ import restaurantInterior from '@/assets/restaurant-interior.jpg';
 import { useClient } from '@/contexts/ClientContext';
 import { useLocation } from 'react-router-dom';
 import { getCachedAdminContent } from '@/utils/cachedContent';
+import { useAdaptiveStatsFontSize } from '@/hooks/useAdaptiveStatsFontSize';
 
 const AboutRustic = () => {
   const { client, adminContent } = useClient();
@@ -78,23 +79,44 @@ const AboutRustic = () => {
     }
   };
 
+  // Use adaptive font sizing for stats
+  const { fontSize, containerRef } = useAdaptiveStatsFontSize(stats);
+
   return (
     <section id="about" className="py-20 lg:py-32 bg-muted/30">
       <div className="container mx-auto px-4">
         {/* Stats Bar at Top */}
         {(isAboutPage ? adminContent?.about_page_about_stats_visible !== false : adminContent?.homepage_about_stats_visible !== false) && (
           <div className="fade-in mb-16">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-4xl mx-auto">
+            <div ref={containerRef} className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-4xl mx-auto">
               <div className="text-center p-4 sm:p-6 bg-background/50 backdrop-blur-sm border-2 border-border">
-                <div className="text-4xl sm:text-5xl font-heading font-bold text-accent mb-2">{stats.experience.number}</div>
+                <div 
+                  data-stat-number
+                  className="font-heading font-bold text-accent mb-2 transition-all" 
+                  style={{ fontSize: `${fontSize}px` }}
+                >
+                  {stats.experience.number}
+                </div>
                 <div className="text-xs sm:text-sm text-foreground/70 uppercase tracking-widest break-words px-2">{stats.experience.label}</div>
               </div>
               <div className="text-center p-4 sm:p-6 bg-background/50 backdrop-blur-sm border-2 border-border">
-                <div className="text-4xl sm:text-5xl font-heading font-bold text-accent mb-2">{stats.clients.number}</div>
+                <div 
+                  data-stat-number
+                  className="font-heading font-bold text-accent mb-2 transition-all" 
+                  style={{ fontSize: `${fontSize}px` }}
+                >
+                  {stats.clients.number}
+                </div>
                 <div className="text-xs sm:text-sm text-foreground/70 uppercase tracking-widest break-words px-2">{stats.clients.label}</div>
               </div>
               <div className="text-center p-4 sm:p-6 bg-background/50 backdrop-blur-sm border-2 border-border">
-                <div className="text-4xl sm:text-5xl font-heading font-bold text-accent mb-2">{stats.awards.number}</div>
+                <div 
+                  data-stat-number
+                  className="font-heading font-bold text-accent mb-2 transition-all" 
+                  style={{ fontSize: `${fontSize}px` }}
+                >
+                  {stats.awards.number}
+                </div>
                 <div className="text-xs sm:text-sm text-foreground/70 uppercase tracking-widest break-words px-2">{stats.awards.label}</div>
               </div>
             </div>
