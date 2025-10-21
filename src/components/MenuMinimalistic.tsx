@@ -76,7 +76,7 @@ const MenuMinimalistic = () => {
                       </p>
                     )}
                   </div>
-                  <span className="text-xl font-heading text-accent shrink-0">
+                  <span className="text-xl font-heading text-accent shrink-0 whitespace-nowrap">
                     {currency}{Number(item.price).toFixed(2)}
                   </span>
                 </div>
