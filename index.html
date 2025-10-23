@@ -50,16 +50,56 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900&family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap">
     
     <script>
-      // Immediate font application from cache to prevent layout shifts
+      // Immediate font and analytics injection from fast-load cache
       (function() {
         try {
           // Get domain for cache lookup (same logic as the app)
           const hostname = window.location.hostname;
-          const domain = (hostname === 'localhost' || hostname.includes('lovable') || hostname.includes('lovableproject.com')) 
-            ? 'demos' 
-            : hostname.split('.')[0];
+          let domain;
           
-          // Try to load from client_styles cache (main cache)
+          if (hostname === 'localhost' || hostname.includes('lovable') || hostname.includes('lovableproject.com')) {
+            domain = 'demo';
+          } else if (hostname.includes('mirestaurante.online') || hostname.split('.').length > 2) {
+            domain = hostname.split('.')[0]; // Extract subdomain
+          } else {
+            domain = hostname; // Full domain for custom domains
+          }
+          
+          // Try fast-load cache first for analytics
+          const fastLoadCacheKey = `fast_load_data_${domain}`;
+          const fastLoadCached = localStorage.getItem(fastLoadCacheKey);
+          
+          if (fastLoadCached) {
+            const parsed = JSON.parse(fastLoadCached);
+            const data = parsed.data;
+            
+            // Inject Google Analytics if ID exists
+            if (data.google_analytics_id) {
+              const gaScript = document.createElement('script');
+              gaScript.async = true;
+              gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${data.google_analytics_id}`;
+              document.head.appendChild(gaScript);
+              
+              const gaConfigScript = document.createElement('script');
+              gaConfigScript.innerHTML = `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${data.google_analytics_id}');
+              `;
+              document.head.appendChild(gaConfigScript);
+            }
+            
+            // Inject Google Search Console verification meta tag
+            if (data.google_search_console_verification) {
+              const gscMeta = document.createElement('meta');
+              gscMeta.name = 'google-site-verification';
+              gscMeta.content = data.google_search_console_verification;
+              document.head.appendChild(gscMeta);
+            }
+          }
+          
+          // Try to load from client_styles cache for fonts
           const cacheKey = `client_styles_${domain}`;
           const cached = localStorage.getItem(cacheKey);
           

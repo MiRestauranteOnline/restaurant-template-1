@@ -71,6 +71,13 @@ serve(async (req) => {
       .eq('client_id', client.id)
       .single()
 
+    // Fetch premium features (GA, GSC, etc.)
+    const { data: premiumFeatures } = await supabaseClient
+      .from('premium_features')
+      .select('google_analytics_id, google_search_console_verification')
+      .eq('client_id', client.id)
+      .single()
+
     // Check if reviews exist
     const { data: reviews } = await supabaseClient
       .from('reviews')
@@ -165,6 +172,10 @@ serve(async (req) => {
       // Navigation critical data
       has_reviews: reviews && reviews.length > 0,
       delivery_services: deliveryServices,
+      
+      // Analytics and SEO
+      google_analytics_id: premiumFeatures?.google_analytics_id,
+      google_search_console_verification: premiumFeatures?.google_search_console_verification,
       
       // Metadata
       generated_at: new Date().toISOString(),

@@ -64,6 +64,10 @@ export interface FastLoadData {
     show: boolean;
   }>;
   
+  // Analytics and SEO
+  google_analytics_id?: string;
+  google_search_console_verification?: string;
+  
   // Metadata
   generated_at: string;
   domain: string;
