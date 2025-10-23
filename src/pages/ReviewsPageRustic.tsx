@@ -57,11 +57,12 @@ const ReviewsPageRustic = () => {
         <div className="min-h-screen bg-background">
           <NavigationRustic />
           <section className="relative pt-20 min-h-[50vh] flex items-center justify-start overflow-hidden">
-            <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url('${reviewsHeroBackground}')` }}
-              role="img"
-              aria-label="Imagen de fondo de la página de reseñas"
+            <img 
+              src={reviewsHeroBackground}
+              alt="Imagen de fondo de la página de reseñas"
+              className="absolute inset-0 w-full h-full object-cover"
+              fetchPriority="high"
+              loading="eager"
             />
             <div className="absolute inset-0 hero-overlay" />
             <div className="relative z-10 container mx-auto px-4 py-20">
@@ -106,13 +107,12 @@ const ReviewsPageRustic = () => {
           
           {/* Hero Section */}
           <section className="relative pt-20 min-h-[50vh] flex items-center justify-start overflow-hidden">
-            <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `url('${reviewsHeroBackground}')`,
-              }}
-              role="img"
-              aria-label="Imagen de fondo de la página de reseñas"
+            <img 
+              src={reviewsHeroBackground}
+              alt="Imagen de fondo de la página de reseñas"
+              className="absolute inset-0 w-full h-full object-cover"
+              fetchPriority="high"
+              loading="eager"
             />
             <div className="absolute inset-0 hero-overlay" />
             
@@ -148,13 +148,12 @@ const ReviewsPageRustic = () => {
         
         {/* Hero Section - Rustic Style */}
         <section className="relative pt-20 min-h-[50vh] flex items-center justify-start overflow-hidden">
-          <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: `url('${reviewsHeroBackground}')`,
-            }}
-            role="img"
-            aria-label="Imagen de fondo de la página de reseñas"
+          <img 
+            src={reviewsHeroBackground}
+            alt="Imagen de fondo de la página de reseñas"
+            className="absolute inset-0 w-full h-full object-cover"
+            fetchPriority="high"
+            loading="eager"
           />
           <div className="absolute inset-0 hero-overlay" />
           

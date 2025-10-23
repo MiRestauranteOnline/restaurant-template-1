@@ -41,11 +41,12 @@ const ReviewsPage = () => {
         <div className="min-h-screen bg-background">
           <Navigation />
           <section className="relative pt-20 h-[40vh] flex items-center justify-center overflow-hidden">
-            <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url('${reviewsHeroBackground}')` }}
-              role="img"
-              aria-label="Imagen de fondo de la página de reseñas"
+            <img 
+              src={reviewsHeroBackground}
+              alt="Imagen de fondo de la página de reseñas"
+              className="absolute inset-0 w-full h-full object-cover"
+              fetchPriority="high"
+              loading="eager"
             />
             <div className="absolute inset-0 hero-overlay" />
             <div className="relative z-10 container mx-auto px-4">
@@ -77,13 +78,12 @@ const ReviewsPage = () => {
           
           {/* Hero Section */}
           <section className="relative pt-20 h-[40vh] flex items-center justify-center overflow-hidden">
-            <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `url('${reviewsHeroBackground}')`,
-              }}
-              role="img"
-              aria-label="Imagen de fondo de la página de reseñas"
+            <img 
+              src={reviewsHeroBackground}
+              alt="Imagen de fondo de la página de reseñas"
+              className="absolute inset-0 w-full h-full object-cover"
+              fetchPriority="high"
+              loading="eager"
             />
             <div className="absolute inset-0 hero-overlay" />
             
@@ -114,17 +114,16 @@ const ReviewsPage = () => {
       <div className="min-h-screen bg-background">
         <Navigation />
         
-        {/* Hero Section */}
-        <section className="relative pt-20 h-[40vh] flex items-center justify-center overflow-hidden">
-          <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: `url('${reviewsHeroBackground}')`,
-            }}
-            role="img"
-            aria-label="Imagen de fondo de la página de reseñas"
-          />
-          <div className="absolute inset-0 hero-overlay" />
+          {/* Hero Section */}
+          <section className="relative pt-20 h-[40vh] flex items-center justify-center overflow-hidden">
+            <img 
+              src={reviewsHeroBackground}
+              alt="Imagen de fondo de la página de reseñas"
+              className="absolute inset-0 w-full h-full object-cover"
+              fetchPriority="high"
+              loading="eager"
+            />
+            <div className="absolute inset-0 hero-overlay" />
           
           <div className="relative z-10 container mx-auto px-4">
               <div className="text-center">

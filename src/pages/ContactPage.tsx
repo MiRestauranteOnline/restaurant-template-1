@@ -96,13 +96,12 @@ const ContactPage = () => {
         
         {/* Hero Section */}
         <section className="relative pt-20 h-[40vh] flex items-center justify-center overflow-hidden">
-          <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: `url('${contactHeroBackground}')`,
-            }}
-            role="img"
-            aria-label="Imagen de fondo de la página de contacto"
+          <img 
+            src={contactHeroBackground}
+            alt="Imagen de fondo de la página de contacto"
+            className="absolute inset-0 w-full h-full object-cover"
+            fetchPriority="high"
+            loading="eager"
           />
           <div className="absolute inset-0 hero-overlay" />
           

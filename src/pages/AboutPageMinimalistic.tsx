@@ -64,14 +64,15 @@ const AboutPageMinimalistic = () => {
         <NavigationMinimalistic />
         
         {/* Hero Section - Minimalistic Style */}
-        <section className="relative pt-20 min-h-[40vh] flex items-center justify-center overflow-hidden">
-          <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url('${aboutHeroBackground}')` }}
-            role="img"
-            aria-label="About page background"
-          />
-          <div className="absolute inset-0 hero-overlay" />
+          <section className="relative pt-20 min-h-[40vh] flex items-center justify-center overflow-hidden">
+            <img 
+              src={aboutHeroBackground}
+              alt="About page background"
+              className="absolute inset-0 w-full h-full object-cover"
+              fetchPriority="high"
+              loading="eager"
+            />
+            <div className="absolute inset-0 hero-overlay" />
           
           <div className="relative z-10 container mx-auto px-4 py-16 text-center">
             <div className="max-w-2xl mx-auto space-y-4">

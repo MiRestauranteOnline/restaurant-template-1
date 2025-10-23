@@ -83,13 +83,12 @@ const MenuPage = () => {
         
         {/* Hero Section */}
         <section className="relative pt-20 h-[50vh] flex items-center justify-center overflow-hidden">
-          <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: `url('${menuHeroBackground}')`,
-            }}
-            role="img"
-            aria-label="Imagen de fondo de la página del menú"
+          <img 
+            src={menuHeroBackground}
+            alt="Imagen de fondo de la página del menú"
+            className="absolute inset-0 w-full h-full object-cover"
+            fetchPriority="high"
+            loading="eager"
           />
           <div className="absolute inset-0 hero-overlay" />
           

@@ -95,11 +95,12 @@ const ContactPageMinimalistic = () => {
         
         {/* Hero Section - Minimalistic Style */}
         <section className="relative pt-20 min-h-[40vh] flex items-center justify-center overflow-hidden">
-          <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url('${contactHeroBackground}')` }}
-            role="img"
-            aria-label="Contact page background"
+          <img 
+            src={contactHeroBackground}
+            alt="Contact page background"
+            className="absolute inset-0 w-full h-full object-cover"
+            fetchPriority="high"
+            loading="eager"
           />
           <div className="absolute inset-0 hero-overlay" />
           

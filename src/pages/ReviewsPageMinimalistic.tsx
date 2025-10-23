@@ -92,11 +92,12 @@ const ReviewsPageMinimalistic = () => {
           
           {/* Hero Section */}
           <section className="relative pt-20 min-h-[40vh] flex items-center justify-center overflow-hidden">
-            <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url('${reviewsHeroBackground}')` }}
-              role="img"
-              aria-label="Reviews page background"
+            <img 
+              src={reviewsHeroBackground}
+              alt="Reviews page background"
+              className="absolute inset-0 w-full h-full object-cover"
+              fetchPriority="high"
+              loading="eager"
             />
             <div className="absolute inset-0 hero-overlay" />
             
@@ -134,11 +135,12 @@ const ReviewsPageMinimalistic = () => {
         
         {/* Hero Section - Minimalistic Style */}
         <section className="relative pt-20 min-h-[40vh] flex items-center justify-center overflow-hidden">
-          <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url('${reviewsHeroBackground}')` }}
-            role="img"
-            aria-label="Reviews page background"
+          <img 
+            src={reviewsHeroBackground}
+            alt="Reviews page background"
+            className="absolute inset-0 w-full h-full object-cover"
+            fetchPriority="high"
+            loading="eager"
           />
           <div className="absolute inset-0 hero-overlay" />
           
