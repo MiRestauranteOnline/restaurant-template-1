@@ -2,9 +2,11 @@ import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Linkedin } from 'luc
 import { useClient } from '@/contexts/ClientContext';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
 import { getCachedClientData, getCachedAdminContent } from '@/utils/cachedContent';
+import { useAnalyticsContext } from '@/components/AnalyticsProvider';
 
 const Footer = () => {
   const { client, adminContent } = useClient();
+  const { trackButtonClick } = useAnalyticsContext();
   
   // Get cached client data to prevent layout shifts
   const cachedClient = getCachedClientData();
@@ -193,8 +195,10 @@ const Footer = () => {
                       className="btn-primary px-6 py-3 rounded-full shadow-md hover:shadow-xl transition-all hover:scale-105"
                       onClick={() => {
                         if (button1Link) {
+                          trackButtonClick('cta', { source: 'footer', text: button1Text });
                           window.open(button1Link, '_blank');
                         } else {
+                          trackButtonClick('whatsapp', { source: 'footer' });
                           const whatsappNumber = client?.whatsapp ? 
                             `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
                             '51987654321';
@@ -210,8 +214,10 @@ const Footer = () => {
                       className="btn-ghost px-6 py-3 rounded-full hover:scale-105 transition-all"
                       onClick={() => {
                         if (button2Link) {
+                          trackButtonClick('cta', { source: 'footer', text: button2Text });
                           window.open(button2Link, '_blank');
                         } else {
+                          trackButtonClick('phone', { source: 'footer' });
                           const phoneNumber = client?.phone ? 
                             `${client.phone_country_code || '+51'}${client.phone}` : 
                             '+51987654321';

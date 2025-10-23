@@ -3,11 +3,13 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useClient } from '@/contexts/ClientContext';
 import { getCachedNavigationData, getCachedAdminContent, getCachedClientSettings } from '@/utils/cachedContent';
+import { useAnalyticsContext } from '@/components/AnalyticsProvider';
 
 const NavigationMinimalistic = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { client, clientSettings, adminContent } = useClient();
+  const { trackButtonClick } = useAnalyticsContext();
 
   // Get cached navigation data to prevent layout shifts
   const cachedNav = getCachedNavigationData();
@@ -79,6 +81,7 @@ const NavigationMinimalistic = () => {
               <Button 
                 className="btn-primary px-6 py-2 text-xs rounded-none tracking-wider uppercase"
                 onClick={() => {
+                  trackButtonClick('cta', { source: 'navigation_desktop', text: customCtaText });
                   if (customCtaLink.startsWith('#')) {
                     document.querySelector(customCtaLink)?.scrollIntoView({ behavior: 'smooth' });
                   } else {
@@ -123,6 +126,7 @@ const NavigationMinimalistic = () => {
                 <Button 
                   className="btn-primary px-6 py-2 text-xs rounded-none tracking-wider uppercase w-full"
                   onClick={() => {
+                    trackButtonClick('cta', { source: 'navigation_mobile', text: customCtaText });
                     setIsMobileMenuOpen(false);
                     if (customCtaLink.startsWith('#')) {
                       document.querySelector(customCtaLink)?.scrollIntoView({ behavior: 'smooth' });

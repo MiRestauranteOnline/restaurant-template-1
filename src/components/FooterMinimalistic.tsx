@@ -2,9 +2,11 @@ import { useClient } from '@/contexts/ClientContext';
 import { getCachedAdminContent, getCachedClientData } from '@/utils/cachedContent';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
 import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Linkedin } from 'lucide-react';
+import { useAnalyticsContext } from '@/components/AnalyticsProvider';
 
 const FooterMinimalistic = () => {
   const { client, adminContent } = useClient();
+  const { trackButtonClick } = useAnalyticsContext();
   
   const cachedAdminContent = getCachedAdminContent();
   const cachedClient = getCachedClientData();
@@ -200,8 +202,10 @@ const FooterMinimalistic = () => {
                         className="btn-primary px-6 py-2 text-sm rounded-none tracking-wider uppercase"
                         onClick={() => {
                           if (button1Link) {
+                            trackButtonClick('cta', { source: 'footer', text: button1Text });
                             window.open(button1Link, '_blank');
                           } else {
+                            trackButtonClick('whatsapp', { source: 'footer' });
                             const whatsappNumber = client?.whatsapp ? 
                               `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
                               '51987654321';
@@ -217,8 +221,10 @@ const FooterMinimalistic = () => {
                         className="btn-ghost px-6 py-2 text-sm rounded-none tracking-wider uppercase"
                         onClick={() => {
                           if (button2Link) {
+                            trackButtonClick('cta', { source: 'footer', text: button2Text });
                             window.open(button2Link, '_blank');
                           } else {
+                            trackButtonClick('phone', { source: 'footer' });
                             const phoneNumber = client?.phone ? 
                               `${client.phone_country_code || '+51'}${client.phone}` : 
                               '+51987654321';

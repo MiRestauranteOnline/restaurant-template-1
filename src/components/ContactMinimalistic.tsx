@@ -1,9 +1,11 @@
 import { MapPin } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
 import { getCachedAdminContent, getCachedClientData } from '@/utils/cachedContent';
+import { useAnalyticsContext } from '@/components/AnalyticsProvider';
 
 const ContactMinimalistic = () => {
   const { client, adminContent } = useClient();
+  const { trackButtonClick } = useAnalyticsContext();
   
   const cachedAdminContent = getCachedAdminContent();
   const cachedClient = getCachedClientData();
@@ -54,6 +56,7 @@ const ContactMinimalistic = () => {
                 <button 
                   className="btn-primary px-8 py-3 text-sm rounded-none tracking-wider uppercase"
                   onClick={() => {
+                    trackButtonClick('whatsapp', { source: 'contact' });
                     const whatsappNumber = client?.whatsapp ? 
                       `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
                       '51987654321';
@@ -69,6 +72,7 @@ const ContactMinimalistic = () => {
                 <button 
                   className="btn-ghost px-8 py-3 text-sm rounded-none tracking-wider uppercase"
                   onClick={() => {
+                    trackButtonClick('phone', { source: 'contact' });
                     const phoneNumber = client?.phone ? 
                       `${client.phone_country_code || '+51'}${client.phone}` : 
                       '+51987654321';

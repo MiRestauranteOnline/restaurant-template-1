@@ -2,10 +2,12 @@ import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
 import { getCachedAdminContent } from '@/utils/cachedContent';
+import { useAnalyticsContext } from '@/components/AnalyticsProvider';
 import heroPasta from '@/assets/hero-pasta.jpg';
 
 const Hero = () => {
   const { client, adminContent } = useClient();
+  const { trackButtonClick } = useAnalyticsContext();
   
   // Get cached content to prevent layout shifts
   const cachedAdminContent = getCachedAdminContent();
@@ -64,7 +66,10 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               className="btn-primary px-8 py-3 text-lg rounded-full shadow-md hover:shadow-xl transition-all hover:scale-105"
-              onClick={() => window.location.href = '/menu'}
+              onClick={() => {
+                trackButtonClick('view_menu', { source: 'hero' });
+                window.location.href = '/menu';
+              }}
             >
               Ver Menú
             </Button>
@@ -72,6 +77,7 @@ const Hero = () => {
               variant="contrast" 
               className="px-8 py-3 text-lg rounded-full hover:scale-105 transition-all"
               onClick={() => {
+                trackButtonClick('reservation', { source: 'hero', text: rightButtonText });
                 if (rightButtonLink.startsWith('#')) {
                   document.querySelector(rightButtonLink)?.scrollIntoView({ behavior: 'smooth' });
                 } else {

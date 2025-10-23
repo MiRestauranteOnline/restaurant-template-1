@@ -1,10 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { useClient } from '@/contexts/ClientContext';
 import { getCachedAdminContent } from '@/utils/cachedContent';
+import { useAnalyticsContext } from '@/components/AnalyticsProvider';
 import heroPasta from '@/assets/hero-pasta.jpg';
 
 const HeroMinimalistic = () => {
   const { client, adminContent } = useClient();
+  const { trackButtonClick } = useAnalyticsContext();
   
   // Get cached content to prevent layout shifts
   const cachedAdminContent = getCachedAdminContent();
@@ -63,7 +65,10 @@ const HeroMinimalistic = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <Button 
               className="btn-primary px-8 py-3 text-sm rounded-none tracking-wider uppercase"
-              onClick={() => window.location.href = '/menu'}
+              onClick={() => {
+                trackButtonClick('view_menu', { source: 'hero' });
+                window.location.href = '/menu';
+              }}
             >
               {viewMenuButtonText}
             </Button>
@@ -71,6 +76,7 @@ const HeroMinimalistic = () => {
               variant="outline" 
               className="px-8 py-3 text-sm rounded-none tracking-wider uppercase border-foreground/20 hover:border-accent hover:text-accent"
               onClick={() => {
+                trackButtonClick('reservation', { source: 'hero', text: rightButtonText });
                 if (rightButtonLink.startsWith('#')) {
                   document.querySelector(rightButtonLink)?.scrollIntoView({ behavior: 'smooth' });
                 } else {

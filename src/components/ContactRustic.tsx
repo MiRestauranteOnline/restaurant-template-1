@@ -4,10 +4,12 @@ import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
 import { getCachedClientData } from '@/utils/cachedContent';
+import { useAnalyticsContext } from '@/components/AnalyticsProvider';
 
 const ContactRustic = () => {
   const { client, clientSettings, adminContent } = useClient();
   const cachedClient = getCachedClientData();
+  const { trackButtonClick } = useAnalyticsContext();
   
   const sectionDescription = adminContent?.homepage_contact_section_description || "¿Listo para disfrutar de sabores únicos? Te esperamos en Savoria.";
   const hideReservationBox = adminContent?.homepage_contact_hide_reservation_box || false;
@@ -127,6 +129,7 @@ const ContactRustic = () => {
                       <Button 
                         className="btn-primary w-full py-6 text-base rounded-xl shadow-md hover:shadow-xl transition-all hover:scale-105"
                         onClick={() => {
+                          trackButtonClick('whatsapp', { source: 'contact_reservation' });
                           const whatsappNumber = client?.whatsapp ? 
                             `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
                             '51987654321';
@@ -145,6 +148,7 @@ const ContactRustic = () => {
                         variant="outline"
                         className="w-full py-6 text-base rounded-xl border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground hover:scale-105 transition-all"
                         onClick={() => {
+                          trackButtonClick('phone', { source: 'contact_reservation' });
                           const phoneNumber = client?.phone ? 
                             `${client.phone_country_code || '+51'}${client.phone}` : 
                             '+51987654321';
