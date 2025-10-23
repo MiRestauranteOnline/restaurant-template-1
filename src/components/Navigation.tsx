@@ -39,10 +39,10 @@ const Navigation = () => {
 
   const baseNavItems = [
     { label: 'Inicio', href: '/' },
-    { label: 'Sobre Nosotros', href: '/about' },
+    { label: 'Sobre Nosotros', href: '/nosotros' },
     { label: 'Menú', href: '/menu' },
-    { label: 'Reseñas', href: '/reviews' },
-    { label: 'Contacto', href: '/contact' },
+    { label: 'Reseñas', href: '/resenas' },
+    { label: 'Contacto', href: '/contacto' },
   ];
 
   // Determine if Reviews link should be visible - prioritize cached/explicit config to prevent shifts
@@ -169,7 +169,7 @@ const Navigation = () => {
                   isActivePage(item.href) 
                     ? 'text-accent font-bold' 
                     : 'text-foreground/80 hover:text-accent'
-                } ${item.href === '/reviews' && !showReviewsLink ? 'invisible' : ''}`}
+                } ${item.href === '/resenas' && !showReviewsLink ? 'invisible' : ''}`}
                 onClick={(e) => {
                   if (item.href.startsWith('#')) {
                     e.preventDefault();

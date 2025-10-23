@@ -37,10 +37,10 @@ const NavigationRustic = () => {
 
   const baseNavItems = [
     { label: 'Inicio', href: '/' },
-    { label: 'Sobre Nosotros', href: '/about' },
+    { label: 'Sobre Nosotros', href: '/nosotros' },
     { label: 'Menú', href: '/menu' },
-    { label: 'Reseñas', href: '/reviews' },
-    { label: 'Contacto', href: '/contact' },
+    { label: 'Reseñas', href: '/resenas' },
+    { label: 'Contacto', href: '/contacto' },
   ];
 
   const explicitReviewsConfig = (clientSettings as any)?.other_customizations?.show_reviews_nav;
@@ -154,7 +154,7 @@ const NavigationRustic = () => {
                   isActivePage(item.href) 
                     ? 'text-accent bg-accent/10 font-bold' 
                     : 'text-foreground/80 hover:text-accent hover:bg-accent/5'
-                } ${item.href === '/reviews' && !showReviewsLink ? 'invisible' : ''}`}
+                } ${item.href === '/resenas' && !showReviewsLink ? 'invisible' : ''}`}
                 onClick={(e) => {
                   if (item.href.startsWith('#')) {
                     e.preventDefault();

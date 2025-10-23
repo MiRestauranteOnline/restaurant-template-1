@@ -39,10 +39,10 @@ const NavigationMinimalistic = () => {
 
   const navLinks = [
     { label: navHomeText, href: '/' },
-    { label: navAboutText, href: '/about' },
+    { label: navAboutText, href: '/nosotros' },
     { label: navMenuText, href: '/menu' },
-    { label: navReviewsText, href: '/reviews' },
-    { label: navContactText, href: '/contact' },
+    { label: navReviewsText, href: '/resenas' },
+    { label: navContactText, href: '/contacto' },
   ];
 
   return (
@@ -71,7 +71,7 @@ const NavigationMinimalistic = () => {
                 key={link.href}
                 href={link.href}
                 className={`text-sm tracking-[0.2em] uppercase text-foreground/70 hover:text-accent transition-colors ${
-                  link.href === '/reviews' && !hasReviews ? 'invisible' : ''
+                  link.href === '/resenas' && !hasReviews ? 'invisible' : ''
                 }`}
               >
                 {link.label}

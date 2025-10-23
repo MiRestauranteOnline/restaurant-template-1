@@ -356,9 +356,9 @@ const ThemedApp = () => {
             <Route path="/login" element={<ExternalRedirect to="https://mirestaurante.online/auth" />} />
             <Route path="/sitemap.xml" element={<SitemapXML />} />
             <Route path="/menu" element={<TemplateAwareMenuPage />} />
-            <Route path="/about" element={<TemplateAwareAboutPage />} />
-            <Route path="/contact" element={<TemplateAwareContactPage />} />
-            <Route path="/reviews" element={<TemplateAwareReviewsPage />} />
+            <Route path="/nosotros" element={<TemplateAwareAboutPage />} />
+            <Route path="/contacto" element={<TemplateAwareContactPage />} />
+            <Route path="/resenas" element={<TemplateAwareReviewsPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
