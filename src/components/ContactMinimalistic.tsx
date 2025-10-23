@@ -13,6 +13,7 @@ const ContactMinimalistic = () => {
   const contactTitle = (adminContent as any)?.homepage_contact_section_title || 'Reserva Tu Experiencia';
   const contactDescription = (adminContent as any)?.homepage_contact_section_description || 
     'Contáctanos para reservar tu mesa y vivir una experiencia gastronómica única';
+  const hideReservationBox = adminContent?.homepage_contact_hide_reservation_box || false;
   
   // Use separate title fields from database
   const contactTitleFirstLine = (adminContent as any)?.homepage_contact_section_title_first_line || "Reserva Tu";
@@ -51,38 +52,40 @@ const ContactMinimalistic = () => {
             )}
 
             {/* Contact Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {client?.whatsapp && (
-                <button 
-                  className="btn-primary px-8 py-3 text-sm rounded-none tracking-wider uppercase"
-                  onClick={() => {
-                    trackButtonClick('whatsapp', { source: 'contact' });
-                    const whatsappNumber = client?.whatsapp ? 
-                      `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
-                      '51987654321';
-                    const message = (adminContent as any)?.whatsapp_reservation_message || 'Hola, me gustaría hacer una reserva';
-                    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
-                  }}
-                >
-                  {(adminContent as any)?.homepage_cta_button1_text || 'WhatsApp'}
-                </button>
-              )}
-              
-              {client?.phone && (
-                <button 
-                  className="btn-ghost px-8 py-3 text-sm rounded-none tracking-wider uppercase"
-                  onClick={() => {
-                    trackButtonClick('phone', { source: 'contact' });
-                    const phoneNumber = client?.phone ? 
-                      `${client.phone_country_code || '+51'}${client.phone}` : 
-                      '+51987654321';
-                    window.open(`tel:${phoneNumber}`, '_self');
-                  }}
-                >
-                  {(adminContent as any)?.homepage_cta_button2_text || 'Llamar'}
-                </button>
-              )}
-            </div>
+            {!hideReservationBox && (
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                {client?.whatsapp && (
+                  <button 
+                    className="btn-primary px-8 py-3 text-sm rounded-none tracking-wider uppercase"
+                    onClick={() => {
+                      trackButtonClick('whatsapp', { source: 'contact' });
+                      const whatsappNumber = client?.whatsapp ? 
+                        `${client.whatsapp_country_code?.replace('+', '') || '51'}${client.whatsapp}` : 
+                        '51987654321';
+                      const message = (adminContent as any)?.whatsapp_reservation_message || 'Hola, me gustaría hacer una reserva';
+                      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+                    }}
+                  >
+                    {(adminContent as any)?.homepage_cta_button1_text || 'WhatsApp'}
+                  </button>
+                )}
+                
+                {client?.phone && (
+                  <button 
+                    className="btn-ghost px-8 py-3 text-sm rounded-none tracking-wider uppercase"
+                    onClick={() => {
+                      trackButtonClick('phone', { source: 'contact' });
+                      const phoneNumber = client?.phone ? 
+                        `${client.phone_country_code || '+51'}${client.phone}` : 
+                        '+51987654321';
+                      window.open(`tel:${phoneNumber}`, '_self');
+                    }}
+                  >
+                    {(adminContent as any)?.homepage_cta_button2_text || 'Llamar'}
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* Map */}
             {adminContent?.homepage_contact_map_visible !== false && (client?.address || client?.coordinates || cachedClient?.address || cachedClient?.coordinates) && (
