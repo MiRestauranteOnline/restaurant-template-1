@@ -63,7 +63,7 @@ const Contact = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
+        <div className={hideReservationBox ? "max-w-4xl mx-auto" : "grid lg:grid-cols-2 gap-12 lg:gap-20"}>
           
           {/* Contact Information */}
           <div className="space-y-8 fade-in">
