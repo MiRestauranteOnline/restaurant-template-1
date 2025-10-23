@@ -78,18 +78,13 @@ async function handleRequest(request) {
       headers,
       redirect: 'manual'
     };
-
     if (method !== 'GET' && method !== 'HEAD') {
-      // Forward body only for non-GET/HEAD
       init.body = request.body;
     }
-
     const modifiedRequest = new Request(targetUrl.toString(), init);
-
     const response = await fetch(modifiedRequest);
-
-    // Return response as-is while preserving headers
-    return new Response(response.body, response);
+    // Return upstream response directly to preserve streaming/headers
+    return response;
   } catch (err) {
     console.error('[WORKER-UNHANDLED]', { rid, message: err?.message, stack: err?.stack });
     return new Response(
