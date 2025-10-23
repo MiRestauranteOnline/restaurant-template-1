@@ -81,6 +81,7 @@ const FooterRustic = () => {
         
         {/* CTA Section */}
         {(() => {
+          const hideReservationBox = adminContent?.homepage_contact_hide_reservation_box || false;
           const ctaTitle = adminContent?.homepage_cta_title;
           const ctaDescription = adminContent?.homepage_cta_description;
           const button1Text = adminContent?.homepage_cta_button1_text;
@@ -92,7 +93,7 @@ const FooterRustic = () => {
           const showButton1 = button1Text && (button1Link || client?.whatsapp || cachedClient?.whatsapp);
           const showButton2 = button2Text && (button2Link || client?.phone || cachedClient?.phone);
           
-          if (!showButton1 && !showButton2) return null;
+          if (hideReservationBox || (!showButton1 && !showButton2)) return null;
           
           return (
             <div className="bg-card/40 backdrop-blur-sm border border-border/50 rounded-3xl p-10 mb-16 text-center shadow-lg">
