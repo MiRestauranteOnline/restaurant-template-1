@@ -38,6 +38,12 @@ async function handleRequest(request) {
       headers: { 'content-type': 'application/json', 'cache-control': 'no-cache' }
     });
   }
+  // Favicon fallback to avoid proxy errors causing 1101 during simple icon fetches
+  if (url.pathname === '/favicon.ico') {
+    const pngB64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=';
+    const bytes = Uint8Array.from(atob(pngB64), (c) => c.charCodeAt(0));
+    return new Response(bytes, { headers: { 'content-type': 'image/png', 'cache-control': 'public, max-age=86400' } });
+  }
 
   // Log first-line routing info
   console.log('[ROUTE]', JSON.stringify({ rid, url: url.toString(), host: hostHeader, parsedSubdomain: subdomain }));
@@ -48,10 +54,21 @@ async function handleRequest(request) {
 
     // Create new URL pointing to the Pages deployment
     const targetUrl = new URL(request.url);
+    targetUrl.protocol = 'https:';
     targetUrl.hostname = TARGET_PAGES;
 
-    // Clone and augment headers
-    const headers = new Headers(request.headers);
+    // Sanitize and copy headers (strip forbidden hop-by-hop and CF headers)
+    const banned = new Set([
+      'host', 'accept-encoding', 'content-length', 'connection', 'keep-alive',
+      'transfer-encoding', 'cf-ray', 'cf-connecting-ip', 'cf-visitor', 'cf-ew-via'
+    ]);
+    const headers = new Headers();
+    for (const [k, v] of request.headers) {
+      const lk = k.toLowerCase();
+      if (banned.has(lk)) continue;
+      if (lk.startsWith('cf-')) continue;
+      headers.set(k, v);
+    }
     headers.set('X-Forwarded-Host', hostHeader);
 
     // Build init without body for GET/HEAD to avoid exceptions
