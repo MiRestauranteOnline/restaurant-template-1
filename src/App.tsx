@@ -9,24 +9,29 @@ import HeadScripts from '@/components/HeadScripts';
 import FaviconManager from '@/components/FaviconManager';
 import { lazy, Suspense, useEffect, useState } from 'react';
 import LoadingSpinner from "./components/LoadingSpinner";
-import MenuPage from "./pages/MenuPage";
-import MenuPageRustic from "./pages/MenuPageRustic";
-import MenuPageMinimalistic from "./pages/MenuPageMinimalistic";
-import AboutPage from "./pages/AboutPage";
-import AboutPageRustic from "./pages/AboutPageRustic";
-import AboutPageMinimalistic from "./pages/AboutPageMinimalistic";
-import ContactPage from "./pages/ContactPage";
-import ContactPageRustic from "./pages/ContactPageRustic";
-import ContactPageMinimalistic from "./pages/ContactPageMinimalistic";
-import ReviewsPage from "./pages/ReviewsPage";
-import ReviewsPageRustic from "./pages/ReviewsPageRustic";
-import ReviewsPageMinimalistic from "./pages/ReviewsPageMinimalistic";
-import NotFound from "./pages/NotFound";
-import SitemapXML from "./pages/SitemapXML";
+
+// Lazy load all page components for better code splitting
+const MenuPage = lazy(() => import("./pages/MenuPage"));
+const MenuPageRustic = lazy(() => import("./pages/MenuPageRustic"));
+const MenuPageMinimalistic = lazy(() => import("./pages/MenuPageMinimalistic"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const AboutPageRustic = lazy(() => import("./pages/AboutPageRustic"));
+const AboutPageMinimalistic = lazy(() => import("./pages/AboutPageMinimalistic"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
+const ContactPageRustic = lazy(() => import("./pages/ContactPageRustic"));
+const ContactPageMinimalistic = lazy(() => import("./pages/ContactPageMinimalistic"));
+const ReviewsPage = lazy(() => import("./pages/ReviewsPage"));
+const ReviewsPageRustic = lazy(() => import("./pages/ReviewsPageRustic"));
+const ReviewsPageMinimalistic = lazy(() => import("./pages/ReviewsPageMinimalistic"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const SitemapXML = lazy(() => import("./pages/SitemapXML"));
 import WhatsAppPopup from "./components/WhatsAppPopup";
 import { supabase } from "@/integrations/supabase/client";
 import ErrorPage from "./components/ErrorPage";
 import { DeactivationOverlay } from "./components/DeactivationOverlay";
+
+// Lazy load non-critical components
+const LazyWhatsAppPopup = lazy(() => import("./components/WhatsAppPopup"));
 
 // Template registry: Maps template slugs to lazy-loaded components
 const TEMPLATE_REGISTRY: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
@@ -351,6 +356,7 @@ const ThemedApp = () => {
       <HeadScripts />
       <FaviconManager />
       <AnalyticsProvider>
+        <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route path="/" element={<TemplateSwitcher />} />
             <Route path="/login" element={<ExternalRedirect to="https://mirestaurante.online/auth" />} />
@@ -362,7 +368,10 @@ const ThemedApp = () => {
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        <WhatsAppPopup />
+        </Suspense>
+        <Suspense fallback={null}>
+          <LazyWhatsAppPopup />
+        </Suspense>
       </AnalyticsProvider>
     </>
   );
