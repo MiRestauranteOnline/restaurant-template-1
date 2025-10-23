@@ -293,6 +293,7 @@ export interface ClientData {
   country_code?: string;
   locale?: string;
   favicon_url?: string;
+  is_deactivated?: boolean;
   created_at: string;
   updated_at: string;
 }

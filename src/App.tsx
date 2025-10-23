@@ -26,6 +26,7 @@ import SitemapXML from "./pages/SitemapXML";
 import WhatsAppPopup from "./components/WhatsAppPopup";
 import { supabase } from "@/integrations/supabase/client";
 import ErrorPage from "./components/ErrorPage";
+import { DeactivationOverlay } from "./components/DeactivationOverlay";
 
 // Template registry: Maps template slugs to lazy-loaded components
 const TEMPLATE_REGISTRY: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
@@ -339,6 +340,11 @@ const ThemedApp = () => {
   }, [client, loading]);
 
   console.log('🔍 ThemedApp: Rendering routes');
+
+  // Show deactivation overlay if site is deactivated
+  if (!loading && client?.is_deactivated) {
+    return <DeactivationOverlay />;
+  }
 
   return (
     <>
