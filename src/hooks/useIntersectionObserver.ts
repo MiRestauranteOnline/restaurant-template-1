@@ -64,6 +64,11 @@ export const useIntersectionObserver = ({
   }, [onEnter, onExit, debounceMs]);
 
   const observe = useCallback((element: HTMLElement) => {
+    // SSR-safe: Check if IntersectionObserver exists
+    if (typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+    
     if (!observerRef.current) {
       observerRef.current = new IntersectionObserver(handleIntersection, {
         threshold,

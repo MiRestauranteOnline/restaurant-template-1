@@ -4,6 +4,7 @@ import { useAnalytics } from './useAnalytics';
 
 export const useMenuSectionTracking = () => {
   const { trackMenuSectionView } = useAnalytics();
+  const isBrowser = typeof window !== 'undefined' && typeof IntersectionObserver !== 'undefined';
 
   const { observe, unobserve } = useIntersectionObserver({
     threshold: 0.5, // 50% of element must be visible
@@ -25,25 +26,36 @@ export const useMenuSectionTracking = () => {
   });
 
   const startTracking = useCallback((container?: HTMLElement) => {
-    const targetContainer = container || document;
-    const sections = targetContainer.querySelectorAll('[data-analytics-section]');
+    if (!isBrowser || typeof document === 'undefined') {
+      return () => {};
+    }
     
-    sections.forEach((section) => {
-      observe(section as HTMLElement);
-    });
-
-    return () => {
+    try {
+      const targetContainer = container || document;
+      const sections = targetContainer.querySelectorAll('[data-analytics-section]');
+      
       sections.forEach((section) => {
-        unobserve(section as HTMLElement);
+        observe(section as HTMLElement);
       });
-    };
-  }, [observe, unobserve]);
 
-  // Auto-start tracking when hook is used
+      return () => {
+        sections.forEach((section) => {
+          unobserve(section as HTMLElement);
+        });
+      };
+    } catch (e) {
+      console.error('[MENU-TRACKING]', e);
+      return () => {};
+    }
+  }, [isBrowser, observe, unobserve]);
+
+  // Auto-start tracking when hook is used (SSR-safe)
   useEffect(() => {
+    if (!isBrowser) return;
+    
     const cleanup = startTracking();
     return cleanup;
-  }, [startTracking]);
+  }, [isBrowser, startTracking]);
 
   return {
     startTracking,

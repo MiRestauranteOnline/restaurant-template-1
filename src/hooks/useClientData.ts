@@ -601,14 +601,14 @@ export const preloadAllClientData = async (domain?: string) => {
         .from('clients')
         .select('*')
         .eq('subdomain', detectedDomain)
-        .single();
+        .maybeSingle();
     } else {
       // Query by domain for custom domains
       clientQuery = supabase
         .from('clients')
         .select('*')
         .eq('domain', detectedDomain)
-        .single();
+        .maybeSingle();
     }
     
     const { data: clientData, error: clientError } = await clientQuery;
@@ -616,6 +616,11 @@ export const preloadAllClientData = async (domain?: string) => {
     if (clientError) {
       console.error('Error fetching client:', clientError);
       throw clientError;
+    }
+
+    if (!clientData) {
+      console.error('No client found for domain:', detectedDomain);
+      throw new Error('Client not found');
     }
 
     globalDataCache.client = clientData as ClientData;
@@ -641,13 +646,13 @@ export const preloadAllClientData = async (domain?: string) => {
           .from('client_settings')
           .select('*')
           .eq('client_id', clientData.id)
-          .single(),
+          .maybeSingle(),
         
         supabase
           .from('admin_content')
           .select('*')
           .eq('client_id', clientData.id)
-          .single(),
+          .maybeSingle(),
 
         supabase
           .from('team_members')
@@ -816,11 +821,16 @@ export const useClientData = (domain?: string) => {
         }
         
         // Fetch complete data from database
-        const { data: clientData, error: clientError } = await clientQuery.single();
+        const { data: clientData, error: clientError } = await clientQuery.maybeSingle();
 
         if (clientError) {
           console.error('Error fetching client:', clientError);
           throw clientError;
+        }
+
+        if (!clientData) {
+          console.error('No client found for domain:', detectedDomain);
+          throw new Error('Client not found');
         }
 
         // Update with complete client data from database
@@ -847,13 +857,13 @@ export const useClientData = (domain?: string) => {
               .from('client_settings')
               .select('*')
               .eq('client_id', clientData.id)
-              .single(),
+              .maybeSingle(),
             
             supabase
               .from('admin_content')
               .select('*')
               .eq('client_id', clientData.id)
-              .single()
+              .maybeSingle()
           ]);
 
           // Fetch team members and reviews separately due to type limitations

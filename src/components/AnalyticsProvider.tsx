@@ -29,7 +29,21 @@ interface AnalyticsProviderProps {
 export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({ children }) => {
   const analytics = useAnalytics();
   
-  // Initialize menu section tracking
+  // Initialize menu section tracking (SSR-safe)
+  React.useEffect(() => {
+    try {
+      if (typeof window === 'undefined' || typeof document === 'undefined') return;
+      if ((globalThis as any).__ANALYTICS_PROVIDER_INIT__) return;
+      
+      (globalThis as any).__ANALYTICS_PROVIDER_INIT__ = true;
+      console.log('✅ Analytics Provider initialized');
+    } catch (e) {
+      console.error('[ANALYTICS-PROVIDER-INIT]', e);
+      (globalThis as any).__ANALYTICS_ERRORS__ = ((globalThis as any).__ANALYTICS_ERRORS__ || 0) + 1;
+    }
+  }, []);
+  
+  // Initialize menu section tracking only in browser
   useMenuSectionTracking();
 
   return (

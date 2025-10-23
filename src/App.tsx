@@ -67,11 +67,17 @@ const TemplateSwitcher = () => {
           .from('templates' as any)
           .select('slug, is_active')
           .eq('id', clientWithTemplate.template_id)
-          .single();
+          .maybeSingle();
 
         console.log('🔍 Template query result:', { data, error });
 
         if (error) throw error;
+        if (!data) {
+          console.warn('⚠️ No template found, using default');
+          setTemplateSlug('modern-restaurant');
+          setTemplateLoading(false);
+          return;
+        }
 
         const templateData = data as any;
         if (templateData?.slug) {
@@ -144,7 +150,7 @@ const TemplateAwareAboutPage = () => {
           .from('templates' as any)
           .select('slug')
           .eq('id', clientWithTemplate.template_id)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
         const templateData = data as any;
@@ -187,7 +193,7 @@ const TemplateAwareMenuPage = () => {
           .from('templates' as any)
           .select('slug')
           .eq('id', clientWithTemplate.template_id)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
         const templateData = data as any;
@@ -230,7 +236,7 @@ const TemplateAwareContactPage = () => {
           .from('templates' as any)
           .select('slug')
           .eq('id', clientWithTemplate.template_id)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
         const templateData = data as any;
@@ -273,7 +279,7 @@ const TemplateAwareReviewsPage = () => {
           .from('templates' as any)
           .select('slug')
           .eq('id', clientWithTemplate.template_id)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
         const templateData = data as any;
