@@ -10,6 +10,7 @@ const FooterRustic = () => {
   const { client, adminContent } = useClient();
   const { trackButtonClick } = useAnalyticsContext();
   const [policyLinks, setPolicyLinks] = useState<{ label: string; href: string }[]>([]);
+  const [reclamacionesEnabled, setReclamacionesEnabled] = useState(false);
   
   const cachedClient = getCachedClientData();
   const cachedAdminContent = getCachedAdminContent();
@@ -25,6 +26,8 @@ const FooterRustic = () => {
         .eq('client_id', client.id)
         .maybeSingle();
 
+      setReclamacionesEnabled(data?.reclamaciones_enabled || false);
+      
       const links = [];
       if (data?.privacy_policy_enabled) {
         links.push({ label: 'Política de Privacidad', href: '/privacidad' });
@@ -60,7 +63,8 @@ const FooterRustic = () => {
         { label: "Menú", href: "/menu" },
         { label: "Sobre Nosotros", href: "/about" },
         { label: "Reseñas", href: "/reviews" },
-        { label: "Contacto", href: "/contact" }
+        { label: "Contacto", href: "/contact" },
+        ...(reclamacionesEnabled ? [{ label: "Libro de Reclamaciones", href: "/libro-reclamaciones" }] : [])
       ]
     },
     ...(policyLinks.length > 0 ? [{
