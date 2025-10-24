@@ -2,10 +2,47 @@ import { useEffect, useState } from 'react';
 import { useClient } from '@/contexts/ClientContext';
 import { Navigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import Navigation from '@/components/Navigation';
+import NavigationMinimalistic from '@/components/NavigationMinimalistic';
+import NavigationRustic from '@/components/NavigationRustic';
+import Footer from '@/components/Footer';
+import FooterMinimalistic from '@/components/FooterMinimalistic';
+import FooterRustic from '@/components/FooterRustic';
 
 const CookiesPolicyPage = () => {
   const { client, loading } = useClient();
   const [policyData, setPolicyData] = useState<{ enabled: boolean; content: string } | null>(null);
+  const [templateSlug, setTemplateSlug] = useState<string>('modern-restaurant');
+
+  useEffect(() => {
+    const fetchTemplateSlug = async () => {
+      const clientWithTemplate = client as any;
+      
+      if (!clientWithTemplate?.template_id) {
+        setTemplateSlug('modern-restaurant');
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('templates' as any)
+          .select('slug')
+          .eq('id', clientWithTemplate.template_id)
+          .maybeSingle();
+
+        if (error) throw error;
+        const templateData = data as any;
+        setTemplateSlug(templateData?.slug || 'modern-restaurant');
+      } catch (error) {
+        console.error('Error loading template:', error);
+        setTemplateSlug('modern-restaurant');
+      }
+    };
+
+    if (client) {
+      fetchTemplateSlug();
+    }
+  }, [client]);
 
   useEffect(() => {
     const fetchPolicyData = async () => {
@@ -40,9 +77,16 @@ const CookiesPolicyPage = () => {
     return <Navigate to="/404" replace />;
   }
 
+  const NavComponent = templateSlug === 'minimalistic-restaurant' ? NavigationMinimalistic : 
+                       templateSlug === 'rustic-restaurant' ? NavigationRustic : Navigation;
+  const FooterComponent = templateSlug === 'minimalistic-restaurant' ? FooterMinimalistic :
+                         templateSlug === 'rustic-restaurant' ? FooterRustic : Footer;
+
   return (
-    <div className="min-h-screen bg-background py-16 px-4">
-      <div className="max-w-4xl mx-auto">
+    <>
+      <NavComponent />
+      <div className="min-h-screen bg-background py-16 px-4">
+        <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="font-display text-4xl md:text-5xl font-title-weight text-center mb-4">
             Política de Cookies
@@ -65,8 +109,10 @@ const CookiesPolicyPage = () => {
             prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
           dangerouslySetInnerHTML={{ __html: policyData.content }}
         />
+        </div>
       </div>
-    </div>
+      <FooterComponent />
+    </>
   );
 };
 
