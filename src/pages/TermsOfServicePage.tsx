@@ -55,9 +55,11 @@ const TermsOfServicePage = () => {
         <div 
           className="prose prose-slate dark:prose-invert max-w-none
             prose-headings:font-display prose-headings:font-title-weight
-            prose-h2:text-2xl prose-h3:text-xl
-            prose-p:leading-relaxed prose-p:mb-4
-            prose-ul:my-4 prose-ol:my-4
+            prose-h1:text-4xl prose-h1:mb-6
+            prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4
+            prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
+            prose-p:text-base prose-p:leading-relaxed prose-p:mb-4
+            prose-ul:my-6 prose-ol:my-6
             prose-li:my-2
             prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
           dangerouslySetInnerHTML={{ __html: policyData.content }}
