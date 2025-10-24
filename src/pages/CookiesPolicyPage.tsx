@@ -85,7 +85,7 @@ const CookiesPolicyPage = () => {
   return (
     <>
       <NavComponent />
-      <div className="min-h-screen bg-background py-16 px-4">
+      <div className="min-h-screen bg-background pt-24 pb-16 px-4">
         <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="font-display text-4xl md:text-5xl font-title-weight text-center mb-4">
