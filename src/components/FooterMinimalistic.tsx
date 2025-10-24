@@ -1,8 +1,10 @@
 import { useClient } from '@/contexts/ClientContext';
 import { getCachedAdminContent, getCachedClientData } from '@/utils/cachedContent';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
-import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Linkedin } from 'lucide-react';
+import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Linkedin, FileText } from 'lucide-react';
 import { useAnalyticsContext } from '@/components/AnalyticsProvider';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 const FooterMinimalistic = () => {
   const { client, adminContent } = useClient();
@@ -19,6 +21,25 @@ const FooterMinimalistic = () => {
   const footerLocationText = (adminContent as any)?.footer_location_text || (cachedAdminContent as any)?.footer_location_text || 'Hecho con ❤️ en Lima, Perú';
   
   const logoUrl = adminContent?.footer_logo_url || cachedAdminContent?.footer_logo_url;
+
+  // Check if reclamaciones is enabled
+  const [reclamacionesEnabled, setReclamacionesEnabled] = useState(false);
+
+  useEffect(() => {
+    const checkPolicies = async () => {
+      if (!client?.id) return;
+
+      const { data } = await supabase
+        .from('client_policies')
+        .select('reclamaciones_enabled')
+        .eq('client_id', client.id)
+        .single();
+
+      setReclamacionesEnabled(data?.reclamaciones_enabled || false);
+    };
+
+    checkPolicies();
+  }, [client?.id]);
 
   const restaurantInfo = [
     {
@@ -39,7 +60,8 @@ const FooterMinimalistic = () => {
         { label: "Menú", href: "/menu" },
         { label: "Sobre Nosotros", href: "/about" },
         { label: "Reseñas", href: "/reviews" },
-        { label: "Contacto", href: "/contact" }
+        { label: "Contacto", href: "/contact" },
+        ...(reclamacionesEnabled ? [{ label: "Libro de Reclamaciones", href: "/libro-reclamaciones", icon: FileText }] : [])
       ]
     }
   ];

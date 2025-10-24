@@ -13,6 +13,25 @@ const FooterRustic = () => {
   const cachedClient = getCachedClientData();
   const cachedAdminContent = getCachedAdminContent();
 
+  // Check if reclamaciones is enabled
+  const [reclamacionesEnabled, setReclamacionesEnabled] = useState(false);
+
+  useEffect(() => {
+    const checkPolicies = async () => {
+      if (!client?.id) return;
+
+      const { data } = await supabase
+        .from('client_policies')
+        .select('reclamaciones_enabled')
+        .eq('client_id', client.id)
+        .single();
+
+      setReclamacionesEnabled(data?.reclamaciones_enabled || false);
+    };
+
+    checkPolicies();
+  }, [client?.id]);
+
   const restaurantInfo = [
     {
       title: "Contacto",
@@ -32,7 +51,8 @@ const FooterRustic = () => {
         { label: "Menú", href: "/menu" },
         { label: "Sobre Nosotros", href: "/about" },
         { label: "Reseñas", href: "/reviews" },
-        { label: "Contacto", href: "/contact" }
+        { label: "Contacto", href: "/contact" },
+        ...(reclamacionesEnabled ? [{ label: "Libro de Reclamaciones", href: "/libro-reclamaciones", icon: FileText }] : [])
       ]
     }
   ];
