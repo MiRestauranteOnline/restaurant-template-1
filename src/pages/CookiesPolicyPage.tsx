@@ -15,7 +15,7 @@ const CookiesPolicyPage = () => {
         .from('client_policies')
         .select('cookies_policy_enabled, cookies_policy_content')
         .eq('client_id', client.id)
-        .single();
+        .maybeSingle();
 
       if (data) {
         setPolicyData({

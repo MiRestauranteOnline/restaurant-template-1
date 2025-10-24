@@ -15,7 +15,7 @@ const TermsOfServicePage = () => {
         .from('client_policies')
         .select('terms_of_service_enabled, terms_of_service_content')
         .eq('client_id', client.id)
-        .single();
+        .maybeSingle();
 
       if (data) {
         setPolicyData({

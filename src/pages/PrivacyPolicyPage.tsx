@@ -15,7 +15,7 @@ const PrivacyPolicyPage = () => {
         .from('client_policies')
         .select('privacy_policy_enabled, privacy_policy_content')
         .eq('client_id', client.id)
-        .single();
+        .maybeSingle();
 
       if (data) {
         setPolicyData({
