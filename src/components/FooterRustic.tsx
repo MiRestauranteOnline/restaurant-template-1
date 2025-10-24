@@ -9,9 +9,37 @@ import { useAnalyticsContext } from '@/components/AnalyticsProvider';
 const FooterRustic = () => {
   const { client, adminContent } = useClient();
   const { trackButtonClick } = useAnalyticsContext();
+  const [policyLinks, setPolicyLinks] = useState<{ label: string; href: string }[]>([]);
   
   const cachedClient = getCachedClientData();
   const cachedAdminContent = getCachedAdminContent();
+
+  // Fetch policy links
+  useEffect(() => {
+    const checkPolicies = async () => {
+      if (!client?.id) return;
+
+      const { data } = await supabase
+        .from('client_policies')
+        .select('privacy_policy_enabled, cookies_policy_enabled, terms_of_service_enabled, reclamaciones_enabled')
+        .eq('client_id', client.id)
+        .single();
+
+      const links = [];
+      if (data?.privacy_policy_enabled) {
+        links.push({ label: 'Política de Privacidad', href: '/privacidad' });
+      }
+      if (data?.cookies_policy_enabled) {
+        links.push({ label: 'Política de Cookies', href: '/cookies' });
+      }
+      if (data?.terms_of_service_enabled) {
+        links.push({ label: 'Términos y Condiciones', href: '/terminos' });
+      }
+      setPolicyLinks(links);
+    };
+
+    checkPolicies();
+  }, [client?.id]);
 
   const restaurantInfo = [
     {
@@ -32,10 +60,13 @@ const FooterRustic = () => {
         { label: "Menú", href: "/menu" },
         { label: "Sobre Nosotros", href: "/about" },
         { label: "Reseñas", href: "/reviews" },
-        { label: "Contacto", href: "/contact" },
-        { label: "Libro de Reclamaciones", href: "/libro-reclamaciones" }
+        { label: "Contacto", href: "/contact" }
       ]
-    }
+    },
+    ...(policyLinks.length > 0 ? [{
+      title: "Legal",
+      items: policyLinks
+    }] : [])
   ];
 
   const getSocialLinks = () => {

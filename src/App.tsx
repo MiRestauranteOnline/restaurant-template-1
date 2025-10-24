@@ -26,6 +26,9 @@ const ReviewsPageMinimalistic = lazy(() => import("./pages/ReviewsPageMinimalist
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SitemapXML = lazy(() => import("./pages/SitemapXML"));
 const LibroReclamaciones = lazy(() => import("./pages/LibroReclamaciones"));
+const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
+const CookiesPolicyPage = lazy(() => import("./pages/CookiesPolicyPage"));
+const TermsOfServicePage = lazy(() => import("./pages/TermsOfServicePage"));
 import WhatsAppPopup from "./components/WhatsAppPopup";
 import { supabase } from "@/integrations/supabase/client";
 import ErrorPage from "./components/ErrorPage";
@@ -367,6 +370,9 @@ const ThemedApp = () => {
             <Route path="/contacto" element={<TemplateAwareContactPage />} />
             <Route path="/resenas" element={<TemplateAwareReviewsPage />} />
             <Route path="/libro-reclamaciones" element={<LibroReclamaciones />} />
+            <Route path="/privacidad" element={<PrivacyPolicyPage />} />
+            <Route path="/cookies" element={<CookiesPolicyPage />} />
+            <Route path="/terminos" element={<TermsOfServicePage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

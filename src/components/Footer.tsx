@@ -10,6 +10,7 @@ const Footer = () => {
   const { client, adminContent } = useClient();
   const { trackButtonClick } = useAnalyticsContext();
   const [reclamacionesEnabled, setReclamacionesEnabled] = useState(false);
+  const [policyLinks, setPolicyLinks] = useState<{ label: string; href: string }[]>([]);
   
   // Get cached client data to prevent layout shifts
   const cachedClient = getCachedClientData();
@@ -22,11 +23,24 @@ const Footer = () => {
 
       const { data } = await supabase
         .from('client_policies')
-        .select('reclamaciones_enabled')
+        .select('reclamaciones_enabled, privacy_policy_enabled, cookies_policy_enabled, terms_of_service_enabled')
         .eq('client_id', client.id)
         .single();
 
       setReclamacionesEnabled(data?.reclamaciones_enabled || false);
+      
+      // Build policy links based on what's enabled
+      const links = [];
+      if (data?.privacy_policy_enabled) {
+        links.push({ label: 'Política de Privacidad', href: '/privacidad' });
+      }
+      if (data?.cookies_policy_enabled) {
+        links.push({ label: 'Política de Cookies', href: '/cookies' });
+      }
+      if (data?.terms_of_service_enabled) {
+        links.push({ label: 'Términos y Condiciones', href: '/terminos' });
+      }
+      setPolicyLinks(links);
     };
 
     checkPolicies();
@@ -52,9 +66,13 @@ const Footer = () => {
         { label: "Sobre Nosotros", href: "/about" },
         { label: "Reseñas", href: "/reviews" },
         { label: "Contacto", href: "/contact" },
-        { label: "Libro de Reclamaciones", href: "/libro-reclamaciones", icon: FileText }
+        ...(reclamacionesEnabled ? [{ label: "Libro de Reclamaciones", href: "/libro-reclamaciones", icon: FileText }] : [])
       ]
-    }
+    },
+    ...(policyLinks.length > 0 ? [{
+      title: "Legal",
+      items: policyLinks
+    }] : [])
   ];
 
   // Generate social links from database
