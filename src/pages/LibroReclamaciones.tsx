@@ -212,7 +212,7 @@ const LibroReclamaciones = () => {
 
         <main className="flex-1">
           {/* Hero Section */}
-          <section className="relative py-20 bg-gradient-to-b from-background to-background/80">
+          <section className="relative pt-32 pb-20 bg-gradient-to-b from-background to-background/80">
             <div className="container mx-auto px-4">
               <div className="max-w-3xl mx-auto text-center">
                 <FileText className="w-16 h-16 mx-auto mb-6 text-primary" />
