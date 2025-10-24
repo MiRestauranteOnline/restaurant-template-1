@@ -233,10 +233,15 @@ const LibroReclamaciones = () => {
                 <Alert>
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
-                    <strong>Información Legal:</strong> Este libro de reclamaciones está 
-                    conforme a lo dispuesto en la Ley N.º 29571 del Código de Protección 
-                    y Defensa del Consumidor. Su reclamación será atendida en un plazo 
-                    máximo de <strong>30 días calendario</strong>.
+                    <p className="mb-3">
+                      <strong>{(client as any)?.razon_social || 'Mi Restaurante Online'}</strong> (RUC {(client as any)?.ruc || '20123456789'}) pone a tu disposición el Libro de Reclamaciones Virtual, conforme al Reglamento del Libro de Reclamaciones del Código de Protección y Defensa del Consumidor (Ley N.º 29571).
+                    </p>
+                    <p className="mb-3">
+                      El plazo de atención de tu reclamo o queja puede ser de hasta <strong>30 días calendario</strong>.
+                    </p>
+                    <p>
+                      Los datos que proporciones serán tratados de acuerdo con nuestra Política de Datos Personales, exclusivamente para gestionar y responder tu solicitud dentro del plazo legal.
+                    </p>
                   </AlertDescription>
                 </Alert>
               </div>
