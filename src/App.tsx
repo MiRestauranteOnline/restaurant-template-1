@@ -25,6 +25,7 @@ const ReviewsPageRustic = lazy(() => import("./pages/ReviewsPageRustic"));
 const ReviewsPageMinimalistic = lazy(() => import("./pages/ReviewsPageMinimalistic"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SitemapXML = lazy(() => import("./pages/SitemapXML"));
+const LibroReclamaciones = lazy(() => import("./pages/LibroReclamaciones"));
 import WhatsAppPopup from "./components/WhatsAppPopup";
 import { supabase } from "@/integrations/supabase/client";
 import ErrorPage from "./components/ErrorPage";
@@ -365,6 +366,7 @@ const ThemedApp = () => {
             <Route path="/nosotros" element={<TemplateAwareAboutPage />} />
             <Route path="/contacto" element={<TemplateAwareContactPage />} />
             <Route path="/resenas" element={<TemplateAwareReviewsPage />} />
+            <Route path="/libro-reclamaciones" element={<LibroReclamaciones />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

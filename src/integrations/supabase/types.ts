@@ -792,6 +792,59 @@ export type Database = {
           },
         ]
       }
+      client_policies: {
+        Row: {
+          client_id: string
+          cookies_policy_content: string | null
+          cookies_policy_enabled: boolean
+          created_at: string
+          id: string
+          privacy_policy_content: string | null
+          privacy_policy_enabled: boolean
+          reclamaciones_email: string | null
+          reclamaciones_enabled: boolean
+          terms_of_service_content: string | null
+          terms_of_service_enabled: boolean
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          cookies_policy_content?: string | null
+          cookies_policy_enabled?: boolean
+          created_at?: string
+          id?: string
+          privacy_policy_content?: string | null
+          privacy_policy_enabled?: boolean
+          reclamaciones_email?: string | null
+          reclamaciones_enabled?: boolean
+          terms_of_service_content?: string | null
+          terms_of_service_enabled?: boolean
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          cookies_policy_content?: string | null
+          cookies_policy_enabled?: boolean
+          created_at?: string
+          id?: string
+          privacy_policy_content?: string | null
+          privacy_policy_enabled?: boolean
+          reclamaciones_email?: string | null
+          reclamaciones_enabled?: boolean
+          terms_of_service_content?: string | null
+          terms_of_service_enabled?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_policies_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_settings: {
         Row: {
           body_font: string | null
@@ -1671,6 +1724,86 @@ export type Database = {
             foreignKeyName: "premium_features_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: true
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reclamaciones: {
+        Row: {
+          address: string | null
+          business_name: string | null
+          claim_code: string
+          claim_type: string
+          client_id: string
+          created_at: string
+          description: string
+          dni: string | null
+          email: string
+          full_name: string
+          id: string
+          person_type: string
+          phone: string | null
+          product_description: string
+          purchase_amount: number | null
+          purchase_date: string
+          resolved_at: string | null
+          ruc: string | null
+          status: string
+          submitted_at: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          business_name?: string | null
+          claim_code: string
+          claim_type: string
+          client_id: string
+          created_at?: string
+          description: string
+          dni?: string | null
+          email: string
+          full_name: string
+          id?: string
+          person_type: string
+          phone?: string | null
+          product_description: string
+          purchase_amount?: number | null
+          purchase_date: string
+          resolved_at?: string | null
+          ruc?: string | null
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          business_name?: string | null
+          claim_code?: string
+          claim_type?: string
+          client_id?: string
+          created_at?: string
+          description?: string
+          dni?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          person_type?: string
+          phone?: string | null
+          product_description?: string
+          purchase_amount?: number | null
+          purchase_date?: string
+          resolved_at?: string | null
+          ruc?: string | null
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reclamaciones_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
             referencedRelation: "clients"
             referencedColumns: ["id"]
           },
