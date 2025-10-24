@@ -52,7 +52,7 @@ const Footer = () => {
         { label: "Sobre Nosotros", href: "/about" },
         { label: "Reseñas", href: "/reviews" },
         { label: "Contacto", href: "/contact" },
-        ...(reclamacionesEnabled ? [{ label: "Libro de Reclamaciones", href: "/libro-reclamaciones", icon: FileText }] : [])
+        { label: "Libro de Reclamaciones", href: "/libro-reclamaciones", icon: FileText }
       ]
     }
   ];
