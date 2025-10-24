@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+
 import { useClient } from "@/contexts/ClientContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -87,7 +87,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 const LibroReclamaciones = () => {
   const { client, clientSettings, loading } = useClient();
-  const navigate = useNavigate();
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [claimCode, setClaimCode] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -135,24 +135,29 @@ const LibroReclamaciones = () => {
 
   useEffect(() => {
     const checkPolicies = async () => {
-      if (!client?.id) return;
+      if (!client?.id) {
+        setReclamacionesEnabled(true);
+        setPoliciesLoading(false);
+        return;
+      }
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("client_policies")
         .select("reclamaciones_enabled")
         .eq("client_id", client.id)
-        .single();
+        .maybeSingle();
 
-      setReclamacionesEnabled(data?.reclamaciones_enabled || false);
-      setPoliciesLoading(false);
-
-      if (!data?.reclamaciones_enabled) {
-        navigate("/");
+      if (error) {
+        console.warn("Failed to read client_policies; defaulting reclamaciones to enabled:", error);
+        setReclamacionesEnabled(true);
+      } else {
+        setReclamacionesEnabled(data?.reclamaciones_enabled ?? true);
       }
+      setPoliciesLoading(false);
     };
 
     checkPolicies();
-  }, [client?.id, navigate]);
+  }, [client?.id]);
 
   if (loading || policiesLoading) {
     return (
