@@ -185,7 +185,7 @@ const FooterMinimalistic = () => {
                             <span>{item.text}</span>
                           )}
                         </div>
-                      ) : section.title === "Enlaces" ? (
+                      ) : section.title === "Enlaces" || section.title === "Legal" ? (
                         <a
                           href={item.href}
                           className="hover:text-accent transition-colors"

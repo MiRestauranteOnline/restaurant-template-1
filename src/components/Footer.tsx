@@ -182,17 +182,17 @@ const Footer = () => {
                           <span>{item.text}</span>
                         )}
                       </div>
-                    ) : section.title === "Enlaces" ? (
-                      <a
-                        href={item.href}
-                        className="hover:text-accent transition-colors duration-300 flex items-center gap-2"
-                      >
-                        {item.icon && <item.icon className="w-4 h-4" />}
-                        {item.label}
-                      </a>
-                    ) : (
-                      item
-                    )}
+                      ) : section.title === "Enlaces" || section.title === "Legal" ? (
+                        <a
+                          href={item.href}
+                          className="hover:text-accent transition-colors duration-300 flex items-center gap-2"
+                        >
+                          {item.icon && <item.icon className="w-4 h-4" />}
+                          {item.label}
+                        </a>
+                      ) : (
+                        item
+                      )}
                   </li>
                 ))}
               </ul>

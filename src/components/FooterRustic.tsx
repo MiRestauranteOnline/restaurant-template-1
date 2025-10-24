@@ -254,16 +254,16 @@ const FooterRustic = () => {
                           <span className="text-sm leading-relaxed">{item.text}</span>
                         )}
                       </div>
-                    ) : section.title === "Enlaces" ? (
-                      <a
-                        href={item.href}
-                        className="text-sm hover:text-accent transition-colors duration-300 inline-block hover:translate-x-1 transition-transform"
-                      >
-                        {item.label}
-                      </a>
-                    ) : (
-                      <span className="text-sm leading-relaxed">{item}</span>
-                    )}
+                      ) : section.title === "Enlaces" || section.title === "Legal" ? (
+                        <a
+                          href={item.href}
+                          className="text-sm hover:text-accent transition-colors duration-300 inline-block hover:translate-x-1 transition-transform"
+                        >
+                          {item.label}
+                        </a>
+                      ) : (
+                        <span className="text-sm leading-relaxed">{item}</span>
+                      )}
                   </li>
                 ))}
               </ul>
