@@ -25,7 +25,7 @@ const Footer = () => {
         .from('client_policies')
         .select('reclamaciones_enabled, privacy_policy_enabled, cookies_policy_enabled, terms_of_service_enabled')
         .eq('client_id', client.id)
-        .single();
+        .maybeSingle();
 
       setReclamacionesEnabled(data?.reclamaciones_enabled || false);
       

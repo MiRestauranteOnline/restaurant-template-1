@@ -23,7 +23,7 @@ const FooterMinimalistic = () => {
         .from('client_policies')
         .select('privacy_policy_enabled, cookies_policy_enabled, terms_of_service_enabled, reclamaciones_enabled')
         .eq('client_id', client.id)
-        .single();
+        .maybeSingle();
 
       const links = [];
       if (data?.privacy_policy_enabled) {
