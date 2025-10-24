@@ -1,16 +1,36 @@
-import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Linkedin } from 'lucide-react';
+import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Linkedin, FileText } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
 import { getCachedClientData, getCachedAdminContent } from '@/utils/cachedContent';
 import { useAnalyticsContext } from '@/components/AnalyticsProvider';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 const Footer = () => {
   const { client, adminContent } = useClient();
   const { trackButtonClick } = useAnalyticsContext();
+  const [reclamacionesEnabled, setReclamacionesEnabled] = useState(false);
   
   // Get cached client data to prevent layout shifts
   const cachedClient = getCachedClientData();
   const cachedAdminContent = getCachedAdminContent();
+
+  // Check if reclamaciones is enabled
+  useEffect(() => {
+    const checkPolicies = async () => {
+      if (!client?.id) return;
+
+      const { data } = await supabase
+        .from('client_policies')
+        .select('reclamaciones_enabled')
+        .eq('client_id', client.id)
+        .single();
+
+      setReclamacionesEnabled(data?.reclamaciones_enabled || false);
+    };
+
+    checkPolicies();
+  }, [client?.id]);
 
   const restaurantInfo = [
     {
@@ -146,8 +166,9 @@ const Footer = () => {
                     ) : section.title === "Enlaces" ? (
                       <a
                         href={item.href}
-                        className="hover:text-accent transition-colors duration-300"
+                        className="hover:text-accent transition-colors duration-300 flex items-center gap-2"
                       >
+                        {item.icon && <item.icon className="w-4 h-4" />}
                         {item.label}
                       </a>
                     ) : (
@@ -241,7 +262,7 @@ const Footer = () => {
             <div className="text-foreground/60 text-sm mb-4 md:mb-0">
               <div>© {new Date().getFullYear()} Restaurante {client?.restaurant_name || 'Savoria'}. Todos los derechos reservados.</div>
               <div className="mt-1">
-                {client?.razon_social || 'Mi Restaurante Online'} | RUC: {client?.ruc || '20123456789'}
+                {(client as any)?.razon_social || 'Mi Restaurante Online'} | RUC: {(client as any)?.ruc || '20123456789'}
               </div>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-4 text-sm">

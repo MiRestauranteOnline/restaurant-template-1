@@ -1,7 +1,9 @@
-import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Linkedin } from 'lucide-react';
+import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Linkedin, FileText } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
 import { getCachedClientData, getCachedAdminContent } from '@/utils/cachedContent';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { useAnalyticsContext } from '@/components/AnalyticsProvider';
 
 const FooterRustic = () => {
@@ -243,7 +245,7 @@ const FooterRustic = () => {
             <div className="text-foreground/60 text-sm text-center lg:text-left">
               <div>© {new Date().getFullYear()} Restaurante {client?.restaurant_name || 'Savoria'}. Todos los derechos reservados.</div>
               <div className="mt-1">
-                {client?.razon_social || 'Mi Restaurante Online'} | RUC: {client?.ruc || '20123456789'}
+                {(client as any)?.razon_social || 'Mi Restaurante Online'} | RUC: {(client as any)?.ruc || '20123456789'}
               </div>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-4 text-sm text-center">

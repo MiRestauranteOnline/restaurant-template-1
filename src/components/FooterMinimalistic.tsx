@@ -248,7 +248,7 @@ const FooterMinimalistic = () => {
               <div className="text-foreground/50 text-xs">
                 <p>© {new Date().getFullYear()} {client?.restaurant_name || 'Restaurant'}. {footerRightsText}</p>
                 <p className="mt-1">
-                  {client?.razon_social || 'Mi Restaurante Online'} | RUC: {client?.ruc || '20123456789'}
+                  {(client as any)?.razon_social || 'Mi Restaurante Online'} | RUC: {(client as any)?.ruc || '20123456789'}
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row items-center gap-4 text-xs">

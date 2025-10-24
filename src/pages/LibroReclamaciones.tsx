@@ -199,9 +199,7 @@ const LibroReclamaciones = () => {
   return (
     <>
       <PageMetadata
-        page="libro-reclamaciones"
-        title={`Libro de Reclamaciones - ${client?.restaurant_name || "Restaurante"}`}
-        description="Libro de Reclamaciones oficial conforme a la Ley N.º 29571 del Código de Protección y Defensa del Consumidor del Perú."
+        pageType="home"
       />
       
       <div className="min-h-screen flex flex-col">

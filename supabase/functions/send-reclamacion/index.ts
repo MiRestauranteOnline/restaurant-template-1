@@ -1,10 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { Resend } from "npm:resend@4.0.0";
-import React from "npm:react@18.3.1";
-import { renderAsync } from "npm:@react-email/components@0.0.22";
-import { RestaurantEmailTemplate } from "./_templates/restaurant-email.tsx";
-import { CustomerConfirmationTemplate } from "./_templates/customer-confirmation.tsx";
+import { Resend } from "npm:resend@2.0.0";
+import { generateRestaurantEmail, generateCustomerEmail } from "./_templates/email-templates.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -84,26 +81,22 @@ serve(async (req) => {
 
     console.log("✅ Claim stored with code:", claimCode);
 
-    // Render email templates
-    const restaurantHtml = await renderAsync(
-      React.createElement(RestaurantEmailTemplate, {
-        restaurantName: client.restaurant_name,
-        claimCode,
-        claimData: requestData,
-        submittedAt: new Date().toLocaleString("es-PE", {
-          timeZone: "America/Lima",
-        }),
-      })
-    );
+    // Generate HTML email content
+    const restaurantHtml = generateRestaurantEmail({
+      restaurantName: client.restaurant_name,
+      claimCode,
+      claimData: requestData,
+      submittedAt: new Date().toLocaleString("es-PE", {
+        timeZone: "America/Lima",
+      }),
+    });
 
-    const customerHtml = await renderAsync(
-      React.createElement(CustomerConfirmationTemplate, {
-        restaurantName: client.restaurant_name,
-        claimCode,
-        claimData: requestData,
-        restaurantEmail,
-      })
-    );
+    const customerHtml = generateCustomerEmail({
+      restaurantName: client.restaurant_name,
+      claimCode,
+      claimData: requestData,
+      restaurantEmail,
+    });
 
     // Send email to restaurant
     const { error: restaurantEmailError } = await resend.emails.send({
