@@ -239,7 +239,10 @@ const Footer = () => {
         <div className="border-t border-border pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-foreground/60 text-sm mb-4 md:mb-0">
-              © {new Date().getFullYear()} Restaurante {client?.restaurant_name || 'Savoria'}. Todos los derechos reservados.
+              <div>© {new Date().getFullYear()} Restaurante {client?.restaurant_name || 'Savoria'}. Todos los derechos reservados.</div>
+              <div className="mt-1">
+                {client?.razon_social || 'Mi Restaurante Online'} | RUC: {client?.ruc || '20123456789'}
+              </div>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-4 text-sm">
               <span className="text-foreground/60">

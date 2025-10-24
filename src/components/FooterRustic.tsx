@@ -241,7 +241,10 @@ const FooterRustic = () => {
         <div className="border-t border-border/50 pt-8">
           <div className="flex flex-col lg:flex-row justify-between items-center gap-4">
             <div className="text-foreground/60 text-sm text-center lg:text-left">
-              © {new Date().getFullYear()} Restaurante {client?.restaurant_name || 'Savoria'}. Todos los derechos reservados.
+              <div>© {new Date().getFullYear()} Restaurante {client?.restaurant_name || 'Savoria'}. Todos los derechos reservados.</div>
+              <div className="mt-1">
+                {client?.razon_social || 'Mi Restaurante Online'} | RUC: {client?.ruc || '20123456789'}
+              </div>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-4 text-sm text-center">
               <span className="text-foreground/60">

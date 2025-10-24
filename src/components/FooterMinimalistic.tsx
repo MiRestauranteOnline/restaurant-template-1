@@ -245,9 +245,12 @@ const FooterMinimalistic = () => {
           {/* Bottom Section */}
           <div className="border-t border-border/30 pt-8 text-center">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-foreground/50 text-xs">
-                © {new Date().getFullYear()} {client?.restaurant_name || 'Restaurant'}. {footerRightsText}
-              </p>
+              <div className="text-foreground/50 text-xs">
+                <p>© {new Date().getFullYear()} {client?.restaurant_name || 'Restaurant'}. {footerRightsText}</p>
+                <p className="mt-1">
+                  {client?.razon_social || 'Mi Restaurante Online'} | RUC: {client?.ruc || '20123456789'}
+                </p>
+              </div>
               <div className="flex flex-col sm:flex-row items-center gap-4 text-xs">
                 <span className="text-foreground/50">
                   {footerLocationText}

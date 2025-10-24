@@ -563,7 +563,15 @@ export type Database = {
           is_active?: boolean
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "carousel_images_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       client_billing_info: {
         Row: {
@@ -721,7 +729,15 @@ export type Database = {
           upload_context?: string | null
           uploaded_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "client_images_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       client_monthly_usage: {
         Row: {
@@ -878,9 +894,12 @@ export type Database = {
           email: string | null
           favicon_url: string | null
           id: string
+          is_deactivated: boolean
           last_domain_check: string | null
           last_payment_attempt: string | null
           locale: string | null
+          locked_advanced_price: number | null
+          locked_basic_price: number | null
           monthly_bandwidth_limit_gb: number | null
           monthly_visits_limit: number | null
           next_billing_date: string | null
@@ -896,9 +915,11 @@ export type Database = {
           phone: string | null
           phone_country_code: string | null
           plan_type: string | null
+          razon_social: string | null
           referral_source: string | null
           reservations_email: string | null
           restaurant_name: string
+          ruc: string | null
           social_media_links: Json | null
           ssl_issued_date: string | null
           ssl_status: string | null
@@ -939,9 +960,12 @@ export type Database = {
           email?: string | null
           favicon_url?: string | null
           id?: string
+          is_deactivated?: boolean
           last_domain_check?: string | null
           last_payment_attempt?: string | null
           locale?: string | null
+          locked_advanced_price?: number | null
+          locked_basic_price?: number | null
           monthly_bandwidth_limit_gb?: number | null
           monthly_visits_limit?: number | null
           next_billing_date?: string | null
@@ -957,9 +981,11 @@ export type Database = {
           phone?: string | null
           phone_country_code?: string | null
           plan_type?: string | null
+          razon_social?: string | null
           referral_source?: string | null
           reservations_email?: string | null
           restaurant_name: string
+          ruc?: string | null
           social_media_links?: Json | null
           ssl_issued_date?: string | null
           ssl_status?: string | null
@@ -1000,9 +1026,12 @@ export type Database = {
           email?: string | null
           favicon_url?: string | null
           id?: string
+          is_deactivated?: boolean
           last_domain_check?: string | null
           last_payment_attempt?: string | null
           locale?: string | null
+          locked_advanced_price?: number | null
+          locked_basic_price?: number | null
           monthly_bandwidth_limit_gb?: number | null
           monthly_visits_limit?: number | null
           next_billing_date?: string | null
@@ -1018,9 +1047,11 @@ export type Database = {
           phone?: string | null
           phone_country_code?: string | null
           plan_type?: string | null
+          razon_social?: string | null
           referral_source?: string | null
           reservations_email?: string | null
           restaurant_name?: string
+          ruc?: string | null
           social_media_links?: Json | null
           ssl_issued_date?: string | null
           ssl_status?: string | null
@@ -1196,6 +1227,36 @@ export type Database = {
           unique_sessions?: number
           updated_at?: string
           whatsapp_clicks?: number
+        }
+        Relationships: []
+      }
+      documentation_pages: {
+        Row: {
+          changefreq: string
+          created_at: string
+          id: string
+          is_active: boolean
+          path: string
+          priority: number
+          updated_at: string
+        }
+        Insert: {
+          changefreq?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          path: string
+          priority?: number
+          updated_at?: string
+        }
+        Update: {
+          changefreq?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          path?: string
+          priority?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1788,6 +1849,36 @@ export type Database = {
         }
         Relationships: []
       }
+      site_pages: {
+        Row: {
+          changefreq: string
+          created_at: string
+          id: string
+          is_active: boolean
+          path: string
+          priority: number
+          updated_at: string
+        }
+        Insert: {
+          changefreq?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          path: string
+          priority?: number
+          updated_at?: string
+        }
+        Update: {
+          changefreq?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          path?: string
+          priority?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       subscription_payments: {
         Row: {
           amount: number
@@ -2243,14 +2334,8 @@ export type Database = {
         Args: { opening_hours_obj: Json }
         Returns: Json
       }
-      generate_support_pin: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      generate_ticket_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_support_pin: { Args: never; Returns: string }
+      generate_ticket_number: { Args: never; Returns: string }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -2270,10 +2355,7 @@ export type Database = {
         Args: { coupon_code: string }
         Returns: undefined
       }
-      is_subscription_active: {
-        Args: { client_id: string }
-        Returns: boolean
-      }
+      is_subscription_active: { Args: { client_id: string }; Returns: boolean }
       link_user_to_client: {
         Args: { client_uuid: string; user_email: string; user_role?: string }
         Returns: string
