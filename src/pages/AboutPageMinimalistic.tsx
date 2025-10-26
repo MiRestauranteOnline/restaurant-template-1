@@ -9,7 +9,6 @@ import HeadScripts from '@/components/HeadScripts';
 import PageMetadata from '@/components/PageMetadata';
 import { useTitleScale } from '@/hooks/useTitleScale';
 import { useHeroOverlay } from '@/hooks/useHeroOverlay';
-import { useAdaptiveStatsFontSize } from '@/hooks/useAdaptiveStatsFontSize';
 
 const AboutPageMinimalistic = () => {
   const { adminContent, teamMembers } = useClient();
@@ -56,8 +55,6 @@ const AboutPageMinimalistic = () => {
     }
   };
 
-  const { fontSize, containerRef } = useAdaptiveStatsFontSize(stats);
-
   return (
     <>
       <HeadScripts />
@@ -102,7 +99,7 @@ const AboutPageMinimalistic = () => {
           {adminContent?.about_page_stats_section_visible !== false && (
             <section className="py-16 lg:py-24 bg-muted/30">
               <div className="container mx-auto px-4 max-w-6xl">
-                <div ref={containerRef} className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                   {Object.entries(stats).map(([key, stat], index) => (
                     <div 
                       key={key} 
@@ -113,11 +110,7 @@ const AboutPageMinimalistic = () => {
                         <div className="p-4 rounded-full bg-accent/10 group-hover:bg-accent/20 transition-colors">
                           <stat.icon className="w-8 h-8 text-accent" />
                         </div>
-                        <h3 
-                          data-stat-number
-                          className="font-heading font-light text-foreground"
-                          style={{ fontSize: `${fontSize}px` }}
-                        >
+                        <h3 className="text-5xl font-heading font-light text-foreground">
                           {stat.number}
                         </h3>
                         <div className="w-12 h-px bg-accent/30" />

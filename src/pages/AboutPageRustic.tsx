@@ -11,6 +11,7 @@ import HeadScripts from '@/components/HeadScripts';
 import PageMetadata from '@/components/PageMetadata';
 import { useTitleScale } from '@/hooks/useTitleScale';
 import { useHeroOverlay } from '@/hooks/useHeroOverlay';
+import { useAdaptiveStatsFontSize } from '@/hooks/useAdaptiveStatsFontSize';
 
 const AboutPageRustic = () => {
   const { adminContent, teamMembers } = useClient();
@@ -39,23 +40,25 @@ const AboutPageRustic = () => {
   const teamTitleSecond = (adminContent as any)?.about_team_section_title_second_line || 'Equipo';
   const teamDescription = (adminContent as any)?.about_team_section_description || 'Conoce a las personas apasionadas que hacen posible cada experiencia en nuestro restaurante.';
 
-  const stats = [
-    { 
+  const stats = {
+    stat1: { 
       icon: getIcon((adminContent as any)?.stats_item1_icon || 'Clock'), 
       number: (adminContent as any)?.stats_item1_number || "15+", 
       label: (adminContent as any)?.stats_item1_label || "Años de Experiencia" 
     },
-    { 
+    stat2: { 
       icon: getIcon((adminContent as any)?.stats_item2_icon || 'Users'), 
       number: (adminContent as any)?.stats_item2_number || "5000+", 
       label: (adminContent as any)?.stats_item2_label || "Clientes Satisfechos" 
     },
-    { 
+    stat3: { 
       icon: getIcon((adminContent as any)?.stats_item3_icon || 'Award'), 
       number: (adminContent as any)?.stats_item3_number || "10+", 
       label: (adminContent as any)?.stats_item3_label || "Reconocimientos" 
     }
-  ];
+  };
+
+  const { fontSize, containerRef } = useAdaptiveStatsFontSize(stats);
 
   return (
     <>
@@ -115,10 +118,10 @@ const AboutPageRustic = () => {
           {adminContent?.about_page_stats_section_visible !== false && (
             <section className="py-20 lg:py-32 bg-muted/30">
               <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {stats.map((stat, index) => (
+                <div ref={containerRef} className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {Object.entries(stats).map(([key, stat], index) => (
                     <Card 
-                      key={index} 
+                      key={key} 
                       className="text-left border-2 border-border card-hover bg-card overflow-hidden group"
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
@@ -128,7 +131,11 @@ const AboutPageRustic = () => {
                             <stat.icon className="w-10 h-10 text-accent" />
                           </div>
                           <div className="flex-1">
-                            <h3 className="text-5xl font-heading font-bold mb-2 text-foreground group-hover:text-accent transition-colors">
+                            <h3 
+                              data-stat-number
+                              className="font-heading font-bold mb-2 text-foreground group-hover:text-accent transition-colors"
+                              style={{ fontSize: `${fontSize}px` }}
+                            >
                               {stat.number}
                             </h3>
                             <div className="w-16 h-1 bg-accent/30 rounded-full mb-3"></div>
