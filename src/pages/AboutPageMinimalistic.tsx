@@ -71,8 +71,7 @@ const AboutPageMinimalistic = () => {
             <img 
               src={aboutHeroBackground}
               alt="About page background"
-              className="absolute inset-0 w-full h-full object-cover"
-              fetchPriority="high"
+              className="absolute inset-0 w-full h-full object-cover" {...{ fetchpriority: 'high' }}
               loading="eager"
             />
             <div className="absolute inset-0 hero-overlay" />
