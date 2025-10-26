@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { ClientTurnstileWidget } from "@/components/ClientTurnstileWidget";
 import {
   Form,
   FormControl,
@@ -27,7 +28,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { FileText, AlertCircle, CheckCircle2 } from "lucide-react";
+import { FileText, AlertCircle, CheckCircle2, Shield } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import PageMetadata from "@/components/PageMetadata";
 
@@ -91,6 +92,8 @@ const LibroReclamaciones = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [claimCode, setClaimCode] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [showCaptchaWarning, setShowCaptchaWarning] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -172,11 +175,19 @@ const LibroReclamaciones = () => {
   }
 
   const onSubmit = async (values: FormValues) => {
+    // Validate CAPTCHA token
+    if (!captchaToken) {
+      setShowCaptchaWarning(true);
+      toast.error('Por favor completa la verificación de seguridad');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const { data, error } = await supabase.functions.invoke("send-reclamacion", {
         body: {
           clientId: client?.id,
+          turnstile_token: captchaToken,
           ...values,
         },
       });
@@ -186,6 +197,7 @@ const LibroReclamaciones = () => {
       setClaimCode(data.claimCode);
       setShowSuccess(true);
       form.reset();
+      setCaptchaToken(null);
       toast.success("Reclamación enviada exitosamente");
     } catch (error: any) {
       console.error("Error submitting claim:", error);
@@ -563,8 +575,40 @@ const LibroReclamaciones = () => {
                         )}
                       />
 
+                      {/* Security Verification */}
+                      <div className="space-y-4">
+                        {showCaptchaWarning && (
+                          <Alert variant="destructive">
+                            <Shield className="h-4 w-4" />
+                            <AlertDescription>
+                              Por favor, completa la verificación de seguridad.
+                            </AlertDescription>
+                          </Alert>
+                        )}
+                        
+                        {client?.id && (
+                          <ClientTurnstileWidget
+                            clientId={client.id}
+                            onVerify={(token) => {
+                              setCaptchaToken(token);
+                              setShowCaptchaWarning(false);
+                            }}
+                            onError={() => {
+                              setCaptchaToken(null);
+                              toast.error('Error en verificación de seguridad');
+                            }}
+                            onExpire={() => {
+                              setCaptchaToken(null);
+                              toast.warning('La verificación expiró. Por favor, complétala nuevamente.');
+                            }}
+                            theme="auto"
+                            size="normal"
+                          />
+                        )}
+                      </div>
+
                       <div className="flex justify-center pt-6">
-                        <Button type="submit" size="lg" disabled={isSubmitting}>
+                        <Button type="submit" size="lg" disabled={isSubmitting || !captchaToken}>
                           {isSubmitting ? (
                             <>
                               <div className="mr-2"><LoadingSpinner /></div>

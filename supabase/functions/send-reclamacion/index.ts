@@ -25,19 +25,73 @@ serve(async (req) => {
     const requestData = await req.json();
     console.log("📝 Received reclamación request:", { 
       clientId: requestData.clientId,
-      email: requestData.email 
+      email: requestData.email,
+      hasTurnstileToken: !!requestData.turnstile_token
     });
 
-    // Fetch client data
+    // Validate required fields
+    if (!requestData.clientId || !requestData.turnstile_token) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields: clientId and turnstile_token' }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Fetch client data including turnstile_secret_key
     const { data: client, error: clientError } = await supabase
       .from("clients")
-      .select("restaurant_name, email")
+      .select("restaurant_name, email, turnstile_secret_key")
       .eq("id", requestData.clientId)
       .single();
 
     if (clientError || !client) {
-      throw new Error("Client not found");
+      console.error("❌ Client not found:", clientError);
+      return new Response(
+        JSON.stringify({ error: 'Client not found' }),
+        { status: 404, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
     }
+
+    if (!(client as any).turnstile_secret_key) {
+      console.error("❌ Client missing Turnstile secret key");
+      return new Response(
+        JSON.stringify({ error: 'Security configuration not found' }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Validate Turnstile token
+    console.log("🔐 Validating Turnstile token...");
+    const clientIp = req.headers.get('CF-Connecting-IP') || 
+                     req.headers.get('X-Forwarded-For')?.split(',')[0];
+
+    const turnstileResponse = await fetch(
+      'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          secret: (client as any).turnstile_secret_key,
+          response: requestData.turnstile_token,
+          remoteip: clientIp,
+        }),
+      }
+    );
+
+    const turnstileData = await turnstileResponse.json();
+
+    if (!turnstileData.success) {
+      console.error("❌ Turnstile validation failed:", turnstileData['error-codes']);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Security verification failed',
+          details: turnstileData['error-codes']?.join(', ') || 'Validation failed'
+        }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    console.log("✅ Turnstile validation successful");
 
     // Fetch client policies for reclamaciones_email
     const { data: policies } = await supabase

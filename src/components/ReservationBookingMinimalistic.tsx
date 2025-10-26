@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useClient } from '@/contexts/ClientContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { getCachedAdminContent } from '@/utils/cachedContent';
 import { toast } from 'sonner';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Calendar, CheckCircle2, Shield } from 'lucide-react';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { ClientTurnstileWidget } from '@/components/ClientTurnstileWidget';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 
 interface Schedule {
@@ -65,6 +71,8 @@ const ReservationBookingMinimalistic = () => {
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [availableCapacity, setAvailableCapacity] = useState<number | null>(null);
   const [availableDates, setAvailableDates] = useState<{ value: string; label: string }[]>([]);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [showCaptchaWarning, setShowCaptchaWarning] = useState(false);
   const [formData, setFormData] = useState({
     date: '',
     time: '',
@@ -664,10 +672,42 @@ const ReservationBookingMinimalistic = () => {
                 />
               </div>
 
+              {/* Security Verification */}
+              <div className="space-y-4">
+                {showCaptchaWarning && (
+                  <Alert variant="destructive">
+                    <Shield className="h-4 w-4" />
+                    <AlertDescription>
+                      Por favor, completa la verificación de seguridad.
+                    </AlertDescription>
+                  </Alert>
+                )}
+                
+                {client?.id && (
+                  <ClientTurnstileWidget
+                    clientId={client.id}
+                    onVerify={(token) => {
+                      setCaptchaToken(token);
+                      setShowCaptchaWarning(false);
+                    }}
+                    onError={() => {
+                      setCaptchaToken(null);
+                      toast.error('Error en verificación de seguridad');
+                    }}
+                    onExpire={() => {
+                      setCaptchaToken(null);
+                      toast.warning('La verificación expiró. Por favor, complétala nuevamente.');
+                    }}
+                    theme="auto"
+                    size="normal"
+                  />
+                )}
+              </div>
+
               {/* Submit Button */}
               <Button
                 type="submit"
-                disabled={loading || !formData.date || !formData.time || isPartySizeOutOfRange}
+                disabled={loading || !captchaToken || !formData.date || !formData.time || isPartySizeOutOfRange}
                 className="btn-primary w-full py-6 text-sm tracking-wider uppercase rounded-none"
               >
                 {loading ? loadingText : submitButtonText}

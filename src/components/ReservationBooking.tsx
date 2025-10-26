@@ -6,8 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Calendar } from 'lucide-react';
+import { Calendar, Shield } from 'lucide-react';
 import { toast } from 'sonner';
+import { ClientTurnstileWidget } from '@/components/ClientTurnstileWidget';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 
 interface Schedule {
@@ -45,6 +47,8 @@ export default function ReservationBooking() {
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [availableCapacity, setAvailableCapacity] = useState<number | null>(null);
   const [partySizeOptions, setPartySizeOptions] = useState<number[]>([]);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [showCaptchaWarning, setShowCaptchaWarning] = useState(false);
   const [formData, setFormData] = useState({
     date: '',
     time: '',
@@ -314,6 +318,14 @@ export default function ReservationBooking() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate CAPTCHA token
+    if (!captchaToken) {
+      setShowCaptchaWarning(true);
+      toast.error('Por favor completa la verificación de seguridad');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -843,11 +855,43 @@ export default function ReservationBooking() {
               />
             </div>
 
+            {/* Security Verification */}
+            <div className="space-y-4">
+              {showCaptchaWarning && (
+                <Alert variant="destructive">
+                  <Shield className="h-4 w-4" />
+                  <AlertDescription>
+                    Por favor, completa la verificación de seguridad.
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              {client?.id && (
+                <ClientTurnstileWidget
+                  clientId={client.id}
+                  onVerify={(token) => {
+                    setCaptchaToken(token);
+                    setShowCaptchaWarning(false);
+                  }}
+                  onError={() => {
+                    setCaptchaToken(null);
+                    toast.error('Error en verificación de seguridad');
+                  }}
+                  onExpire={() => {
+                    setCaptchaToken(null);
+                    toast.warning('La verificación expiró. Por favor, complétala nuevamente.');
+                  }}
+                  theme="auto"
+                  size="normal"
+                />
+              )}
+            </div>
+
             <Button 
               type="submit" 
               className="w-full" 
               size="lg" 
-              disabled={loading || (shouldShowSpecialGroupsMessage && !currentSchedule?.special_groups_contact_method)}
+              disabled={loading || !captchaToken || (shouldShowSpecialGroupsMessage && !currentSchedule?.special_groups_contact_method)}
             >
               <Calendar className="mr-2 h-5 w-5 text-primary-foreground" />
               {loading ? 'Enviando...' : 'Solicitar Reserva'}
