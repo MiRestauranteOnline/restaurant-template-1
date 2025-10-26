@@ -35,6 +35,9 @@ export function ClientTurnstileWidget({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const widgetIdRef = useRef<string | null>(null);
+  
+  // Store callbacks in refs to prevent re-renders
+  const callbacksRef = useRef({ onVerify, onError, onExpire });
 
   // Fetch site key for this client
   useEffect(() => {
@@ -68,6 +71,11 @@ export function ClientTurnstileWidget({
     }
   }, [clientId]);
 
+  // Update callbacks ref when they change
+  useEffect(() => {
+    callbacksRef.current = { onVerify, onError, onExpire };
+  }, [onVerify, onError, onExpire]);
+
   // Render Turnstile widget
   useEffect(() => {
     if (!siteKey || !containerRef.current) return;
@@ -92,16 +100,16 @@ export function ClientTurnstileWidget({
           size,
           callback: (token: string) => {
             console.log('✅ Turnstile verification successful');
-            onVerify(token);
+            callbacksRef.current.onVerify(token);
           },
           'error-callback': () => {
             console.error('❌ Turnstile verification error');
             setError('Error en la verificación de seguridad');
-            onError?.();
+            callbacksRef.current.onError?.();
           },
           'expired-callback': () => {
             console.warn('⏰ Turnstile token expired');
-            onExpire?.();
+            callbacksRef.current.onExpire?.();
           },
         });
       } catch (err) {
@@ -122,7 +130,7 @@ export function ClientTurnstileWidget({
         }
       }
     };
-  }, [siteKey, theme, size, onVerify, onError, onExpire]);
+  }, [siteKey, theme, size]);
 
   if (loading) {
     return (
