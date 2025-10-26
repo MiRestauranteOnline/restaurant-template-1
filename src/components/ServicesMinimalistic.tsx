@@ -1,7 +1,6 @@
 import { useClient } from '@/contexts/ClientContext';
 import { getCachedAdminContent } from '@/utils/cachedContent';
 import { getIcon } from '@/utils/iconMapper';
-import { useAdaptiveStatsFontSize } from '@/hooks/useAdaptiveStatsFontSize';
 
 const ServicesMinimalistic = () => {
   const { adminContent } = useClient();
@@ -33,14 +32,6 @@ const ServicesMinimalistic = () => {
     },
   ];
 
-  // Build a stats-like map so we can reuse the adaptive font hook for titles
-  const statsLike = services.reduce((acc, svc, i) => {
-    acc[`svc${i}`] = { number: svc.title, label: svc.description };
-    return acc;
-  }, {} as Record<string, { number: string; label: string }>);
-
-  const { fontSize, containerRef } = useAdaptiveStatsFontSize(statsLike);
-
   return (
     <section id="services" className="py-24 lg:py-32 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -63,7 +54,7 @@ const ServicesMinimalistic = () => {
           </div>
 
           {/* Services Grid */}
-          <div ref={containerRef} className="grid md:grid-cols-3 gap-12">
+          <div className="grid md:grid-cols-3 gap-12">
             {services.map((service, index) => (
               <div 
                 key={index}
@@ -74,11 +65,7 @@ const ServicesMinimalistic = () => {
                   <div className="p-4 rounded-full bg-accent/10 group-hover:bg-accent/20 transition-colors">
                     <service.icon className="w-8 h-8 text-accent" />
                   </div>
-                  <h3
-                    data-stat-number
-                    className="font-heading font-light text-foreground"
-                    style={{ fontSize: `${fontSize}px` }}
-                  >
+                  <h3 className="text-xl font-heading">
                     {service.title}
                   </h3>
                   <div className="w-8 h-px bg-accent/30" />
