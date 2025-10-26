@@ -340,79 +340,27 @@ const ReservationBookingMinimalistic = () => {
     setLoading(true);
 
     try {
-      // PRE-INSERT CHECK: Re-verify availability right before inserting to prevent race conditions
-      const availableTimes = await getAvailableTimes();
-      if (!availableTimes.includes(formData.time)) {
-        toast.error('Este horario acaba de llenarse. Por favor selecciona otro.');
-        setLoading(false);
-        return;
-      }
+      // Call secure edge function with Turnstile token
+      const { data, error } = await supabase.functions.invoke("send-reservation", {
+        body: {
+          client_id: client?.id,
+          turnstile_token: captchaToken,
+          reservation_date: formData.date,
+          reservation_time: formData.time,
+          party_size: parseInt(formData.partySize),
+          customer_name: formData.name,
+          customer_email: formData.email,
+          customer_phone: formData.phone,
+          special_requests: formData.specialRequests || null,
+        },
+      });
 
-      const { getActiveTableConfigs, findSuitableTable, calculateTableAvailability } = await import('@/utils/reservationTableLogic');
-      const currentSchedule = getCurrentSchedule();
-      
-      let tableConfigId: string | null = null;
-      
-      if (currentSchedule && globalTableConfigs.length > 0) {
-        const activeConfigs = getActiveTableConfigs(currentSchedule, globalTableConfigs);
-        
-        if (activeConfigs.length > 0) {
-          const { data: existingReservations } = await supabase
-            .from('reservations')
-            .select('reservation_time, party_size, table_config_id, duration_minutes')
-            .eq('client_id', client?.id)
-            .eq('reservation_date', formData.date)
-            .in('status', ['pending', 'confirmed']);
+      if (error) throw error;
 
-          const slotStartMinutes = parseInt(formData.time.split(':')[0]) * 60 + 
-                                   parseInt(formData.time.split(':')[1]);
-          const slotEndMinutes = slotStartMinutes + (currentSchedule.duration_minutes || 120);
-
-          const availableTables = calculateTableAvailability(
-            activeConfigs,
-            (existingReservations as any) || [],
-            slotStartMinutes,
-            slotEndMinutes
-          );
-
-          tableConfigId = findSuitableTable(parseInt(formData.partySize), availableTables);
-
-          if (!tableConfigId) {
-            toast.error(`No hay mesas disponibles para ${formData.partySize} personas en este horario. Por favor intenta otro horario o contáctanos directamente.`);
-            setLoading(false);
-            return;
-          }
-        }
-      }
-
-      const reservationData = {
-        client_id: client?.id,
-        reservation_date: formData.date,
-        reservation_time: formData.time,
-        party_size: parseInt(formData.partySize),
-        customer_name: formData.name,
-        customer_email: formData.email,
-        customer_phone: formData.phone,
-        special_requests: formData.specialRequests || null,
-        table_config_id: tableConfigId,
-        duration_minutes: currentSchedule?.duration_minutes || 120,
-        status: 'pending'
-      };
-
-      // Store local date and time (no timezone) to match DB schema and schedules
-      const { data, error } = await supabase
-        .from('reservations')
-        .insert(reservationData)
-        .select();
-
-      if (error) {
-        console.error('Reservation insert error:', error);
-        throw error;
-      }
-      
-      console.log('Reservation created successfully:', data);
+      console.log('✅ Reservation created:', data.reservation_id);
 
       toast.success('¡Reserva solicitada! Te contactaremos pronto para confirmar.');
+      setCaptchaToken(null);
       setFormData({
         date: '',
         time: '',
@@ -422,9 +370,9 @@ const ReservationBookingMinimalistic = () => {
         phone: '',
         specialRequests: ''
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating reservation:', error);
-      toast.error('Error al crear la reserva. Por favor intenta nuevamente.');
+      toast.error(error.message || 'Error al crear la reserva. Por favor intenta nuevamente.');
     } finally {
       setLoading(false);
     }
