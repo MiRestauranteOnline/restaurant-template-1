@@ -5,11 +5,15 @@ import { useClient } from '@/contexts/ClientContext';
 import { formatOpeningHours } from '@/utils/formatOpeningHours';
 import { getCachedClientData } from '@/utils/cachedContent';
 import { useAnalyticsContext } from '@/components/AnalyticsProvider';
+import { normalizeAddresses, getMapUrl } from '@/utils/addressHelper';
 
 const ContactRustic = () => {
   const { client, clientSettings, adminContent } = useClient();
   const cachedClient = getCachedClientData();
   const { trackButtonClick } = useAnalyticsContext();
+  
+  // Normalize addresses for multi-location support
+  const addresses = normalizeAddresses(client?.address);
   
   const sectionDescription = adminContent?.homepage_contact_section_description || "¿Listo para disfrutar de sabores únicos? Te esperamos en Savoria.";
   const hideReservationBox = adminContent?.homepage_contact_hide_reservation_box || false;
@@ -28,10 +32,10 @@ const ContactRustic = () => {
       title: "Email",
       details: [client.email]
     }] : []),
-    ...(client?.address ? [{
+    ...(addresses.length > 0 ? [{
       icon: MapPin,
-      title: "Ubicación",
-      details: [client.address]
+      title: addresses.length > 1 ? "Ubicaciones" : "Ubicación",
+      details: addresses.map(loc => loc.name ? `${loc.name}: ${loc.address}` : loc.address)
     }] : []),
     {
       icon: Clock,
@@ -166,16 +170,16 @@ const ContactRustic = () => {
         </div>
 
         {/* Map Section - Full width below */}
-        {adminContent?.homepage_contact_map_visible !== false && (client?.address || client?.coordinates || cachedClient?.address || cachedClient?.coordinates) && (
+        {adminContent?.homepage_contact_map_visible !== false && (addresses.length > 0 || client?.coordinates || cachedClient?.coordinates) && (
           <div className="mt-12 lg:mt-16 max-w-7xl mx-auto fade-in">
             <Card className="bg-card border-border overflow-hidden shadow-lg">
               <div className="relative h-96 lg:h-[500px]">
                 <iframe
-                  src={`https://maps.google.com/maps?q=${
-                    (client?.use_coordinates || cachedClient?.use_coordinates)
-                      ? `${(client?.coordinates || cachedClient?.coordinates)?.lat},${(client?.coordinates || cachedClient?.coordinates)?.lng}`
-                      : encodeURIComponent(client?.address || cachedClient?.address || '')
-                  }&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                  src={getMapUrl(
+                    client?.address || cachedClient?.address,
+                    client?.use_coordinates || cachedClient?.use_coordinates,
+                    client?.coordinates || cachedClient?.coordinates
+                  ) || ''}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}

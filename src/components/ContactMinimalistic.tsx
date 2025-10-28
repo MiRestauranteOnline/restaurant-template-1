@@ -2,10 +2,14 @@ import { MapPin } from 'lucide-react';
 import { useClient } from '@/contexts/ClientContext';
 import { getCachedAdminContent, getCachedClientData } from '@/utils/cachedContent';
 import { useAnalyticsContext } from '@/components/AnalyticsProvider';
+import { normalizeAddresses, getMapUrl } from '@/utils/addressHelper';
 
 const ContactMinimalistic = () => {
   const { client, adminContent } = useClient();
   const { trackButtonClick } = useAnalyticsContext();
+  
+  // Normalize addresses for multi-location support
+  const addresses = normalizeAddresses(client?.address);
   
   const cachedAdminContent = getCachedAdminContent();
   const cachedClient = getCachedClientData();
@@ -42,12 +46,17 @@ const ContactMinimalistic = () => {
 
           {/* Contact Info */}
           <div className="text-center space-y-8 fade-in">
-            {client?.address && (
+            {addresses.length > 0 && (
               <div className="flex flex-col items-center gap-3">
                 <MapPin className="w-6 h-6 text-accent" />
-                <p className="text-foreground text-lg">
-                  {client.address}
-                </p>
+                <div className="space-y-2">
+                  {addresses.map((location, index) => (
+                    <p key={index} className="text-foreground text-lg">
+                      {location.name && <span className="font-semibold">{location.name}: </span>}
+                      {location.address}
+                    </p>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -88,14 +97,14 @@ const ContactMinimalistic = () => {
             )}
 
             {/* Map */}
-            {adminContent?.homepage_contact_map_visible !== false && (client?.address || client?.coordinates || cachedClient?.address || cachedClient?.coordinates) && (
+            {adminContent?.homepage_contact_map_visible !== false && (addresses.length > 0 || client?.coordinates || cachedClient?.coordinates) && (
               <div className="mt-12 aspect-[16/9] w-full overflow-hidden border border-border">
               <iframe
-                src={`https://maps.google.com/maps?q=${
-                  (client?.use_coordinates || cachedClient?.use_coordinates)
-                    ? `${(client?.coordinates || cachedClient?.coordinates)?.lat},${(client?.coordinates || cachedClient?.coordinates)?.lng}`
-                    : encodeURIComponent(client?.address || cachedClient?.address || '')
-                }&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                src={getMapUrl(
+                  client?.address || cachedClient?.address,
+                  client?.use_coordinates || cachedClient?.use_coordinates,
+                  client?.coordinates || cachedClient?.coordinates
+                ) || ''}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}

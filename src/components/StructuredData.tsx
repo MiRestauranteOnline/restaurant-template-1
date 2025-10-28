@@ -1,5 +1,6 @@
 import { useClient } from '@/contexts/ClientContext';
 import { useEffect, useState } from 'react';
+import { normalizeAddresses, getPrimaryAddress } from '@/utils/addressHelper';
 
 const StructuredData = () => {
   const { client, clientSettings, reviews } = useClient();
@@ -40,6 +41,26 @@ const StructuredData = () => {
     // Extract coordinates from client data
     const coordinates = clientAny.coordinates as { latitude?: number; longitude?: number } | undefined;
     
+    // Handle multiple locations
+    const addresses = normalizeAddresses(client.address);
+    const primaryAddress = getPrimaryAddress(client.address);
+    
+    // For multiple locations, create an array of addresses
+    const addressSchema = addresses.length > 1 
+      ? addresses.map(loc => ({
+          "@type": "PostalAddress",
+          "streetAddress": loc.address,
+          "name": loc.name || undefined,
+          "addressLocality": clientAny.city || undefined,
+          "addressCountry": clientAny.country_code || "PE"
+        }))
+      : (primaryAddress ? {
+          "@type": "PostalAddress",
+          "streetAddress": primaryAddress,
+          "addressLocality": clientAny.city || undefined,
+          "addressCountry": clientAny.country_code || "PE"
+        } : undefined);
+    
     const schema = {
       "@context": "https://schema.org",
       "@type": "Restaurant",
@@ -50,12 +71,7 @@ const StructuredData = () => {
       "url": window.location.origin,
       "telephone": client.phone ? `${client.phone_country_code || '+51'}${client.phone}` : undefined,
       "inLanguage": clientAny.locale || "es-PE",
-      "address": client.address ? {
-        "@type": "PostalAddress",
-        "streetAddress": client.address,
-        "addressLocality": clientAny.city || undefined,
-        "addressCountry": clientAny.country_code || "PE"
-      } : undefined,
+      "address": addressSchema,
       "geo": coordinates?.latitude && coordinates?.longitude ? {
         "@type": "GeoCoordinates",
         "latitude": coordinates.latitude,

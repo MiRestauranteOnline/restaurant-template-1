@@ -5,12 +5,16 @@ import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Linkedin } from 'luc
 import { useAnalyticsContext } from '@/components/AnalyticsProvider';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { normalizeAddresses } from '@/utils/addressHelper';
 
 const FooterMinimalistic = () => {
   const { client, adminContent } = useClient();
   const { trackButtonClick } = useAnalyticsContext();
   const [policyLinks, setPolicyLinks] = useState<{ label: string; href: string }[]>([]);
   const [reclamacionesEnabled, setReclamacionesEnabled] = useState(false);
+  
+  // Normalize addresses for multi-location support
+  const addresses = normalizeAddresses(client?.address);
   
   const cachedAdminContent = getCachedAdminContent();
   const cachedClient = getCachedClientData();
@@ -59,7 +63,10 @@ const FooterMinimalistic = () => {
       items: [
         ...(client?.phone || cachedClient?.phone ? [{ icon: Phone, text: client?.phone ? `${client.phone_country_code || '+51'} ${client.phone}` : "+51 987 654 321" }] : []),
         ...(client?.email ? [{ icon: Mail, text: client.email }] : []),
-        ...(client?.address ? [{ icon: MapPin, text: client.address }] : [])
+        ...addresses.map(loc => ({ 
+          icon: MapPin, 
+          text: loc.name ? `${loc.name}: ${loc.address}` : loc.address 
+        }))
       ]
     },
     {
