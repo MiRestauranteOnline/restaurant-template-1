@@ -29,46 +29,52 @@ function extractDomain(request: Request): string | null {
 
 // Generate bot-optimized HTML 
 async function generateBotHTML(domain: string, pathname: string, host?: string): Promise<string | null> {
-  // Resolve client using multiple strategies to avoid false negatives
+  console.log('[BOT-SSR] Starting client lookup', { domain, host, pathname });
+  
   const headersCommon = {
     apikey: SUPABASE_ANON_KEY,
     Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
     'Content-Type': 'application/json',
   } as const;
 
-  const queries: string[] = [];
-  const isCustomDomain = domain.includes('.');
-  // Primary lookup
-  queries.push(
-    isCustomDomain
-      ? `custom_domain=eq.${encodeURIComponent(domain)}`
-      : `subdomain=eq.${encodeURIComponent(domain)}`
-  );
-  // Secondary lookups using full host when available
-  if (host) {
-    queries.push(`custom_domain=eq.${encodeURIComponent(host)}`);
-    queries.push(`domain=eq.${encodeURIComponent(host)}`);
-  }
-
+  // Determine if this is a custom domain or subdomain
+  const isCustomDomain = !domain.includes('mirestaurante.online');
+  
   let client: any = null;
-  for (const q of queries) {
-    const url = `${SUPABASE_URL}/rest/v1/clients?select=*&${q}&limit=1`;
+  
+  if (isCustomDomain) {
+    // For custom domains, lookup by custom_domain field
+    console.log('[BOT-SSR] Looking up custom domain:', domain);
+    const url = `${SUPABASE_URL}/rest/v1/clients?select=*&custom_domain=eq.${encodeURIComponent(domain)}&limit=1`;
     const res = await fetch(url, { headers: headersCommon });
-    if (!res.ok) {
-      console.log('[BOT-SSR] Client fetch failed', { q, status: res.status });
-      continue;
+    if (res.ok) {
+      const rows = await res.json();
+      client = rows?.[0];
+      console.log('[BOT-SSR] Custom domain result:', client ? `Found: ${client.restaurant_name}` : 'Not found');
     }
-    const rows = await res.json();
-    if (rows && rows[0]) {
-      client = rows[0];
-      break;
+  } else {
+    // For subdomains, lookup by subdomain field
+    console.log('[BOT-SSR] Looking up subdomain:', domain);
+    const url = `${SUPABASE_URL}/rest/v1/clients?select=*&subdomain=eq.${encodeURIComponent(domain)}&limit=1`;
+    const res = await fetch(url, { headers: headersCommon });
+    if (res.ok) {
+      const rows = await res.json();
+      client = rows?.[0];
+      console.log('[BOT-SSR] Subdomain result:', client ? `Found: ${client.restaurant_name} (subdomain: ${client.subdomain})` : 'Not found');
     }
   }
 
   if (!client) {
-    console.log('[BOT-SSR] Client not found for domain/host:', { domain, host });
+    console.log('[BOT-SSR] Client not found for:', { domain, host });
     return null;
   }
+
+  console.log('[BOT-SSR] Using client:', {
+    id: client.id,
+    name: client.restaurant_name,
+    subdomain: client.subdomain,
+    custom_domain: client.custom_domain
+  });
 
   // Fetch related data - batch in 2 groups to avoid connection limits
   const clientId = client.id;
