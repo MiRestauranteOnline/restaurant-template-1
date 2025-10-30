@@ -1,20 +1,6 @@
 const SUPABASE_URL = 'https://ptzcetvcccnojdbzzlyt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emNldHZjY2Nub2pkYnp6bHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjExNzksImV4cCI6MjA3NDMzNzE3OX0.2HS2wP06xe8PryWW_VdzTu7TDYg303BjwmzyA_5Ang8';
 
-// Bot detection - comprehensive list of search engine crawlers and SEO tools
-function isBot(userAgent: string): boolean {
-  const botPatterns = [
-    'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider',
-    'yandexbot', 'facebookexternalhit', 'twitterbot', 'whatsapp',
-    'linkedinbot', 'slackbot', 'telegrambot', 'applebot', 'ia_archiver',
-    'crawler', 'spider', 'bot', 'crawl', 'scraper', 'simulator',
-    'seo', 'check', 'test', 'monitor', 'validator', 'lighthouse',
-    'pagespeed', 'pingdom', 'gtmetrix', 'semrush', 'ahrefs', 'moz'
-  ];
-  const ua = userAgent.toLowerCase();
-  return botPatterns.some(bot => ua.includes(bot));
-}
-
 // Extract domain from request
 function extractDomain(request: Request): string | null {
   const url = new URL(request.url);
@@ -31,8 +17,8 @@ function extractDomain(request: Request): string | null {
   return host;
 }
 
-// Generate SEO-optimized HTML for bots
-async function generateBotHTML(domain: string, pathname: string): Promise<string | null> {
+// Generate SSR HTML for all visitors (with React hydration)
+async function generateSSRHTML(domain: string, pathname: string): Promise<string | null> {
   // Fetch client data by subdomain or custom_domain using REST API
   const isCustomDomain = domain.includes('.');
   const filter = isCustomDomain 
@@ -431,13 +417,18 @@ async function generateBotHTML(domain: string, pathname: string): Promise<string
   </script>
 </head>
 <body>
-  ${pageContent}
+  <!-- SSR Content (instant for crawlers and first paint) -->
+  <div id="root">${pageContent}</div>
   
   <footer>
     <p>&copy; ${new Date().getFullYear()} ${restaurantName}. Todos los derechos reservados.</p>
     ${client.address ? `<p>${client.address}</p>` : ''}
     ${client.phone ? `<p>Tel: ${client.phone_country_code || '+51'} ${client.phone}</p>` : ''}
   </footer>
+  
+  <!-- React bundle for client-side hydration (progressive enhancement) -->
+  <script type="module" crossorigin src="/assets/index.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index.css">
 </body>
 </html>
   `.trim();
@@ -447,47 +438,62 @@ async function generateBotHTML(domain: string, pathname: string): Promise<string
 
 export const onRequest: PagesFunction = async (ctx) => {
   try {
-    const userAgent = ctx.request.headers.get('user-agent') || '';
-    const secFetchDest = ctx.request.headers.get('sec-fetch-dest');
     const url = new URL(ctx.request.url);
+    const pathname = url.pathname;
+    
+    // Skip SSR for assets and API routes
+    if (pathname.startsWith('/assets/') || pathname.startsWith('/api/') || pathname.includes('.')) {
+      return await ctx.next();
+    }
 
-    // Broaden SSR: treat missing Sec-Fetch headers (common in crawlers/tools) as bot-like
-    const shouldSSR = isBot(userAgent) || !secFetchDest;
+    const domain = extractDomain(ctx.request);
+    if (!domain) {
+      console.log('[SSR] Could not extract domain');
+      return await ctx.next();
+    }
 
-    if (shouldSSR) {
-      console.log('[BOT-SSR] === REQUEST DETAILS ===');
-      console.log('[BOT-SSR] User-Agent:', userAgent);
-      console.log('[BOT-SSR] URL:', url.toString());
-      console.log('[BOT-SSR] Host:', ctx.request.headers.get('host'));
-      console.log('[BOT-SSR] X-Forwarded-Host:', ctx.request.headers.get('x-forwarded-host'));
-      console.log('[BOT-SSR] Sec-Fetch-Dest:', secFetchDest);
-      console.log('[BOT-SSR] All Headers:', JSON.stringify(Object.fromEntries(ctx.request.headers.entries())));
+    // Only SSR public pages
+    const publicPages = ['/', '', '/menu', '/nosotros', '/about', '/contacto', '/contact', '/resenas', '/reviews'];
+    if (!publicPages.includes(pathname)) {
+      return await ctx.next();
+    }
 
-      const domain = extractDomain(ctx.request);
-      if (!domain) {
-        console.log('[BOT-SSR] Could not extract domain');
-        return await ctx.next();
-      }
+    // ===== CLOUDFLARE CACHE API =====
+    const cacheKey = new Request(url.toString(), ctx.request);
+    const cache = caches.default;
+    
+    // Check cache first
+    let cachedResponse = await cache.match(cacheKey);
+    if (cachedResponse) {
+      console.log('[SSR-CACHE] Cache HIT:', domain, pathname);
+      return cachedResponse;
+    }
 
-      const pathname = url.pathname;
+    console.log('[SSR-CACHE] Cache MISS - Generating HTML:', domain, pathname);
 
-      // Generate bot-optimized HTML
-      const botHTML = await generateBotHTML(domain, pathname);
+    // Generate SSR HTML for all visitors
+    const ssrHTML = await generateSSRHTML(domain, pathname);
 
-      if (botHTML) {
-        console.log('[BOT-SSR] Serving bot-optimized HTML for:', domain, pathname);
-        return new Response(botHTML, {
-          headers: {
-            'Content-Type': 'text/html; charset=utf-8',
-            'Cache-Control': 'public, max-age=3600',
-            'X-Robots-Tag': 'index, follow',
-            'X-Bot-SSR': 'true'
-          }
-        });
-      }
+    if (ssrHTML) {
+      console.log('[SSR] Serving SSR HTML for:', domain, pathname);
+      
+      const response = new Response(ssrHTML, {
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'public, max-age=3600, s-maxage=3600', // 1 hour cache
+          'X-Robots-Tag': 'index, follow',
+          'X-SSR-Rendered': 'true',
+          'Vary': 'Accept-Encoding'
+        }
+      });
+
+      // Store in Cloudflare cache (1 hour TTL)
+      ctx.waitUntil(cache.put(cacheKey, response.clone()));
+
+      return response;
     }
     
-    // Normal flow for human users
+    // Fallback to normal React SPA
     return await ctx.next();
   } catch (err: any) {
     const id = crypto.randomUUID?.() || String(Date.now());
