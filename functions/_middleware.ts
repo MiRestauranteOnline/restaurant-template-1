@@ -37,8 +37,9 @@ async function generateBotHTML(domain: string, pathname: string, host?: string):
     'Content-Type': 'application/json',
   } as const;
 
-  // 1) Optionally use prebuilt fast-load JSON (disabled by default to ensure full content)
-  const enableFastLoadSSR = false;
+  // 1) Optionally prefetch prebuilt fast-load JSON as fallback
+  const enableFastLoadSSR = true;
+  let fallbackHtml: string | null = null;
   if (enableFastLoadSSR) {
     try {
       const fastLoadUrl = `${SUPABASE_URL}/storage/v1/object/public/client-assets/fast-load/${domain}.json`;
@@ -53,7 +54,7 @@ async function generateBotHTML(domain: string, pathname: string, host?: string):
           ? `https://${domain}.mirestaurante.online`
           : `https://${host || domain}`;
 
-        // Build rich content sections
+        // Build rich content sections (fallback)
         const aboutHtml = fast.about_hero_title ? `
           <section>
             <h2>${fast.about_hero_title}</h2>
@@ -95,8 +96,8 @@ async function generateBotHTML(domain: string, pathname: string, host?: string):
     <nav>
       <a href=\"${baseUrl}/\">Inicio</a>
       <a href=\"${baseUrl}/menu\">Menú</a>
-      <a href=\"${baseUrl}/about\">Nosotros</a>
-      <a href=\"${baseUrl}/contact\">Contacto</a>
+      <a href=\"${baseUrl}/nosotros\">Nosotros</a>
+      <a href=\"${baseUrl}/contacto\">Contacto</a>
     </nav>
   </header>
   <main>
@@ -115,7 +116,7 @@ async function generateBotHTML(domain: string, pathname: string, host?: string):
   </footer>
 </body>
 </html>`;
-        return html.trim();
+        fallbackHtml = html.trim();
       }
     } catch (e) {
       console.log('[BOT-SSR] Fast-load fetch failed, falling back to live queries');
@@ -153,7 +154,7 @@ async function generateBotHTML(domain: string, pathname: string, host?: string):
 
   if (!client) {
     console.log('[BOT-SSR] Client not found for:', { domain, host });
-    return null;
+    return fallbackHtml;
   }
 
   console.log('[BOT-SSR] Using client:', {
