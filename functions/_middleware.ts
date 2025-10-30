@@ -62,7 +62,22 @@ async function fetchFastLoad(hostname: string) {
   // Try existing snapshots (hostname first, then subdomain)
   for (const key of candidates) {
     const hit = await tryFetch(key);
-    if (hit) return { ...hit.json, __fast_key: key, __used_subdomain: subdomain || null };
+    if (hit) {
+      const hasFullData = hit.json && (hit.json.menu || hit.json.menu_preview_items || hit.json.admin_content_full);
+      if (hasFullData) {
+        return { ...hit.json, __fast_key: key, __used_subdomain: subdomain || null };
+      }
+      // Snapshot exists but is partial: trigger rebuild and bust cache once
+      const edgeFunctionUrl = `${SUPABASE_URL}/functions/v1/prebuild-client-data`;
+      const body = subdomain ? { subdomain } : { domain: normalized };
+      await fetch(edgeFunctionUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }).catch(() => null);
+      const busted = await tryFetch(key, true);
+      if (busted) return { ...busted.json, __fast_key: key, __used_subdomain: subdomain || null };
+    }
   }
 
   // If absent, generate it once via edge function, then retry with both keys
@@ -199,24 +214,25 @@ function buildHTML(pathname: string, domain: string, fast: any) {
         <section style="padding:80px 20px;background:white;">
           <div style="max-width:1200px;margin:0 auto;text-align:center;">
             <h2 style="font-size:36px;margin-bottom:16px;color:#333;">
-              ${fast?.homepage_menu_section_title_first_line || 'Explora nuestro menú'}
+              ${(fast?.homepage_menu_section_title_first_line || 'Explora nuestro menú')}
             </h2>
             <p style="font-size:20px;color:#666;margin-bottom:48px;">
-              ${fast?.homepage_menu_section_description || 'Descubre platos destacados y sabores únicos en ' + name + '.'}
+              ${fast?.homepage_menu_section_description || ('Descubre platos destacados y sabores únicos en ' + name + '.')}
             </p>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;margin-bottom:48px;">
-              <div style="background:#f8f9fa;padding:24px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.1);">
-                <h3 style="font-size:24px;margin-bottom:12px;color:#333;">Platos Principales</h3>
-                <p style="color:#666;line-height:1.6;">Sabores auténticos preparados con ingredientes frescos y técnicas tradicionales.</p>
-              </div>
-              <div style="background:#f8f9fa;padding:24px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.1);">
-                <h3 style="font-size:24px;margin-bottom:12px;color:#333;">Postres</h3>
-                <p style="color:#666;line-height:1.6;">Dulces creaciones que coronan perfectamente tu experiencia gastronómica.</p>
-              </div>
-              <div style="background:#f8f9fa;padding:24px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.1);">
-                <h3 style="font-size:24px;margin-bottom:12px;color:#333;">Bebidas</h3>
-                <p style="color:#666;line-height:1.6;">Selección cuidada de vinos, cocteles y bebidas que complementan cada plato.</p>
-              </div>
+              ${(() => {
+                const items = (fast?.menu_preview_items && fast.menu_preview_items.length
+                  ? fast.menu_preview_items
+                  : (fast?.menu?.items || []).slice(0, 6));
+                return (items || []).map((item: any) => `
+                  <article style="background:#f8f9fa;padding:24px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.1);text-align:left;">
+                    ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:8px;margin-bottom:12px;" />` : ''}
+                    <h3 style="font-size:22px;margin-bottom:8px;color:#333;">${item.name}</h3>
+                    ${item.description ? `<p style=\"color:#666;line-height:1.6;margin-bottom:8px;\">${item.description}</p>` : ''}
+                    ${typeof item.price === 'number' ? `<strong style=\"color:#333;\">S/ ${item.price.toFixed(2)}</strong>` : ''}
+                  </article>
+                `).join('');
+              })()}
             </div>
             <a href="/menu" style="display:inline-block;background:#667eea;color:white;padding:12px 32px;text-decoration:none;border-radius:25px;font-weight:500;transition:all 0.3s;">Ver menú completo</a>
           </div>
