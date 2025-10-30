@@ -41,25 +41,45 @@ function isBot(userAgent: string): boolean {
   return BOT_PATTERNS.some((pattern) => pattern.test(userAgent));
 }
 
-async function fetchFastLoad(domain: string) {
-  // Try reading prebuilt JSON from public storage
-  const fileUrl = `${SUPABASE_URL}/storage/v1/object/public/client-assets/fast-load/${domain}.json`;
-  const res = await fetch(fileUrl, { cf: { cacheTtl: 300, cacheEverything: true } as any }).catch(() => null);
-  if (res && res.ok) return await res.json();
+async function fetchFastLoad(hostname: string) {
+  const normalized = hostname.replace(/^www\./, '');
+  const labels = normalized.split('.');
+  const subdomain = labels.length >= 3 ? labels[0] : '';
+  const candidates = [normalized, ...(subdomain ? [subdomain] : [])];
 
-  // If absent, generate it once via edge function, then retry
+  const tryFetch = async (key: string) => {
+    const fileUrl = `${SUPABASE_URL}/storage/v1/object/public/client-assets/fast-load/${key}.json`;
+    const res = await fetch(fileUrl, { cf: { cacheTtl: 300, cacheEverything: true } as any }).catch(() => null);
+    if (res && res.ok) {
+      const json = await res.json();
+      return { json, key } as const;
+    }
+    return null;
+  };
+
+  // Try existing snapshots (hostname first, then subdomain)
+  for (const key of candidates) {
+    const hit = await tryFetch(key);
+    if (hit) return { ...hit.json, __fast_key: key, __used_subdomain: subdomain || null };
+  }
+
+  // If absent, generate it once via edge function, then retry with both keys
   const edgeFunctionUrl = `${SUPABASE_URL}/functions/v1/prebuild-client-data`;
+  const body = subdomain ? { subdomain, domain: normalized } : { domain: normalized };
   await fetch(edgeFunctionUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
     },
-    body: JSON.stringify({ subdomain: domain })
+    body: JSON.stringify(body)
   }).catch(() => null);
   
-  const res2 = await fetch(fileUrl).catch(() => null);
-  if (res2 && res2.ok) return await res2.json();
+  for (const key of candidates) {
+    const hit = await tryFetch(key);
+    if (hit) return { ...hit.json, __fast_key: key, __used_subdomain: subdomain || null };
+  }
+
   return null;
 }
 
