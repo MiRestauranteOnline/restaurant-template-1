@@ -549,7 +549,7 @@ export const onRequest: PagesFunction = async (ctx) => {
     const userAgent = ctx.request.headers.get('user-agent') || '';
     const secFetchDest = ctx.request.headers.get('sec-fetch-dest');
     const secFetchMode = ctx.request.headers.get('sec-fetch-mode');
-    const testSSR = url.searchParams.get('__bot') === '1' || ctx.request.headers.get('x-ssr-test') === '1';
+    const testSSR = url.searchParams.has('__bot') || ctx.request.headers.get('x-ssr-test') === '1';
 
     // Skip SSR on staging domains and for static assets
     const isStaging = host.endsWith('.pages.dev') || host.endsWith('.lovableproject.com');
@@ -561,7 +561,7 @@ export const onRequest: PagesFunction = async (ctx) => {
     if (!domain) return await ctx.next();
 
     // Only SSR for non-browser bot crawlers OR when explicitly testing
-    const shouldSSR = ((!isStaging && isBot(userAgent) && !secFetchDest && !secFetchMode)) || testSSR;
+    const shouldSSR = !isStaging && (testSSR || isBot(userAgent));
 
     if (shouldSSR) {
       const publicPages = ['/', '', '/menu', '/nosotros', '/about', '/contacto', '/contact', '/resenas', '/reviews'];
