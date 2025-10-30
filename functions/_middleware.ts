@@ -38,7 +38,7 @@ async function generateBotHTML(domain: string, pathname: string, host?: string):
   } as const;
 
   // Determine if this is a custom domain or subdomain
-  const isCustomDomain = !domain.includes('mirestaurante.online');
+  const isCustomDomain = domain.includes('.');
   
   let client: any = null;
   
