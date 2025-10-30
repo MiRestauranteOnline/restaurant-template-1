@@ -37,6 +37,50 @@ async function generateBotHTML(domain: string, pathname: string, host?: string):
     'Content-Type': 'application/json',
   } as const;
 
+  // 1) Try prebuilt fast-load JSON first for absolute correctness with SPA
+  try {
+    const fastLoadUrl = `${SUPABASE_URL}/storage/v1/object/public/client-assets/fast-load/${domain}.json`;
+    const fastRes = await fetch(fastLoadUrl, { headers: { Accept: 'application/json' } });
+    if (fastRes.ok) {
+      const fast = await fastRes.json();
+      const restaurantName = fast.restaurant_name || 'Restaurante';
+      const titleFirst = fast.homepage_hero_title_first_line || '';
+      const titleSecond = fast.homepage_hero_title_second_line || restaurantName;
+      const description = fast.homepage_hero_description || `Bienvenido a ${restaurantName}. Experiencia gastronómica excepcional.`;
+      const baseUrl = host && host.includes('mirestaurante.online')
+        ? `https://${domain}.mirestaurante.online`
+        : `https://${host || domain}`;
+
+      const html = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${restaurantName} - ${titleFirst || 'Restaurante'}</title>
+  <meta name="description" content="${description}">
+  <link rel="canonical" href="${baseUrl}${pathname}">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="${restaurantName}">
+  <meta property="og:description" content="${description}">
+  <meta property="og:type" content="website">
+</head>
+<body>
+  <main>
+    <section>
+      <h1>${titleFirst} ${titleSecond}</h1>
+      ${description ? `<p>${description}</p>` : ''}
+    </section>
+  </main>
+</body>
+</html>`;
+      return html.trim();
+    }
+  } catch (e) {
+    console.log('[BOT-SSR] Fast-load fetch failed, falling back to live queries');
+  }
+
+  // 2) Fallback to live DB lookups (subdomain vs custom_domain)
   // Determine if this is a custom domain or subdomain
   const isCustomDomain = domain.includes('.');
   
@@ -63,6 +107,7 @@ async function generateBotHTML(domain: string, pathname: string, host?: string):
       console.log('[BOT-SSR] Subdomain result:', client ? `Found: ${client.restaurant_name} (subdomain: ${client.subdomain})` : 'Not found');
     }
   }
+
 
   if (!client) {
     console.log('[BOT-SSR] Client not found for:', { domain, host });
