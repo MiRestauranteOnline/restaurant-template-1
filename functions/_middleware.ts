@@ -1,9 +1,5 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.58.0';
-
 const SUPABASE_URL = 'https://ptzcetvcccnojdbzzlyt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emNldHZjY2Nub2pkYnp6bHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjExNzksImV4cCI6MjA3NDMzNzE3OX0.2HS2wP06xe8PryWW_VdzTu7TDYg303BjwmzyA_5Ang8';
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Common bot user agents
 const BOT_PATTERNS = [
@@ -52,7 +48,16 @@ async function fetchFastLoad(domain: string) {
   if (res && res.ok) return await res.json();
 
   // If absent, generate it once via edge function, then retry
-  await supabase.functions.invoke('prebuild-client-data', { body: { subdomain: domain } }).catch(() => null);
+  const edgeFunctionUrl = `${SUPABASE_URL}/functions/v1/prebuild-client-data`;
+  await fetch(edgeFunctionUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+    },
+    body: JSON.stringify({ subdomain: domain })
+  }).catch(() => null);
+  
   const res2 = await fetch(fileUrl).catch(() => null);
   if (res2 && res2.ok) return await res2.json();
   return null;
