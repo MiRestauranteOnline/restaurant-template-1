@@ -41,6 +41,7 @@ async function generateSSRHTML(domain: string, pathname: string): Promise<string
     return null;
   }
 
+  const baseClients = await clientRes.json();
   let client: any = baseClients?.[0];
   if (!client) {
     console.log('[BOT-SSR] Client not found for domain:', domain);
@@ -417,7 +418,6 @@ async function generateSSRHTML(domain: string, pathname: string): Promise<string
   </script>
 </head>
 <body>
-  <!-- SSR Content (instant for crawlers and first paint) -->
   <div id="root">${pageContent}</div>
   
   <footer>
@@ -425,10 +425,6 @@ async function generateSSRHTML(domain: string, pathname: string): Promise<string
     ${client.address ? `<p>${client.address}</p>` : ''}
     ${client.phone ? `<p>Tel: ${client.phone_country_code || '+51'} ${client.phone}</p>` : ''}
   </footer>
-  
-  <!-- React bundle for client-side hydration (progressive enhancement) -->
-  <script type="module" crossorigin src="/assets/index.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index.css">
 </body>
 </html>
   `.trim();
