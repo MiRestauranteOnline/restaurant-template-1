@@ -30,7 +30,9 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     
     const client = clients[0];
     const clientId = client.id;
-    const baseUrl = `https://${tenantDomain}`;
+    // Use client's custom domain if available, otherwise subdomain
+    const clientDomain = client.custom_domain || client.subdomain;
+    const baseUrl = `https://${clientDomain}`;
     
     // Fetch client's admin_content to check enabled sections
     const contentResponse = await fetch(
@@ -72,7 +74,6 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     // Build XML sitemap
     const today = new Date().toISOString().split('T')[0];
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-    xml += '<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>\n';
     xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
     
     // Homepage
@@ -147,7 +148,6 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     const today = new Date().toISOString().split('T')[0];
     const baseUrl = `https://${host.replace(/^www\./, '')}`;
     const fallback = `<?xml version="1.0" encoding="UTF-8"?>\n` +
-      `<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>\n` +
       `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
       `  <url>\n` +
       `    <loc>${baseUrl}/</loc>\n` +
