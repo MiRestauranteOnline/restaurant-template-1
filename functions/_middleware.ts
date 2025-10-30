@@ -239,7 +239,8 @@ export async function onRequest(context: any) {
   const isTest = url.searchParams.has('__bot');
   const bot = isBot(userAgent) || isTest;
 
-  const domain = url.hostname.replace(/^www\./, '');
+  const forwardedHost = request.headers.get('x-forwarded-host') || request.headers.get('X-Forwarded-Host');
+  const domain = (forwardedHost || url.hostname).replace(/^www\./, '');
 
   if (!bot) {
     return context.next();
@@ -257,7 +258,8 @@ export async function onRequest(context: any) {
       'X-Robots-Tag': 'index, follow',
       ...(fast?.__fast_key ? { 'X-Fast-Key': String(fast.__fast_key) } : {}),
       ...(fast?.__used_subdomain ? { 'X-Fast-Used-Subdomain': String(fast.__used_subdomain) } : {}),
-      'X-Bot-Mode': bot ? '1' : '0'
+      'X-Bot-Mode': bot ? '1' : '0',
+      'X-Resolved-Host': domain
     },
   });
 }
