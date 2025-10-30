@@ -455,7 +455,13 @@ export const onRequest: PagesFunction = async (ctx) => {
     const shouldSSR = isBot(userAgent) || !secFetchDest;
 
     if (shouldSSR) {
-      console.log('[BOT-SSR] SSR enabled for UA:', userAgent);
+      console.log('[BOT-SSR] === REQUEST DETAILS ===');
+      console.log('[BOT-SSR] User-Agent:', userAgent);
+      console.log('[BOT-SSR] URL:', url.toString());
+      console.log('[BOT-SSR] Host:', ctx.request.headers.get('host'));
+      console.log('[BOT-SSR] X-Forwarded-Host:', ctx.request.headers.get('x-forwarded-host'));
+      console.log('[BOT-SSR] Sec-Fetch-Dest:', secFetchDest);
+      console.log('[BOT-SSR] All Headers:', JSON.stringify(Object.fromEntries(ctx.request.headers.entries())));
 
       const domain = extractDomain(ctx.request);
       if (!domain) {
