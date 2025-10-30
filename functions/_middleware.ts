@@ -33,30 +33,71 @@ function extractDomain(request: Request): string | null {
 
 // Generate SEO-optimized HTML for bots
 async function generateBotHTML(domain: string, pathname: string): Promise<string | null> {
-  // Fetch client data by subdomain or custom_domain using REST API
-  const response = await fetch(
-    `${SUPABASE_URL}/rest/v1/clients?select=*,admin_content(*),client_settings(*),menu_items(*),menu_categories(*),reviews(*),faqs(*),team_members(*)&or=(subdomain.eq.${domain},custom_domain.eq.${domain})&subscription_status=eq.active&limit=1`,
+  // Fetch client data by subdomain or custom_domain using REST API (no joins to avoid FK requirements)
+  const isCustomDomain = domain.includes('.');
+  const filter = isCustomDomain 
+    ? `custom_domain=eq.${encodeURIComponent(domain)}` 
+    : `subdomain=eq.${encodeURIComponent(domain)}`;
+
+  const clientRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/clients?select=*&${filter}&limit=1`,
     {
       headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json'
-      }
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
     }
   );
-  
-  if (!response.ok) {
-    console.log('[BOT-SSR] Failed to fetch client data:', domain);
+
+  if (!clientRes.ok) {
+    console.log('[BOT-SSR] Failed to fetch client base data:', domain, clientRes.status);
     return null;
   }
-  
-  const clients = await response.json();
-  const client = clients[0];
-  
+
+  const baseClients = await clientRes.json();
+  const client: any = baseClients?.[0];
   if (!client) {
-    console.log('[BOT-SSR] Client not found:', domain);
+    console.log('[BOT-SSR] Client not found for domain:', domain);
     return null;
   }
+
+  // Fetch related data in parallel by client_id
+  const clientId = client.id;
+  const headers = {
+    apikey: SUPABASE_ANON_KEY,
+    Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    'Content-Type': 'application/json',
+  } as const;
+
+  const [adminContentRes, settingsRes, itemsRes, categoriesRes, reviewsRes, faqsRes, teamRes] = await Promise.all([
+    fetch(`${SUPABASE_URL}/rest/v1/admin_content?client_id=eq.${clientId}`, { headers }),
+    fetch(`${SUPABASE_URL}/rest/v1/client_settings?client_id=eq.${clientId}`, { headers }),
+    fetch(`${SUPABASE_URL}/rest/v1/menu_items?client_id=eq.${clientId}`, { headers }),
+    fetch(`${SUPABASE_URL}/rest/v1/menu_categories?client_id=eq.${clientId}`, { headers }),
+    fetch(`${SUPABASE_URL}/rest/v1/reviews?client_id=eq.${clientId}`, { headers }),
+    fetch(`${SUPABASE_URL}/rest/v1/faqs?client_id=eq.${clientId}`, { headers }),
+    fetch(`${SUPABASE_URL}/rest/v1/team_members?client_id=eq.${clientId}`, { headers }),
+  ]);
+
+  const [adminContentArr, settingsArr, menuItems, menuCategories, reviews, faqs, teamMembers] = await Promise.all([
+    adminContentRes.ok ? adminContentRes.json() : Promise.resolve([]),
+    settingsRes.ok ? settingsRes.json() : Promise.resolve([]),
+    itemsRes.ok ? itemsRes.json() : Promise.resolve([]),
+    categoriesRes.ok ? categoriesRes.json() : Promise.resolve([]),
+    reviewsRes.ok ? reviewsRes.json() : Promise.resolve([]),
+    faqsRes.ok ? faqsRes.json() : Promise.resolve([]),
+    teamRes.ok ? teamRes.json() : Promise.resolve([]),
+  ]);
+
+  // Attach for downstream rendering (compatible with existing code)
+  client.admin_content = adminContentArr;
+  client.client_settings = settingsArr;
+  client.menu_items = menuItems;
+  client.menu_categories = menuCategories;
+  client.reviews = reviews;
+  client.faqs = faqs;
+  client.team_members = teamMembers;
   
   const adminContent = client.admin_content?.[0] || {};
   const settings = client.client_settings?.[0] || {};
