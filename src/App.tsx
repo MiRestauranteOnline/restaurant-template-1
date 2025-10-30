@@ -24,7 +24,6 @@ const ReviewsPage = lazy(() => import("./pages/ReviewsPage"));
 const ReviewsPageRustic = lazy(() => import("./pages/ReviewsPageRustic"));
 const ReviewsPageMinimalistic = lazy(() => import("./pages/ReviewsPageMinimalistic"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-const SitemapXML = lazy(() => import("./pages/SitemapXML"));
 const LibroReclamaciones = lazy(() => import("./pages/LibroReclamaciones"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
 const CookiesPolicyPage = lazy(() => import("./pages/CookiesPolicyPage"));
@@ -364,7 +363,6 @@ const ThemedApp = () => {
           <Routes>
             <Route path="/" element={<TemplateSwitcher />} />
             <Route path="/login" element={<ExternalRedirect to="https://mirestaurante.online/auth" />} />
-            <Route path="/sitemap.xml" element={<SitemapXML />} />
             <Route path="/menu" element={<TemplateAwareMenuPage />} />
             <Route path="/nosotros" element={<TemplateAwareAboutPage />} />
             <Route path="/contacto" element={<TemplateAwareContactPage />} />
