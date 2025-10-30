@@ -28,33 +28,45 @@ function extractDomain(request: Request): string | null {
 }
 
 // Generate bot-optimized HTML 
-async function generateBotHTML(domain: string, pathname: string): Promise<string | null> {
-  // Fetch client data by subdomain or custom_domain using REST API
+async function generateBotHTML(domain: string, pathname: string, host?: string): Promise<string | null> {
+  // Resolve client using multiple strategies to avoid false negatives
+  const headersCommon = {
+    apikey: SUPABASE_ANON_KEY,
+    Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    'Content-Type': 'application/json',
+  } as const;
+
+  const queries: string[] = [];
   const isCustomDomain = domain.includes('.');
-  const filter = isCustomDomain 
-    ? `custom_domain=eq.${encodeURIComponent(domain)}` 
-    : `subdomain=eq.${encodeURIComponent(domain)}`;
-
-  const clientRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/clients?select=*&${filter}&subscription_status=eq.active&or=(is_deactivated.is.null,is_deactivated.eq.false)&limit=1`,
-    {
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
-      },
-    }
+  // Primary lookup
+  queries.push(
+    isCustomDomain
+      ? `custom_domain=eq.${encodeURIComponent(domain)}`
+      : `subdomain=eq.${encodeURIComponent(domain)}`
   );
-
-  if (!clientRes.ok) {
-    console.log('[BOT-SSR] Failed to fetch client:', domain, clientRes.status);
-    return null;
+  // Secondary lookups using full host when available
+  if (host) {
+    queries.push(`custom_domain=eq.${encodeURIComponent(host)}`);
+    queries.push(`domain=eq.${encodeURIComponent(host)}`);
   }
 
-  const baseClients = await clientRes.json();
-  let client: any = baseClients?.[0];
+  let client: any = null;
+  for (const q of queries) {
+    const url = `${SUPABASE_URL}/rest/v1/clients?select=*&${q}&limit=1`;
+    const res = await fetch(url, { headers: headersCommon });
+    if (!res.ok) {
+      console.log('[BOT-SSR] Client fetch failed', { q, status: res.status });
+      continue;
+    }
+    const rows = await res.json();
+    if (rows && rows[0]) {
+      client = rows[0];
+      break;
+    }
+  }
+
   if (!client) {
-    console.log('[BOT-SSR] Client not found for domain:', domain);
+    console.log('[BOT-SSR] Client not found for domain/host:', { domain, host });
     return null;
   }
 
@@ -461,7 +473,7 @@ export const onRequest: PagesFunction = async (ctx) => {
       console.log('[BOT-SSR] Generating HTML for:', { domain, pathname, userAgent });
       
       try {
-        const html = await generateBotHTML(domain, pathname);
+        const html = await generateBotHTML(domain, pathname, host);
         
         if (html) {
           console.log('[BOT-SSR] Successfully generated HTML, length:', html.length);
@@ -477,60 +489,13 @@ export const onRequest: PagesFunction = async (ctx) => {
           });
         }
         
-        console.log('[BOT-SSR] generateBotHTML returned null, serving fallback');
-        // Fallback: serve minimal HTML for bots
-        const fallbackHtml = `<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Restaurante</title>
-  <meta name="description" content="Restaurante">
-  <meta name="robots" content="index, follow">
-</head>
-<body>
-  <main>
-    <h1>Bienvenido</h1>
-    <p>Página en construcción</p>
-  </main>
-</body>
-</html>`;
-        
-        return new Response(fallbackHtml, {
-          headers: {
-            'Content-Type': 'text/html; charset=utf-8',
-            'Cache-Control': 'no-store, private',
-            'X-SSR-Bot': 'true',
-            'X-SSR-Fallback': 'true',
-            'X-SSR-Domain': domain
-          }
-        });
+        console.log('[BOT-SSR] generateBotHTML returned null, falling back to SPA');
+        // If SSR couldn't be generated, fall through to SPA to avoid empty placeholder content
+        return await ctx.next();
       } catch (ssrError: any) {
         console.error('[BOT-SSR] Error during SSR generation:', ssrError);
-        // Return error HTML for bots
-        const errorHtml = `<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Error</title>
-</head>
-<body>
-  <main>
-    <h1>Error</h1>
-    <p>Error al generar contenido</p>
-  </main>
-</body>
-</html>`;
-        
-        return new Response(errorHtml, {
-          status: 500,
-          headers: {
-            'Content-Type': 'text/html; charset=utf-8',
-            'X-SSR-Error': 'true',
-            'X-SSR-Domain': domain
-          }
-        });
+        // Fall through to SPA on error
+        return await ctx.next();
       }
     }
 
