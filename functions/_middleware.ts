@@ -498,6 +498,7 @@ function buildHTML(pathname: string, domain: string, fast: any) {
   </footer>
 </body>
 </html>`;
+}
 
 export async function onRequest(context: any) {
   const { request } = context;
