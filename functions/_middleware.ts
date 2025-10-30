@@ -33,14 +33,14 @@ function extractDomain(request: Request): string | null {
 
 // Generate SEO-optimized HTML for bots
 async function generateBotHTML(domain: string, pathname: string): Promise<string | null> {
-  // Fetch client data by subdomain or custom_domain using REST API (no joins to avoid FK requirements)
-  const isCustomDomain = domain.includes('.');
+  // Fetch client data by subdomain or custom_domain using REST API
+  const isCustomDomain = !domain.includes('mirestaurante.online');
   const filter = isCustomDomain 
     ? `custom_domain=eq.${encodeURIComponent(domain)}` 
     : `subdomain=eq.${encodeURIComponent(domain)}`;
 
   const clientRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/clients?select=*&${filter}&limit=1`,
+    `${SUPABASE_URL}/rest/v1/clients?select=*&${filter}&subscription_status=eq.active&limit=1`,
     {
       headers: {
         apikey: SUPABASE_ANON_KEY,
@@ -51,18 +51,18 @@ async function generateBotHTML(domain: string, pathname: string): Promise<string
   );
 
   if (!clientRes.ok) {
-    console.log('[BOT-SSR] Failed to fetch client base data:', domain, clientRes.status);
+    console.log('[BOT-SSR] Failed to fetch client:', domain, clientRes.status);
     return null;
   }
 
   const baseClients = await clientRes.json();
   const client: any = baseClients?.[0];
   if (!client) {
-    console.log('[BOT-SSR] Client not found for domain:', domain);
+    console.log('[BOT-SSR] Client not found:', domain);
     return null;
   }
 
-  // Fetch related data in parallel by client_id
+  // Fetch related data - batch in 2 groups to avoid connection limits
   const clientId = client.id;
   const headers = {
     apikey: SUPABASE_ANON_KEY,
@@ -70,34 +70,50 @@ async function generateBotHTML(domain: string, pathname: string): Promise<string
     'Content-Type': 'application/json',
   } as const;
 
-  const [adminContentRes, settingsRes, itemsRes, categoriesRes, reviewsRes, faqsRes, teamRes] = await Promise.all([
-    fetch(`${SUPABASE_URL}/rest/v1/admin_content?client_id=eq.${clientId}`, { headers }),
-    fetch(`${SUPABASE_URL}/rest/v1/client_settings?client_id=eq.${clientId}`, { headers }),
-    fetch(`${SUPABASE_URL}/rest/v1/menu_items?client_id=eq.${clientId}`, { headers }),
-    fetch(`${SUPABASE_URL}/rest/v1/menu_categories?client_id=eq.${clientId}`, { headers }),
-    fetch(`${SUPABASE_URL}/rest/v1/reviews?client_id=eq.${clientId}`, { headers }),
-    fetch(`${SUPABASE_URL}/rest/v1/faqs?client_id=eq.${clientId}`, { headers }),
-    fetch(`${SUPABASE_URL}/rest/v1/team_members?client_id=eq.${clientId}`, { headers }),
-  ]);
+  try {
+    // First batch: Essential content data
+    const [adminContentRes, settingsRes, itemsRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/admin_content?client_id=eq.${clientId}&limit=1`, { headers }),
+      fetch(`${SUPABASE_URL}/rest/v1/client_settings?client_id=eq.${clientId}&limit=1`, { headers }),
+      fetch(`${SUPABASE_URL}/rest/v1/menu_items?client_id=eq.${clientId}&is_active=eq.true&limit=20`, { headers }),
+    ]);
 
-  const [adminContentArr, settingsArr, menuItems, menuCategories, reviews, faqs, teamMembers] = await Promise.all([
-    adminContentRes.ok ? adminContentRes.json() : Promise.resolve([]),
-    settingsRes.ok ? settingsRes.json() : Promise.resolve([]),
-    itemsRes.ok ? itemsRes.json() : Promise.resolve([]),
-    categoriesRes.ok ? categoriesRes.json() : Promise.resolve([]),
-    reviewsRes.ok ? reviewsRes.json() : Promise.resolve([]),
-    faqsRes.ok ? faqsRes.json() : Promise.resolve([]),
-    teamRes.ok ? teamRes.json() : Promise.resolve([]),
-  ]);
+    // Second batch: Secondary data
+    const [categoriesRes, reviewsRes, teamRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/menu_categories?client_id=eq.${clientId}&is_active=eq.true`, { headers }),
+      fetch(`${SUPABASE_URL}/rest/v1/reviews?client_id=eq.${clientId}&is_active=eq.true&limit=10`, { headers }),
+      fetch(`${SUPABASE_URL}/rest/v1/team_members?client_id=eq.${clientId}&is_active=eq.true`, { headers }),
+    ]);
 
-  // Attach for downstream rendering (compatible with existing code)
-  client.admin_content = adminContentArr;
-  client.client_settings = settingsArr;
-  client.menu_items = menuItems;
-  client.menu_categories = menuCategories;
-  client.reviews = reviews;
-  client.faqs = faqs;
-  client.team_members = teamMembers;
+    // Parse all responses
+    const [adminContentArr, settingsArr, menuItems, menuCategories, reviews, teamMembers] = await Promise.all([
+      adminContentRes.ok ? adminContentRes.json() : [],
+      settingsRes.ok ? settingsRes.json() : [],
+      itemsRes.ok ? itemsRes.json() : [],
+      categoriesRes.ok ? categoriesRes.json() : [],
+      reviewsRes.ok ? reviewsRes.json() : [],
+      teamRes.ok ? teamRes.json() : [],
+    ]);
+
+    // Attach for downstream rendering
+    client.admin_content = adminContentArr;
+    client.client_settings = settingsArr;
+    client.menu_items = menuItems;
+    client.menu_categories = menuCategories;
+    client.reviews = reviews;
+    client.faqs = []; // Skip FAQs for now to reduce requests
+    client.team_members = teamMembers;
+  } catch (err: any) {
+    console.log('[BOT-SSR] Error fetching related data:', err.message);
+    // Return basic client data even if related data fails
+    client.admin_content = [];
+    client.client_settings = [];
+    client.menu_items = [];
+    client.menu_categories = [];
+    client.reviews = [];
+    client.faqs = [];
+    client.team_members = [];
+  }
   
   const adminContent = client.admin_content?.[0] || {};
   const settings = client.client_settings?.[0] || {};
