@@ -454,19 +454,81 @@ export const onRequest: PagesFunction = async (ctx) => {
     if (shouldSSR) {
       const publicPages = ['/', '', '/menu', '/nosotros', '/about', '/contacto', '/contact', '/resenas', '/reviews'];
       if (!publicPages.includes(pathname)) {
+        console.log('[BOT-SSR] Skipping non-public page:', pathname);
         return await ctx.next();
       }
 
-      const html = await generateBotHTML(domain, pathname);
-      if (html) {
-        return new Response(html, {
+      console.log('[BOT-SSR] Generating HTML for:', { domain, pathname, userAgent });
+      
+      try {
+        const html = await generateBotHTML(domain, pathname);
+        
+        if (html) {
+          console.log('[BOT-SSR] Successfully generated HTML, length:', html.length);
+          return new Response(html, {
+            headers: {
+              'Content-Type': 'text/html; charset=utf-8',
+              'Cache-Control': 'no-store, private',
+              'X-Robots-Tag': 'index, follow',
+              'X-SSR-Bot': 'true',
+              'X-SSR-Domain': domain,
+              'Vary': 'User-Agent, Sec-Fetch-Dest'
+            }
+          });
+        }
+        
+        console.log('[BOT-SSR] generateBotHTML returned null, serving fallback');
+        // Fallback: serve minimal HTML for bots
+        const fallbackHtml = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurante</title>
+  <meta name="description" content="Restaurante">
+  <meta name="robots" content="index, follow">
+</head>
+<body>
+  <main>
+    <h1>Bienvenido</h1>
+    <p>Página en construcción</p>
+  </main>
+</body>
+</html>`;
+        
+        return new Response(fallbackHtml, {
           headers: {
             'Content-Type': 'text/html; charset=utf-8',
             'Cache-Control': 'no-store, private',
-            'X-Robots-Tag': 'index, follow',
             'X-SSR-Bot': 'true',
-            'X-SSR-Domain': domain,
-            'Vary': 'User-Agent, Sec-Fetch-Dest'
+            'X-SSR-Fallback': 'true',
+            'X-SSR-Domain': domain
+          }
+        });
+      } catch (ssrError: any) {
+        console.error('[BOT-SSR] Error during SSR generation:', ssrError);
+        // Return error HTML for bots
+        const errorHtml = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error</title>
+</head>
+<body>
+  <main>
+    <h1>Error</h1>
+    <p>Error al generar contenido</p>
+  </main>
+</body>
+</html>`;
+        
+        return new Response(errorHtml, {
+          status: 500,
+          headers: {
+            'Content-Type': 'text/html; charset=utf-8',
+            'X-SSR-Error': 'true',
+            'X-SSR-Domain': domain
           }
         });
       }
