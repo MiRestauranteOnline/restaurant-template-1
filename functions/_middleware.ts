@@ -37,70 +37,72 @@ async function generateBotHTML(domain: string, pathname: string, host?: string):
     'Content-Type': 'application/json',
   } as const;
 
-  // 1) Try prebuilt fast-load JSON first for absolute correctness with SPA
-  try {
-    const fastLoadUrl = `${SUPABASE_URL}/storage/v1/object/public/client-assets/fast-load/${domain}.json`;
-    const fastRes = await fetch(fastLoadUrl, { headers: { Accept: 'application/json' } });
-    if (fastRes.ok) {
-      const fast = await fastRes.json();
-      const restaurantName = fast.restaurant_name || 'Restaurante';
-      const titleFirst = fast.homepage_hero_title_first_line || '';
-      const titleSecond = fast.homepage_hero_title_second_line || restaurantName;
-      const description = fast.homepage_hero_description || `Bienvenido a ${restaurantName}. Experiencia gastronómica excepcional.`;
-      const baseUrl = host && host.includes('mirestaurante.online')
-        ? `https://${domain}.mirestaurante.online`
-        : `https://${host || domain}`;
+  // 1) Optionally use prebuilt fast-load JSON (disabled by default to ensure full content)
+  const enableFastLoadSSR = false;
+  if (enableFastLoadSSR) {
+    try {
+      const fastLoadUrl = `${SUPABASE_URL}/storage/v1/object/public/client-assets/fast-load/${domain}.json`;
+      const fastRes = await fetch(fastLoadUrl, { headers: { Accept: 'application/json' } });
+      if (fastRes.ok) {
+        const fast = await fastRes.json();
+        const restaurantName = fast.restaurant_name || 'Restaurante';
+        const titleFirst = fast.homepage_hero_title_first_line || '';
+        const titleSecond = fast.homepage_hero_title_second_line || restaurantName;
+        const description = fast.homepage_hero_description || `Bienvenido a ${restaurantName}. Experiencia gastronómica excepcional.`;
+        const baseUrl = host && host.includes('mirestaurante.online')
+          ? `https://${domain}.mirestaurante.online`
+          : `https://${host || domain}`;
 
-      // Build rich content sections
-      const aboutHtml = fast.about_hero_title ? `
-        <section>
-          <h2>${fast.about_hero_title}</h2>
-          <p>${fast.about_hero_description || ''}</p>
-        </section>` : '';
+        // Build rich content sections
+        const aboutHtml = fast.about_hero_title ? `
+          <section>
+            <h2>${fast.about_hero_title}</h2>
+            <p>${fast.about_hero_description || ''}</p>
+          </section>` : '';
 
-      const servicesHtml = fast.homepage_services_title ? `
-        <section>
-          <h2>${fast.homepage_services_title}</h2>
-          <p>${fast.homepage_services_description || ''}</p>
-        </section>` : '';
+        const servicesHtml = fast.homepage_services_title ? `
+          <section>
+            <h2>${fast.homepage_services_title}</h2>
+            <p>${fast.homepage_services_description || ''}</p>
+          </section>` : '';
 
-      const contactHtml = `
-        <section>
-          <h2>Contacto</h2>
-          ${fast.address ? `<p><strong>Dirección:</strong> ${fast.address}</p>` : ''}
-          ${fast.phone ? `<p><strong>Teléfono:</strong> ${fast.phone}</p>` : ''}
-          ${fast.email ? `<p><strong>Email:</strong> ${fast.email}</p>` : ''}
-          ${fast.opening_hours_text ? `<p><strong>Horario:</strong> ${fast.opening_hours_text}</p>` : ''}
-        </section>`;
+        const contactHtml = `
+          <section>
+            <h2>Contacto</h2>
+            ${fast.address ? `<p><strong>Dirección:</strong> ${fast.address}</p>` : ''}
+            ${fast.phone ? `<p><strong>Teléfono:</strong> ${fast.phone}</p>` : ''}
+            ${fast.email ? `<p><strong>Email:</strong> ${fast.email}</p>` : ''}
+            ${fast.opening_hours_text ? `<p><strong>Horario:</strong> ${fast.opening_hours_text}</p>` : ''}
+          </section>`;
 
-      const html = `
+        const html = `
 <!DOCTYPE html>
-<html lang="es">
+<html lang=\"es\">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset=\"UTF-8\">
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
   <title>${restaurantName} - ${titleFirst || 'Restaurante'}</title>
-  <meta name="description" content="${description}">
-  <link rel="canonical" href="${baseUrl}${pathname}">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="${restaurantName}">
-  <meta property="og:description" content="${description}">
-  <meta property="og:type" content="website">
+  <meta name=\"description\" content=\"${description}\">
+  <link rel=\"canonical\" href=\"${baseUrl}${pathname}\">
+  <meta name=\"robots\" content=\"index, follow\">
+  <meta property=\"og:title\" content=\"${restaurantName}\">
+  <meta property=\"og:description\" content=\"${description}\">
+  <meta property=\"og:type\" content=\"website\">
 </head>
 <body>
   <header>
     <h1>${restaurantName}</h1>
     <nav>
-      <a href="${baseUrl}/">Inicio</a>
-      <a href="${baseUrl}/menu">Menú</a>
-      <a href="${baseUrl}/about">Nosotros</a>
-      <a href="${baseUrl}/contact">Contacto</a>
+      <a href=\"${baseUrl}/\">Inicio</a>
+      <a href=\"${baseUrl}/menu\">Menú</a>
+      <a href=\"${baseUrl}/about\">Nosotros</a>
+      <a href=\"${baseUrl}/contact\">Contacto</a>
     </nav>
   </header>
   <main>
     <section>
       <h2>${titleFirst} ${titleSecond}</h2>
-      ${description ? `<p>${description}</p>` : ''}
+      ${description ? `\u003cp\u003e${description}\u003c/p\u003e` : ''}
     </section>
     ${aboutHtml}
     ${servicesHtml}
@@ -113,10 +115,11 @@ async function generateBotHTML(domain: string, pathname: string, host?: string):
   </footer>
 </body>
 </html>`;
-      return html.trim();
+        return html.trim();
+      }
+    } catch (e) {
+      console.log('[BOT-SSR] Fast-load fetch failed, falling back to live queries');
     }
-  } catch (e) {
-    console.log('[BOT-SSR] Fast-load fetch failed, falling back to live queries');
   }
 
   // 2) Fallback to live DB lookups (subdomain vs custom_domain)
@@ -469,9 +472,16 @@ async function generateBotHTML(domain: string, pathname: string, host?: string):
       
     default:
       return null;
-  }
-  
-  // Build full HTML document with proper SEO structure
+    }
+    
+    // Apply page metadata overrides if available
+    const meta = (pageMetadata || []).find((m: any) => m.page_type === pageType);
+    if (meta) {
+      pageTitle = meta.meta_title || pageTitle;
+      pageDescription = meta.meta_description || pageDescription;
+    }
+    
+    // Build full HTML document with proper SEO structure
   const html = `
 <!DOCTYPE html>
 <html lang="es">
