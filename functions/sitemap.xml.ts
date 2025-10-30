@@ -9,12 +9,15 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   
   // Extract host to identify tenant
   const host = request.headers.get('host') || '';
-  const tenantDomain = host.replace(/^www\./, ''); // Remove www prefix
+  const fullDomain = host.replace(/^www\./, ''); // Remove www prefix
+  
+  // Extract subdomain (part before first dot) for subdomain matching
+  const subdomain = fullDomain.split('.')[0];
   
   try {
-    // Fetch client data by domain or subdomain
+    // Fetch client data by subdomain or custom domain
     const clientResponse = await fetch(
-      `${SUPABASE_URL}/rest/v1/clients?select=id,subdomain,custom_domain,restaurant_name&or=(subdomain.eq.${encodeURIComponent(tenantDomain)},custom_domain.eq.${encodeURIComponent(tenantDomain)})&limit=1`,
+      `${SUPABASE_URL}/rest/v1/clients?select=id,subdomain,custom_domain,restaurant_name&or=(subdomain.eq.${encodeURIComponent(subdomain)},custom_domain.eq.${encodeURIComponent(fullDomain)})&limit=1`,
       {
         headers: {
           'apikey': SUPABASE_ANON_KEY,
@@ -137,7 +140,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       headers: {
         'Content-Type': 'application/xml; charset=utf-8',
         'Cache-Control': 'public, max-age=1800, s-maxage=1800', // 30 min cache
-        'X-Tenant-Domain': tenantDomain,
+        'X-Tenant-Domain': fullDomain,
       },
     });
     
