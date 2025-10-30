@@ -1,629 +1,322 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.58.0';
+
 const SUPABASE_URL = 'https://ptzcetvcccnojdbzzlyt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emNldHZjY2Nub2pkYnp6bHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjExNzksImV4cCI6MjA3NDMzNzE3OX0.2HS2wP06xe8PryWW_VdzTu7TDYg303BjwmzyA_5Ang8';
 
-// Bot detection - only SSR for real crawlers/tools
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Bot user agents that need SSR
+const BOT_PATTERNS = [
+  /googlebot/i,
+  /bingbot/i,
+  /slurp/i,
+  /duckduckbot/i,
+  /baiduspider/i,
+  /yandexbot/i,
+  /facebookexternalhit/i,
+  /twitterbot/i,
+  /rogerbot/i,
+  /linkedinbot/i,
+  /embedly/i,
+  /quora link preview/i,
+  /showyoubot/i,
+  /outbrain/i,
+  /pinterest/i,
+  /slackbot/i,
+  /vkShare/i,
+  /W3C_Validator/i,
+  /redditbot/i,
+  /applebot/i,
+  /whatsapp/i,
+  /flipboard/i,
+  /tumblr/i,
+  /bitlybot/i,
+  /skypeuripreview/i,
+  /nuzzel/i,
+  /discordbot/i,
+  /qwantify/i,
+  /pinterestbot/i,
+  /lighthouse/i,
+  /chrome-lighthouse/i,
+  /telegrambot/i,
+];
+
 function isBot(userAgent: string): boolean {
-  if (!userAgent) return false;
-  const botPatterns = [
-    'googlebot','bingbot','slurp','duckduckbot','baiduspider','yandexbot','facebookexternalhit','twitterbot','whatsapp','linkedinbot','slackbot','telegrambot','applebot','ia_archiver','crawler','spider','bot','crawl','lighthouse','pagespeed','gtmetrix','semrush','ahrefs','moz'
-  ];
-  const ua = userAgent.toLowerCase();
-  return botPatterns.some((b) => ua.includes(b));
+  return BOT_PATTERNS.some(pattern => pattern.test(userAgent));
 }
 
-// Extract domain from request
-function extractDomain(request: Request): string | null {
-  const url = new URL(request.url);
-  const host = request.headers.get('x-forwarded-host') || url.hostname;
-  
-  // Check if custom domain or subdomain
-  if (host.includes('mirestaurante.online')) {
-    // Extract subdomain: demo-2.mirestaurante.online -> demo-2
-    const subdomain = host.split('.')[0];
-    return subdomain;
-  }
-  
-  // Custom domain
-  return host;
-}
-
-// Generate bot-optimized HTML 
-async function generateBotHTML(domain: string, pathname: string, host?: string): Promise<string | null> {
-  console.log('[BOT-SSR] Starting client lookup', { domain, host, pathname });
-  
-  const headersCommon = {
-    apikey: SUPABASE_ANON_KEY,
-    Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-    'Content-Type': 'application/json',
-  } as const;
-
-  // 1) Optionally prefetch prebuilt fast-load JSON as fallback
-  const enableFastLoadSSR = true;
-  let fallbackHtml: string | null = null;
-  if (enableFastLoadSSR) {
-    try {
-      const fastLoadUrl = `${SUPABASE_URL}/storage/v1/object/public/client-assets/fast-load/${domain}.json`;
-      const fastRes = await fetch(fastLoadUrl, { headers: { Accept: 'application/json' } });
-      if (fastRes.ok) {
-        const fast = await fastRes.json();
-        const restaurantName = fast.restaurant_name || 'Restaurante';
-        const titleFirst = fast.homepage_hero_title_first_line || '';
-        const titleSecond = fast.homepage_hero_title_second_line || restaurantName;
-        const description = fast.homepage_hero_description || `Bienvenido a ${restaurantName}. Experiencia gastronómica excepcional.`;
-        const baseUrl = host && host.includes('mirestaurante.online')
-          ? `https://${domain}.mirestaurante.online`
-          : `https://${host || domain}`;
-
-        // Build rich content sections (fallback)
-        const aboutHtml = fast.about_hero_title ? `
-          <section>
-            <h2>${fast.about_hero_title}</h2>
-            <p>${fast.about_hero_description || ''}</p>
-          </section>` : '';
-
-        const servicesHtml = fast.homepage_services_title ? `
-          <section>
-            <h2>${fast.homepage_services_title}</h2>
-            <p>${fast.homepage_services_description || ''}</p>
-          </section>` : '';
-
-        const contactHtml = `
-          <section>
-            <h2>Contacto</h2>
-            ${fast.address ? `<p><strong>Dirección:</strong> ${fast.address}</p>` : ''}
-            ${fast.phone ? `<p><strong>Teléfono:</strong> ${fast.phone}</p>` : ''}
-            ${fast.email ? `<p><strong>Email:</strong> ${fast.email}</p>` : ''}
-            ${fast.opening_hours_text ? `<p><strong>Horario:</strong> ${fast.opening_hours_text}</p>` : ''}
-          </section>`;
-
-        const html = `
-<!DOCTYPE html>
-<html lang=\"es\">
-<head>
-  <meta charset=\"UTF-8\">
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
-  <title>${restaurantName} - ${titleFirst || 'Restaurante'}</title>
-  <meta name=\"description\" content=\"${description}\">
-  <link rel=\"canonical\" href=\"${baseUrl}${pathname}\">
-  <meta name=\"robots\" content=\"index, follow\">
-  <meta property=\"og:title\" content=\"${restaurantName}\">
-  <meta property=\"og:description\" content=\"${description}\">
-  <meta property=\"og:type\" content=\"website\">
-</head>
-<body>
-  <header>
-    <h1>${restaurantName}</h1>
-    <nav>
-      <a href=\"${baseUrl}/\">Inicio</a>
-      <a href=\"${baseUrl}/menu\">Menú</a>
-      <a href=\"${baseUrl}/nosotros\">Nosotros</a>
-      <a href=\"${baseUrl}/contacto\">Contacto</a>
-    </nav>
-  </header>
-  <main>
-    <section>
-      <h2>${titleFirst} ${titleSecond}</h2>
-      ${description ? `\u003cp\u003e${description}\u003c/p\u003e` : ''}
-    </section>
-    ${aboutHtml}
-    ${servicesHtml}
-    ${contactHtml}
-  </main>
-  <footer>
-    <p>© ${new Date().getFullYear()} ${restaurantName}. Todos los derechos reservados.</p>
-    ${fast.address ? `<p>${fast.address}</p>` : ''}
-    ${fast.phone ? `<p>Tel: ${fast.phone}</p>` : ''}
-  </footer>
-</body>
-</html>`;
-        fallbackHtml = html.trim();
-      }
-    } catch (e) {
-      console.log('[BOT-SSR] Fast-load fetch failed, falling back to live queries');
-    }
-  }
-
-  // 2) Fallback to live DB lookups (subdomain vs custom_domain)
-  // Determine if this is a custom domain or subdomain
-  const isCustomDomain = domain.includes('.');
-  
-  let client: any = null;
-  
-  if (isCustomDomain) {
-    // For custom domains, lookup by custom_domain field
-    console.log('[BOT-SSR] Looking up custom domain:', domain);
-    const url = `${SUPABASE_URL}/rest/v1/clients?select=*&custom_domain=eq.${encodeURIComponent(domain)}&limit=1`;
-    const res = await fetch(url, { headers: headersCommon });
-    if (res.ok) {
-      const rows = await res.json();
-      client = rows?.[0];
-      console.log('[BOT-SSR] Custom domain result:', client ? `Found: ${client.restaurant_name}` : 'Not found');
-    }
-  } else {
-    // For subdomains, lookup by subdomain field
-    console.log('[BOT-SSR] Looking up subdomain:', domain);
-    const url = `${SUPABASE_URL}/rest/v1/clients?select=*&subdomain=eq.${encodeURIComponent(domain)}&limit=1`;
-    const res = await fetch(url, { headers: headersCommon });
-    if (res.ok) {
-      const rows = await res.json();
-      client = rows?.[0];
-      console.log('[BOT-SSR] Subdomain result:', client ? `Found: ${client.restaurant_name} (subdomain: ${client.subdomain})` : 'Not found');
-    }
-  }
-
-
-  if (!client) {
-    console.log('[BOT-SSR] Client not found for:', { domain, host });
-    return fallbackHtml;
-  }
-
-  console.log('[BOT-SSR] Using client:', {
-    id: client.id,
-    name: client.restaurant_name,
-    subdomain: client.subdomain,
-    custom_domain: client.custom_domain
-  });
-
-  // Fetch related data - batch in 2 groups to avoid connection limits
-  const clientId = client.id;
-  const headers = {
-    apikey: SUPABASE_ANON_KEY,
-    Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-    'Content-Type': 'application/json',
-  } as const;
-
+async function generateBotHTML(domain: string, pathname: string): Promise<string | null> {
   try {
-    // First batch: Essential content data
-    const [adminContentRes, settingsRes, itemsRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/admin_content?client_id=eq.${clientId}&limit=1`, { headers }),
-      fetch(`${SUPABASE_URL}/rest/v1/client_settings?client_id=eq.${clientId}&limit=1`, { headers }),
-      fetch(`${SUPABASE_URL}/rest/v1/menu_items?client_id=eq.${clientId}&is_active=eq.true&limit=20`, { headers }),
-    ]);
+    // Fetch fast-load data
+    const { data: fastLoadData } = await supabase.functions.invoke('prebuild-client-data', {
+      body: { domain }
+    });
 
-    // Second batch: Secondary data
-    const [categoriesRes, reviewsRes, teamRes, pageMetaRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/menu_categories?client_id=eq.${clientId}&is_active=eq.true`, { headers }),
-      fetch(`${SUPABASE_URL}/rest/v1/reviews?client_id=eq.${clientId}&is_active=eq.true&limit=10`, { headers }),
-      fetch(`${SUPABASE_URL}/rest/v1/team_members?client_id=eq.${clientId}&is_active=eq.true`, { headers }),
-      fetch(`${SUPABASE_URL}/rest/v1/page_metadata?client_id=eq.${clientId}`, { headers }),
-    ]);
+    if (!fastLoadData?.data) {
+      console.log('No fast-load data found for domain:', domain);
+      return null;
+    }
 
-    // Parse all responses
-    const [adminContentArr, settingsArr, menuItems, menuCategories, reviews, teamMembers, pageMetadata] = await Promise.all([
-      adminContentRes.ok ? adminContentRes.json() : [],
-      settingsRes.ok ? settingsRes.json() : [],
-      itemsRes.ok ? itemsRes.json() : [],
-      categoriesRes.ok ? categoriesRes.json() : [],
-      reviewsRes.ok ? reviewsRes.json() : [],
-      teamRes.ok ? teamRes.json() : [],
-      pageMetaRes.ok ? pageMetaRes.json() : [],
-    ]);
+    const {
+      client,
+      adminContent,
+      menuItems,
+      menuCategories,
+      clientSettings,
+      reviews,
+      faqs,
+      teamMembers,
+      pageMetadata
+    } = fastLoadData.data;
 
-    // Attach for downstream rendering
-    client.admin_content = adminContentArr;
-    client.client_settings = settingsArr;
-    client.menu_items = menuItems;
-    client.menu_categories = menuCategories;
-    client.reviews = reviews;
-    client.faqs = []; // Skip FAQs for now to reduce requests
-    client.team_members = teamMembers;
-  } catch (err: any) {
-    console.log('[BOT-SSR] Error fetching related data:', err.message);
-    // Return basic client data even if related data fails
-    client.admin_content = [];
-    client.client_settings = [];
-    client.menu_items = [];
-    client.menu_categories = [];
-    client.reviews = [];
-    client.faqs = [];
-    client.team_members = [];
-  }
-  
-  const adminContent = client.admin_content?.[0] || {};
-  const settings = client.client_settings?.[0] || {};
-  
-  // Determine page type
-  let pageTitle = '';
-  let pageDescription = '';
-  let pageKeywords: string[] = [];
-  let pageContent = '';
-  let pageType: 'home' | 'menu' | 'about' | 'contact' | 'reviews' = 'home';
-  
-  const restaurantName = client.restaurant_name || 'Restaurant';
-  const baseUrl = client.custom_domain 
-    ? `https://${client.custom_domain}` 
-    : `https://${client.subdomain}.mirestaurante.online`;
-  
-  // Build opening hours text
-  const openingHoursText = client.opening_hours 
-    ? Object.entries(client.opening_hours)
-        .filter(([_, hours]) => !!hours)
-        .map(([day, hours]) => {
-          if (typeof hours === 'object' && hours !== null) {
-            const open = (hours as any).open || '';
-            const close = (hours as any).close || '';
-            const closed = (hours as any).closed === true;
-            return `${day}: ${closed ? 'Cerrado' : `${open}-${close}`}`;
-          }
-          return `${day}: ${hours}`;
-        })
-        .join(', ')
-    : '';
-  
-  switch (pathname) {
-    case '/':
-    case '':
-      pageTitle = `${restaurantName} - ${adminContent.homepage_hero_title || 'Restaurante'}`;
-      pageDescription = adminContent.homepage_hero_description || `Bienvenido a ${restaurantName}. Experiencia gastronómica excepcional.`;
-      pageKeywords = [restaurantName, 'restaurante', 'comida', 'gastronomía', client.address || ''];
-      pageType = 'home';
-      
-      // Homepage content with proper structure
-      pageContent = `
+    // Get page-specific metadata
+    const currentPageMeta = pageMetadata?.find((meta: any) => {
+      const metaPath = meta.page_type === 'home' ? '/' : `/${meta.page_type}`;
+      return metaPath === pathname;
+    });
+
+    const pageTitle = currentPageMeta?.title || client?.restaurant_name || 'Restaurant';
+    const pageDescription = currentPageMeta?.description || client?.description || '';
+
+    // Generate rich HTML content
+    let contentHTML = '';
+
+    // Homepage content
+    if (pathname === '/' || pathname === '') {
+      const heroTitle = adminContent?.hero_title || client?.restaurant_name || '';
+      const heroSubtitle = adminContent?.hero_subtitle || '';
+      const aboutTitle = adminContent?.about_title || 'About Us';
+      const aboutText = adminContent?.about_text || '';
+
+      contentHTML = `
         <main>
           <section>
-            <h1>${adminContent.homepage_hero_title_first_line || ''} ${adminContent.homepage_hero_title_second_line || restaurantName}</h1>
-            <p>${adminContent.homepage_hero_description || ''}</p>
+            <h1>${heroTitle}</h1>
+            ${heroSubtitle ? `<p>${heroSubtitle}</p>` : ''}
           </section>
           
-          ${adminContent.homepage_about_section_visible !== false ? `
+          ${aboutText ? `
           <section>
-            <h2>${adminContent.homepage_about_section_title || 'Nuestra Historia'}</h2>
-            <p>${adminContent.homepage_about_section_description || adminContent.about_story || ''}</p>
+            <h2>${aboutTitle}</h2>
+            <p>${aboutText}</p>
           </section>
           ` : ''}
           
-          ${adminContent.homepage_menu_section_visible !== false && client.menu_items?.length > 0 ? `
+          ${menuItems?.length > 0 ? `
           <section>
-            <h2>${adminContent.homepage_menu_section_title || 'Nuestro Menú'}</h2>
-            <p>${adminContent.homepage_menu_section_description || ''}</p>
-            ${client.menu_items.slice(0, 12).map((item: any) => `
+            <h2>Our Menu</h2>
+            ${menuCategories?.map((cat: any) => {
+              const catItems = menuItems.filter((item: any) => item.category_id === cat.id);
+              return `
+                <div>
+                  <h3>${cat.name}</h3>
+                  ${catItems.map((item: any) => `
+                    <article>
+                      <h4>${item.name}</h4>
+                      ${item.description ? `<p>${item.description}</p>` : ''}
+                      ${item.price ? `<p>$${item.price}</p>` : ''}
+                      ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" />` : ''}
+                    </article>
+                  `).join('')}
+                </div>
+              `;
+            }).join('')}
+          </section>
+          ` : ''}
+          
+          ${reviews?.length > 0 ? `
+          <section>
+            <h2>Customer Reviews</h2>
+            ${reviews.slice(0, 3).map((review: any) => `
               <article>
-                <h3>${item.name}</h3>
-                <p>${item.description || ''}</p>
-                <p><strong>${item.price || ''}</strong></p>
-                ${item.image_url ? `<img src="${item.image_url}" alt="${item.name} - ${restaurantName}" loading="lazy" />` : ''}
+                <p>"${review.review_text}"</p>
+                <p><strong>${review.customer_name}</strong> - ${review.rating} stars</p>
               </article>
             `).join('')}
-          </section>
-          ` : ''}
-          
-          ${adminContent.homepage_services_section_visible !== false ? `
-          <section>
-            <h2>${adminContent.homepage_services_section_title || 'Nuestros Servicios'}</h2>
-            <p>${adminContent.homepage_services_section_description || ''}</p>
-            <ul>
-              ${adminContent.services_card1_title ? `<li><strong>${adminContent.services_card1_title}:</strong> ${adminContent.services_card1_description || ''}</li>` : ''}
-              ${adminContent.services_card2_title ? `<li><strong>${adminContent.services_card2_title}:</strong> ${adminContent.services_card2_description || ''}</li>` : ''}
-              ${adminContent.services_card3_title ? `<li><strong>${adminContent.services_card3_title}:</strong> ${adminContent.services_card3_description || ''}</li>` : ''}
-            </ul>
-          </section>
-          ` : ''}
-          
-          ${adminContent.homepage_reviews_section_visible !== false && client.reviews?.length > 0 ? `
-          <section>
-            <h2>${adminContent.reviews_section_title_first_line || ''} ${adminContent.reviews_section_title_second_line || 'Testimonios'}</h2>
-            <p>${adminContent.reviews_section_description || ''}</p>
-            ${client.reviews.slice(0, 6).map((review: any) => `
-              <article>
-                <p><strong>${review.customer_name}</strong></p>
-                <p>${review.review_text}</p>
-                <p>Calificación: ${review.rating}/5</p>
-              </article>
-            `).join('')}
-          </section>
-          ` : ''}
-          
-          ${adminContent.homepage_contact_section_visible !== false ? `
-          <section>
-            <h2>${adminContent.homepage_contact_section_title || 'Contacto'}</h2>
-            <p>${adminContent.homepage_contact_section_description || ''}</p>
-            <address>
-              ${client.address ? `<p><strong>Dirección:</strong> ${client.address}</p>` : ''}
-              ${client.phone ? `<p><strong>Teléfono:</strong> <a href="tel:${client.phone_country_code || '+51'}${client.phone}">${client.phone_country_code || '+51'} ${client.phone}</a></p>` : ''}
-              ${client.email ? `<p><strong>Email:</strong> <a href="mailto:${client.email}">${client.email}</a></p>` : ''}
-              ${openingHoursText ? `<p><strong>Horario:</strong> ${openingHoursText}</p>` : ''}
-            </address>
           </section>
           ` : ''}
         </main>
       `;
-      break;
-      
-    case '/menu':
-      pageTitle = `Menú - ${restaurantName}`;
-      pageDescription = adminContent.menu_page_hero_description || `Explora el menú completo de ${restaurantName}. Platos únicos y especialidades.`;
-      pageKeywords = [restaurantName, 'menú', 'carta', 'platos', 'comida'];
-      
-      pageContent = `
+    }
+
+    // Menu page
+    if (pathname === '/menu' || pathname === '/carta') {
+      contentHTML = `
         <main>
-          <h1>${adminContent.menu_page_hero_title_first_line || ''} ${adminContent.menu_page_hero_title_second_line || 'Nuestro Menú'}</h1>
-          <p>${adminContent.menu_page_hero_description || ''}</p>
-          
-          ${client.menu_categories?.map((category: any) => {
-            const categoryItems = client.menu_items?.filter((item: any) => item.category_id === category.id) || [];
+          <h1>Our Menu</h1>
+          ${menuCategories?.map((cat: any) => {
+            const catItems = menuItems.filter((item: any) => item.category_id === cat.id);
             return `
               <section>
-                <h2>${category.name}</h2>
-                ${category.description ? `<p>${category.description}</p>` : ''}
-                ${categoryItems.map((item: any) => `
+                <h2>${cat.name}</h2>
+                ${catItems.map((item: any) => `
                   <article>
                     <h3>${item.name}</h3>
-                    <p>${item.description || ''}</p>
-                    <p><strong>${item.price || ''}</strong></p>
-                    ${item.image_url ? `<img src="${item.image_url}" alt="${item.name} - ${restaurantName}" loading="lazy" />` : ''}
+                    ${item.description ? `<p>${item.description}</p>` : ''}
+                    ${item.price ? `<p>Price: $${item.price}</p>` : ''}
+                    ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" />` : ''}
                   </article>
                 `).join('')}
               </section>
             `;
-          }).join('') || ''}
+          }).join('')}
         </main>
       `;
-      break;
-      
-    case '/nosotros':
-    case '/about':
-      pageTitle = `Nosotros - ${restaurantName}`;
-      pageDescription = adminContent.about_page_hero_description || `Conoce la historia de ${restaurantName}. Nuestra pasión por la gastronomía.`;
-      pageKeywords = [restaurantName, 'nosotros', 'historia', 'equipo', 'chef'];
-      
-      pageContent = `
+    }
+
+    // About page
+    if (pathname === '/about' || pathname === '/nosotros') {
+      const aboutTitle = adminContent?.about_title || 'About Us';
+      const aboutText = adminContent?.about_text || '';
+
+      contentHTML = `
         <main>
-          <h1>${adminContent.about_page_hero_title_first_line || ''} ${adminContent.about_page_hero_title_second_line || 'Nuestra Historia'}</h1>
-          <p>${adminContent.about_page_hero_description || ''}</p>
+          <h1>${aboutTitle}</h1>
+          ${aboutText ? `<p>${aboutText}</p>` : ''}
           
+          ${teamMembers?.length > 0 ? `
           <section>
-            <h2>Nuestra Historia</h2>
-            <p>${adminContent.about_story || ''}</p>
-          </section>
-          
-          <section>
-            <h2>Nuestra Misión</h2>
-            <p>${adminContent.about_mission || ''}</p>
-          </section>
-          
-          ${adminContent.about_chef_info ? `
-          <section>
-            <h2>Nuestro Chef</h2>
-            <p>${adminContent.about_chef_info}</p>
-          </section>
-          ` : ''}
-          
-          ${client.team_members?.length > 0 ? `
-          <section>
-            <h2>${adminContent.about_team_section_title_first_line || ''} ${adminContent.about_team_section_title_second_line || 'Nuestro Equipo'}</h2>
-            <p>${adminContent.about_team_section_description || ''}</p>
-            ${client.team_members.map((member: any) => `
+            <h2>Our Team</h2>
+            ${teamMembers.map((member: any) => `
               <article>
                 <h3>${member.name}</h3>
-                <p><strong>${member.role}</strong></p>
-                <p>${member.bio || ''}</p>
-                ${member.image_url ? `<img src="${member.image_url}" alt="${member.name} - ${member.role}" loading="lazy" />` : ''}
+                ${member.role ? `<p><strong>${member.role}</strong></p>` : ''}
+                ${member.bio ? `<p>${member.bio}</p>` : ''}
+                ${member.image_url ? `<img src="${member.image_url}" alt="${member.name}" />` : ''}
               </article>
             `).join('')}
           </section>
           ` : ''}
         </main>
       `;
-      break;
-      
-    case '/contacto':
-    case '/contact':
-      pageTitle = `Contacto - ${restaurantName}`;
-      pageDescription = `Contacta con ${restaurantName}. Reservas, consultas y ubicación.`;
-      pageKeywords = [restaurantName, 'contacto', 'reservas', 'ubicación', 'teléfono'];
-      
-      pageContent = `
+    }
+
+    // Contact page
+    if (pathname === '/contact' || pathname === '/contacto') {
+      contentHTML = `
         <main>
-          <h1>${adminContent.contact_page_hero_title_first_line || ''} ${adminContent.contact_page_hero_title_second_line || 'Contáctanos'}</h1>
-          <p>${adminContent.contact_page_hero_description || ''}</p>
-          
+          <h1>Contact Us</h1>
+          ${client?.address ? `
           <section>
-            <h2>Información de Contacto</h2>
-            <address>
-              ${client.address ? `<p><strong>Dirección:</strong> ${client.address}</p>` : ''}
-              ${client.phone ? `<p><strong>Teléfono:</strong> <a href="tel:${client.phone_country_code || '+51'}${client.phone}">${client.phone_country_code || '+51'} ${client.phone}</a></p>` : ''}
-              ${client.email ? `<p><strong>Email:</strong> <a href="mailto:${client.email}">${client.email}</a></p>` : ''}
-              ${client.whatsapp ? `<p><strong>WhatsApp:</strong> <a href="https://wa.me/${client.whatsapp_country_code || '+51'}${client.whatsapp}">Enviar mensaje</a></p>` : ''}
-            </address>
-          </section>
-          
-          ${openingHoursText ? `
-          <section>
-            <h2>Horario de Atención</h2>
-            <p>${openingHoursText}</p>
+            <h2>Location</h2>
+            <p>${client.address}</p>
           </section>
           ` : ''}
           
-          ${adminContent.contact_reservation_title ? `
+          ${client?.phone ? `
           <section>
-            <h2>${adminContent.contact_reservation_title}</h2>
-            <p>${adminContent.contact_reservation_description || ''}</p>
+            <h2>Phone</h2>
+            <p>${client.phone}</p>
+          </section>
+          ` : ''}
+          
+          ${client?.email ? `
+          <section>
+            <h2>Email</h2>
+            <p>${client.email}</p>
           </section>
           ` : ''}
         </main>
       `;
-      break;
-      
-    case '/resenas':
-    case '/reviews':
-      pageTitle = `Testimonios - ${restaurantName}`;
-      pageDescription = `Lee las opiniones de nuestros clientes sobre ${restaurantName}. Testimonios reales.`;
-      pageKeywords = [restaurantName, 'testimonios', 'opiniones', 'reseñas', 'clientes'];
-      
-      pageContent = `
+    }
+
+    // Reviews page
+    if (pathname === '/reviews' || pathname === '/resenas') {
+      contentHTML = `
         <main>
-          <h1>${adminContent.reviews_page_hero_title_first_line || ''} ${adminContent.reviews_page_hero_title_second_line || 'Testimonios'}</h1>
-          <p>${adminContent.reviews_page_hero_description || ''}</p>
-          
-          <section>
-            <h2>Lo que dicen nuestros clientes</h2>
-            ${client.reviews?.map((review: any) => `
-              <article>
-                <h3>${review.customer_name}</h3>
-                <p>${review.review_text}</p>
-                <p><strong>Calificación:</strong> ${review.rating}/5 estrellas</p>
-                ${review.created_at ? `<p><time>${new Date(review.created_at).toLocaleDateString('es')}</time></p>` : ''}
-              </article>
-            `).join('') || '<p>Aún no hay reseñas disponibles.</p>'}
-          </section>
+          <h1>Customer Reviews</h1>
+          ${reviews?.map((review: any) => `
+            <article>
+              <h2>${review.customer_name}</h2>
+              <p><strong>Rating:</strong> ${review.rating} / 5</p>
+              <p>"${review.review_text}"</p>
+              ${review.date ? `<p><small>${new Date(review.date).toLocaleDateString()}</small></p>` : ''}
+            </article>
+          `).join('')}
         </main>
       `;
-      break;
-      
-    default:
-      return null;
     }
-    
-    // Apply page metadata overrides if available
-    const meta = (pageMetadata || []).find((m: any) => m.page_type === pageType);
-    if (meta) {
-      pageTitle = meta.meta_title || pageTitle;
-      pageDescription = meta.meta_description || pageDescription;
-    }
-    
-    // Build full HTML document with proper SEO structure
-  const html = `
-<!DOCTYPE html>
+
+    // Build complete HTML
+    const html = `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${pageTitle}</title>
   <meta name="description" content="${pageDescription}">
-  <meta name="keywords" content="${pageKeywords.join(', ')}">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="${baseUrl}${pathname}">
-  
-  <!-- Open Graph -->
   <meta property="og:title" content="${pageTitle}">
   <meta property="og:description" content="${pageDescription}">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="${baseUrl}${pathname}">
-  ${adminContent.homepage_hero_background_url ? `<meta property="og:image" content="${adminContent.homepage_hero_background_url}">` : ''}
-  
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${pageTitle}">
   <meta name="twitter:description" content="${pageDescription}">
-  
-  <!-- Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Restaurant",
-    "name": "${restaurantName}",
-    "description": "${pageDescription}",
-    "url": "${baseUrl}",
-    ${client.address ? `"address": {
-      "@type": "PostalAddress",
-      "streetAddress": "${client.address}",
-      "addressCountry": "${client.country_code || 'PE'}"
-    },` : ''}
-    ${client.phone ? `"telephone": "${client.phone_country_code || '+51'}${client.phone}",` : ''}
-    ${client.email ? `"email": "${client.email}",` : ''}
-    "servesCuisine": "${settings.cuisine_type || 'International'}",
-    "priceRange": "${settings.price_range || '$$'}"
-  }
-  </script>
+  ${clientSettings?.favicon_url ? `<link rel="icon" type="image/x-icon" href="${clientSettings.favicon_url}">` : ''}
 </head>
 <body>
-  <div id="root">${pageContent}</div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/menu">Menu</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+    ${reviews?.length > 0 ? '<a href="/reviews">Reviews</a>' : ''}
+  </nav>
+  
+  ${contentHTML}
   
   <footer>
-    <p>&copy; ${new Date().getFullYear()} ${restaurantName}. Todos los derechos reservados.</p>
-    ${client.address ? `<p>${client.address}</p>` : ''}
-    ${client.phone ? `<p>Tel: ${client.phone_country_code || '+51'} ${client.phone}</p>` : ''}
+    <p>&copy; ${new Date().getFullYear()} ${client?.restaurant_name || 'Restaurant'}. All rights reserved.</p>
+    ${client?.address ? `<p>${client.address}</p>` : ''}
+    ${client?.phone ? `<p>Phone: ${client.phone}</p>` : ''}
   </footer>
 </body>
-</html>
-  `.trim();
-  
-  return html;
+</html>`;
+
+    return html;
+  } catch (error) {
+    console.error('Error generating bot HTML:', error);
+    return null;
+  }
 }
 
-export const onRequest: PagesFunction = async (ctx) => {
-  try {
-    const url = new URL(ctx.request.url);
-    const pathname = url.pathname;
-    const host = ctx.request.headers.get('x-forwarded-host') || url.hostname;
-    const userAgent = ctx.request.headers.get('user-agent') || '';
-    const secFetchDest = ctx.request.headers.get('sec-fetch-dest');
-    const secFetchMode = ctx.request.headers.get('sec-fetch-mode');
-    const testSSR = url.searchParams.has('__bot') || ctx.request.headers.get('x-ssr-test') === '1';
+export async function onRequest(context: any) {
+  const { request } = context;
+  const url = new URL(request.url);
+  const userAgent = request.headers.get('user-agent') || '';
+  
+  // Check if this is a bot or test request
+  const isTestBot = url.searchParams.has('__bot');
+  const isBotRequest = isBot(userAgent) || isTestBot;
 
-    // Skip SSR on staging domains and for static assets
-    const isStaging = host.endsWith('.pages.dev') || host.endsWith('.lovableproject.com');
-    if (pathname.startsWith('/assets/') || pathname.startsWith('/api/') || pathname.includes('.')) {
-      return await ctx.next();
-    }
+  // Extract domain
+  const hostname = url.hostname;
+  const domain = hostname.replace(/^www\./, '');
 
-    const domain = extractDomain(ctx.request);
-    if (!domain) return await ctx.next();
+  console.log('🤖 Bot detection:', {
+    hostname,
+    domain,
+    userAgent,
+    isBot: isBotRequest,
+    isTest: isTestBot,
+    pathname: url.pathname
+  });
 
-    // Only SSR for non-browser bot crawlers OR when explicitly testing
-    const shouldSSR = !isStaging && (testSSR || isBot(userAgent));
-
-    if (shouldSSR) {
-      const publicPages = ['/', '', '/menu', '/nosotros', '/about', '/contacto', '/contact', '/resenas', '/reviews'];
-      if (!publicPages.includes(pathname)) {
-        console.log('[BOT-SSR] Skipping non-public page:', pathname);
-        return await ctx.next();
-      }
-
-      console.log('[BOT-SSR] Generating HTML for:', { domain, pathname, userAgent });
-      
-      try {
-        const html = await generateBotHTML(domain, pathname, host);
-        
-        if (html) {
-          console.log('[BOT-SSR] Successfully generated HTML, length:', html.length);
-          return new Response(html, {
-            headers: {
-              'Content-Type': 'text/html; charset=utf-8',
-              'Cache-Control': 'no-store, private',
-              'X-Robots-Tag': 'index, follow',
-              'X-SSR-Bot': 'true',
-              'X-SSR-Domain': domain,
-              'Vary': 'User-Agent, Sec-Fetch-Dest'
-            }
-          });
-        }
-        
-        console.log('[BOT-SSR] generateBotHTML returned null, falling back to SPA');
-        // If SSR couldn't be generated, fall through to SPA to avoid empty placeholder content
-        return await ctx.next();
-      } catch (ssrError: any) {
-        console.error('[BOT-SSR] Error during SSR generation:', ssrError);
-        // Fall through to SPA on error
-        return await ctx.next();
-      }
-    }
-
-    return await ctx.next();
-  } catch (err: any) {
-    const id = crypto.randomUUID?.() || String(Date.now());
-    console.error('[WORKER-UNHANDLED]', { 
-      id, 
-      message: err?.message, 
-      stack: err?.stack,
-      name: err?.name,
-      url: ctx.request.url
-    });
+  // If bot, serve SSR HTML
+  if (isBotRequest) {
+    console.log('🤖 Serving SSR for bot');
+    const html = await generateBotHTML(domain, url.pathname);
     
-    return new Response(JSON.stringify({
-      ok: false,
-      id,
-      error: err?.message || 'Unknown Worker Exception',
-      stack: err?.stack || null,
-      name: err?.name || 'Error',
-      url: ctx.request.url
-    }), {
-      status: 500,
-      headers: { 
-        'Content-Type': 'application/json', 
-        'X-Debug-Id': id 
-      }
-    });
+    if (html) {
+      return new Response(html, {
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'public, max-age=3600',
+          'X-Robots-Tag': 'index, follow',
+        },
+      });
+    }
   }
-};
+
+  // For regular users, continue to app
+  return context.next();
+}
