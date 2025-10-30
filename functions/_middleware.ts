@@ -3,12 +3,15 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
 const SUPABASE_URL = 'https://ptzcetvcccnojdbzzlyt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emNldHZjY2Nub2pkYnp6bHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjExNzksImV4cCI6MjA3NDMzNzE3OX0.2HS2wP06xe8PryWW_VdzTu7TDYg303BjwmzyA_5Ang8';
 
-// Bot detection - comprehensive list of search engine crawlers
+// Bot detection - comprehensive list of search engine crawlers and SEO tools
 function isBot(userAgent: string): boolean {
   const botPatterns = [
     'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider',
     'yandexbot', 'facebookexternalhit', 'twitterbot', 'whatsapp',
-    'linkedinbot', 'slackbot', 'telegrambot', 'applebot', 'ia_archiver'
+    'linkedinbot', 'slackbot', 'telegrambot', 'applebot', 'ia_archiver',
+    'crawler', 'spider', 'bot', 'crawl', 'scraper', 'simulator',
+    'seo', 'check', 'test', 'monitor', 'validator', 'lighthouse',
+    'pagespeed', 'pingdom', 'gtmetrix', 'semrush', 'ahrefs', 'moz'
   ];
   const ua = userAgent.toLowerCase();
   return botPatterns.some(bot => ua.includes(bot));
