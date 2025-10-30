@@ -7,9 +7,10 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   const { SUPABASE_URL, SUPABASE_ANON_KEY } = context.env;
   const request = context.request;
   
-  // Extract host to identify tenant
-  const host = request.headers.get('host') || '';
-  const fullDomain = host.replace(/^www\./, ''); // Remove www prefix
+  // Extract host to identify tenant (prefer forwarded host when behind proxies)
+  const forwardedHost = request.headers.get('x-forwarded-host') || request.headers.get('X-Forwarded-Host');
+  const hostHeader = forwardedHost || request.headers.get('host') || '';
+  const fullDomain = hostHeader.replace(/^www\./, ''); // Remove www prefix
   
   // Extract subdomain (part before first dot) for subdomain matching
   const subdomain = fullDomain.split('.')[0];
@@ -141,6 +142,9 @@ export const onRequest: PagesFunction<Env> = async (context) => {
         'Content-Type': 'application/xml; charset=utf-8',
         'Cache-Control': 'public, max-age=1800, s-maxage=1800', // 30 min cache
         'X-Tenant-Domain': fullDomain,
+        'X-Sitemap-Source': 'primary',
+        'X-Resolved-Host': hostHeader,
+        'X-Forwarded-Host': forwardedHost || ''
       },
     });
     
@@ -149,7 +153,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     
     // Fallback minimal sitemap
     const today = new Date().toISOString().split('T')[0];
-    const baseUrl = `https://${host.replace(/^www\./, '')}`;
+    const baseUrl = `https://${fullDomain}`;
     const fallback = `<?xml version="1.0" encoding="UTF-8"?>\n` +
       `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
       `  <url>\n` +
