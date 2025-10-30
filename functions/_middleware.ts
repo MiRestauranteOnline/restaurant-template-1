@@ -34,7 +34,7 @@ function extractDomain(request: Request): string | null {
 // Generate SEO-optimized HTML for bots
 async function generateBotHTML(domain: string, pathname: string): Promise<string | null> {
   // Fetch client data by subdomain or custom_domain using REST API
-  const isCustomDomain = !domain.includes('mirestaurante.online');
+  const isCustomDomain = domain.includes('.');
   const filter = isCustomDomain 
     ? `custom_domain=eq.${encodeURIComponent(domain)}` 
     : `subdomain=eq.${encodeURIComponent(domain)}`;
@@ -55,11 +55,31 @@ async function generateBotHTML(domain: string, pathname: string): Promise<string
     return null;
   }
 
-  const baseClients = await clientRes.json();
-  const client: any = baseClients?.[0];
+  let client: any = baseClients?.[0];
   if (!client) {
-    console.log('[BOT-SSR] Client not found:', domain);
-    return null;
+    console.log('[BOT-SSR] Client not found for domain:', domain);
+    // Fallback: try base subdomain before hyphen (e.g., demo-2 -> demo)
+    if (domain.includes('-')) {
+      const baseSub = domain.split('-')[0];
+      const retryRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/clients?select=*&subdomain=eq.${encodeURIComponent(baseSub)}&subscription_status=eq.active&limit=1`,
+        { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json' } }
+      );
+      if (retryRes.ok) {
+        const retryClients = await retryRes.json();
+        if (retryClients?.[0]) {
+          console.log('[BOT-SSR] Fallback matched base subdomain:', baseSub);
+          var client: any = retryClients[0];
+          // proceed with client
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
   }
 
   // Fetch related data - batch in 2 groups to avoid connection limits
@@ -79,20 +99,22 @@ async function generateBotHTML(domain: string, pathname: string): Promise<string
     ]);
 
     // Second batch: Secondary data
-    const [categoriesRes, reviewsRes, teamRes] = await Promise.all([
+    const [categoriesRes, reviewsRes, teamRes, pageMetaRes] = await Promise.all([
       fetch(`${SUPABASE_URL}/rest/v1/menu_categories?client_id=eq.${clientId}&is_active=eq.true`, { headers }),
       fetch(`${SUPABASE_URL}/rest/v1/reviews?client_id=eq.${clientId}&is_active=eq.true&limit=10`, { headers }),
       fetch(`${SUPABASE_URL}/rest/v1/team_members?client_id=eq.${clientId}&is_active=eq.true`, { headers }),
+      fetch(`${SUPABASE_URL}/rest/v1/page_metadata?client_id=eq.${clientId}`, { headers }),
     ]);
 
     // Parse all responses
-    const [adminContentArr, settingsArr, menuItems, menuCategories, reviews, teamMembers] = await Promise.all([
+    const [adminContentArr, settingsArr, menuItems, menuCategories, reviews, teamMembers, pageMetadata] = await Promise.all([
       adminContentRes.ok ? adminContentRes.json() : [],
       settingsRes.ok ? settingsRes.json() : [],
       itemsRes.ok ? itemsRes.json() : [],
       categoriesRes.ok ? categoriesRes.json() : [],
       reviewsRes.ok ? reviewsRes.json() : [],
       teamRes.ok ? teamRes.json() : [],
+      pageMetaRes.ok ? pageMetaRes.json() : [],
     ]);
 
     // Attach for downstream rendering
@@ -123,6 +145,7 @@ async function generateBotHTML(domain: string, pathname: string): Promise<string
   let pageDescription = '';
   let pageKeywords: string[] = [];
   let pageContent = '';
+  let pageType: 'home' | 'menu' | 'about' | 'contact' | 'reviews' = 'home';
   
   const restaurantName = client.restaurant_name || 'Restaurant';
   const baseUrl = client.custom_domain 
@@ -143,6 +166,7 @@ async function generateBotHTML(domain: string, pathname: string): Promise<string
       pageTitle = `${restaurantName} - ${adminContent.homepage_hero_title || 'Restaurante'}`;
       pageDescription = adminContent.homepage_hero_description || `Bienvenido a ${restaurantName}. Experiencia gastronómica excepcional.`;
       pageKeywords = [restaurantName, 'restaurante', 'comida', 'gastronomía', client.address || ''];
+      pageType = 'home';
       
       // Homepage content with proper structure
       pageContent = `
@@ -424,29 +448,32 @@ async function generateBotHTML(domain: string, pathname: string): Promise<string
 export const onRequest: PagesFunction = async (ctx) => {
   try {
     const userAgent = ctx.request.headers.get('user-agent') || '';
-    
-    // Check if request is from a bot
-    if (isBot(userAgent)) {
-      console.log('[BOT-SSR] Bot detected:', userAgent);
-      
+    const secFetchDest = ctx.request.headers.get('sec-fetch-dest');
+    const url = new URL(ctx.request.url);
+
+    // Broaden SSR: treat missing Sec-Fetch headers (common in crawlers/tools) as bot-like
+    const shouldSSR = isBot(userAgent) || !secFetchDest;
+
+    if (shouldSSR) {
+      console.log('[BOT-SSR] SSR enabled for UA:', userAgent);
+
       const domain = extractDomain(ctx.request);
       if (!domain) {
         console.log('[BOT-SSR] Could not extract domain');
         return await ctx.next();
       }
-      
-      const url = new URL(ctx.request.url);
+
       const pathname = url.pathname;
-      
+
       // Generate bot-optimized HTML
       const botHTML = await generateBotHTML(domain, pathname);
-      
+
       if (botHTML) {
         console.log('[BOT-SSR] Serving bot-optimized HTML for:', domain, pathname);
         return new Response(botHTML, {
           headers: {
             'Content-Type': 'text/html; charset=utf-8',
-            'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+            'Cache-Control': 'public, max-age=3600',
             'X-Robots-Tag': 'index, follow',
             'X-Bot-SSR': 'true'
           }
