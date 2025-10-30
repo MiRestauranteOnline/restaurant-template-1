@@ -468,8 +468,8 @@ export const onRequest: PagesFunction = async (ctx) => {
     if (!domain) return await ctx.next();
 
     // Only SSR for bots/tooling and only on custom domains
-    // SSR only for verified bots on custom domains
-    const shouldSSR = !isStaging && isBot(userAgent);
+    // SSR only for real bots (no browser fetch headers) on custom domains
+    const shouldSSR = !isStaging && isBot(userAgent) && !secFetchDest;
 
     if (shouldSSR) {
       const publicPages = ['/', '', '/menu', '/nosotros', '/about', '/contacto', '/contact', '/resenas', '/reviews'];
@@ -482,9 +482,10 @@ export const onRequest: PagesFunction = async (ctx) => {
         return new Response(html, {
           headers: {
             'Content-Type': 'text/html; charset=utf-8',
-            'Cache-Control': 'no-store',
+            'Cache-Control': 'no-store, private',
             'X-Robots-Tag': 'index, follow',
-            'X-SSR-Bot': 'true'
+            'X-SSR-Bot': 'true',
+            'Vary': 'User-Agent, Sec-Fetch-Dest'
           }
         });
       }
