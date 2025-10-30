@@ -83,32 +83,30 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     xml += `    <priority>1.0</priority>\n`;
     xml += '  </url>\n';
     
-    // Menu page (if has menu items)
-    if (menuItems.length > 0) {
-      const menuLastMod = menuItems.reduce((latest, item) => {
-        const itemDate = new Date(item.updated_at);
-        return itemDate > latest ? itemDate : latest;
-      }, new Date(0));
-      
-      xml += '  <url>\n';
-      xml += `    <loc>${baseUrl}/menu</loc>\n`;
-      xml += `    <lastmod>${menuLastMod.toISOString().split('T')[0]}</lastmod>\n`;
-      xml += `    <changefreq>weekly</changefreq>\n`;
-      xml += `    <priority>0.9</priority>\n`;
-      xml += '  </url>\n';
-    }
+    // Menu page - always include
+    const menuLastMod = menuItems.length > 0 
+      ? menuItems.reduce((latest, item) => {
+          const itemDate = new Date(item.updated_at);
+          return itemDate > latest ? itemDate : latest;
+        }, new Date(0))
+      : new Date();
     
-    // About page (if enabled)
-    if (content.about_page_about_section_visible) {
-      xml += '  <url>\n';
-      xml += `    <loc>${baseUrl}/about</loc>\n`;
-      xml += `    <lastmod>${today}</lastmod>\n`;
-      xml += `    <changefreq>monthly</changefreq>\n`;
-      xml += `    <priority>0.8</priority>\n`;
-      xml += '  </url>\n';
-    }
+    xml += '  <url>\n';
+    xml += `    <loc>${baseUrl}/menu</loc>\n`;
+    xml += `    <lastmod>${menuLastMod.toISOString().split('T')[0]}</lastmod>\n`;
+    xml += `    <changefreq>weekly</changefreq>\n`;
+    xml += `    <priority>0.9</priority>\n`;
+    xml += '  </url>\n';
     
-    // Contact page
+    // About page - always include
+    xml += '  <url>\n';
+    xml += `    <loc>${baseUrl}/about</loc>\n`;
+    xml += `    <lastmod>${today}</lastmod>\n`;
+    xml += `    <changefreq>monthly</changefreq>\n`;
+    xml += `    <priority>0.8</priority>\n`;
+    xml += '  </url>\n';
+    
+    // Contact page - always include
     xml += '  <url>\n';
     xml += `    <loc>${baseUrl}/contact</loc>\n`;
     xml += `    <lastmod>${today}</lastmod>\n`;
@@ -116,20 +114,20 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     xml += `    <priority>0.8</priority>\n`;
     xml += '  </url>\n';
     
-    // Reviews page (if has reviews)
-    if (reviews.length > 0) {
-      const reviewsLastMod = reviews.reduce((latest, item) => {
-        const itemDate = new Date(item.updated_at);
-        return itemDate > latest ? itemDate : latest;
-      }, new Date(0));
-      
-      xml += '  <url>\n';
-      xml += `    <loc>${baseUrl}/reviews</loc>\n`;
-      xml += `    <lastmod>${reviewsLastMod.toISOString().split('T')[0]}</lastmod>\n`;
-      xml += `    <changefreq>weekly</changefreq>\n`;
-      xml += `    <priority>0.7</priority>\n`;
-      xml += '  </url>\n';
-    }
+    // Reviews page - always include
+    const reviewsLastMod = reviews.length > 0
+      ? reviews.reduce((latest, item) => {
+          const itemDate = new Date(item.updated_at);
+          return itemDate > latest ? itemDate : latest;
+        }, new Date(0))
+      : new Date();
+    
+    xml += '  <url>\n';
+    xml += `    <loc>${baseUrl}/reviews</loc>\n`;
+    xml += `    <lastmod>${reviewsLastMod.toISOString().split('T')[0]}</lastmod>\n`;
+    xml += `    <changefreq>weekly</changefreq>\n`;
+    xml += `    <priority>0.7</priority>\n`;
+    xml += '  </url>\n';
     
     xml += '</urlset>';
     
