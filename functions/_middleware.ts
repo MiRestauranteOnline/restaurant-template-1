@@ -1,6 +1,16 @@
 const SUPABASE_URL = 'https://ptzcetvcccnojdbzzlyt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emNldHZjY2Nub2pkYnp6bHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjExNzksImV4cCI6MjA3NDMzNzE3OX0.2HS2wP06xe8PryWW_VdzTu7TDYg303BjwmzyA_5Ang8';
 
+// Bot detection - only SSR for real crawlers/tools
+function isBot(userAgent: string): boolean {
+  if (!userAgent) return false;
+  const botPatterns = [
+    'googlebot','bingbot','slurp','duckduckbot','baiduspider','yandexbot','facebookexternalhit','twitterbot','whatsapp','linkedinbot','slackbot','telegrambot','applebot','ia_archiver','crawler','spider','bot','crawl','lighthouse','pagespeed','gtmetrix','semrush','ahrefs','moz'
+  ];
+  const ua = userAgent.toLowerCase();
+  return botPatterns.some((b) => ua.includes(b));
+}
+
 // Extract domain from request
 function extractDomain(request: Request): string | null {
   const url = new URL(request.url);
@@ -17,8 +27,8 @@ function extractDomain(request: Request): string | null {
   return host;
 }
 
-// Generate SSR HTML for all visitors (with React hydration)
-async function generateSSRHTML(domain: string, pathname: string): Promise<string | null> {
+// Generate bot-optimized HTML 
+async function generateBotHTML(domain: string, pathname: string): Promise<string | null> {
   // Fetch client data by subdomain or custom_domain using REST API
   const isCustomDomain = domain.includes('.');
   const filter = isCustomDomain 
@@ -142,8 +152,16 @@ async function generateSSRHTML(domain: string, pathname: string): Promise<string
   // Build opening hours text
   const openingHoursText = client.opening_hours 
     ? Object.entries(client.opening_hours)
-        .filter(([_, hours]) => hours && hours !== 'Cerrado')
-        .map(([day, hours]) => `${day}: ${hours}`)
+        .filter(([_, hours]) => !!hours)
+        .map(([day, hours]) => {
+          if (typeof hours === 'object' && hours !== null) {
+            const open = (hours as any).open || '';
+            const close = (hours as any).close || '';
+            const closed = (hours as any).closed === true;
+            return `${day}: ${closed ? 'Cerrado' : `${open}-${close}`}`;
+          }
+          return `${day}: ${hours}`;
+        })
         .join(', ')
     : '';
   
@@ -436,60 +454,41 @@ export const onRequest: PagesFunction = async (ctx) => {
   try {
     const url = new URL(ctx.request.url);
     const pathname = url.pathname;
-    
-    // Skip SSR for assets and API routes
+    const host = ctx.request.headers.get('x-forwarded-host') || url.hostname;
+    const userAgent = ctx.request.headers.get('user-agent') || '';
+    const secFetchDest = ctx.request.headers.get('sec-fetch-dest');
+
+    // Skip SSR on staging domains and for static assets
+    const isStaging = host.endsWith('.pages.dev') || host.endsWith('.lovableproject.com');
     if (pathname.startsWith('/assets/') || pathname.startsWith('/api/') || pathname.includes('.')) {
       return await ctx.next();
     }
 
     const domain = extractDomain(ctx.request);
-    if (!domain) {
-      console.log('[SSR] Could not extract domain');
-      return await ctx.next();
+    if (!domain) return await ctx.next();
+
+    // Only SSR for bots/tooling and only on custom domains
+    const shouldSSR = !isStaging && (isBot(userAgent) || !secFetchDest);
+
+    if (shouldSSR) {
+      const publicPages = ['/', '', '/menu', '/nosotros', '/about', '/contacto', '/contact', '/resenas', '/reviews'];
+      if (!publicPages.includes(pathname)) {
+        return await ctx.next();
+      }
+
+      const html = await generateBotHTML(domain, pathname);
+      if (html) {
+        return new Response(html, {
+          headers: {
+            'Content-Type': 'text/html; charset=utf-8',
+            'Cache-Control': 'no-store',
+            'X-Robots-Tag': 'index, follow',
+            'X-SSR-Bot': 'true'
+          }
+        });
+      }
     }
 
-    // Only SSR public pages
-    const publicPages = ['/', '', '/menu', '/nosotros', '/about', '/contacto', '/contact', '/resenas', '/reviews'];
-    if (!publicPages.includes(pathname)) {
-      return await ctx.next();
-    }
-
-    // ===== CLOUDFLARE CACHE API =====
-    const cacheKey = new Request(url.toString(), ctx.request);
-    const cache = caches.default;
-    
-    // Check cache first
-    let cachedResponse = await cache.match(cacheKey);
-    if (cachedResponse) {
-      console.log('[SSR-CACHE] Cache HIT:', domain, pathname);
-      return cachedResponse;
-    }
-
-    console.log('[SSR-CACHE] Cache MISS - Generating HTML:', domain, pathname);
-
-    // Generate SSR HTML for all visitors
-    const ssrHTML = await generateSSRHTML(domain, pathname);
-
-    if (ssrHTML) {
-      console.log('[SSR] Serving SSR HTML for:', domain, pathname);
-      
-      const response = new Response(ssrHTML, {
-        headers: {
-          'Content-Type': 'text/html; charset=utf-8',
-          'Cache-Control': 'public, max-age=3600, s-maxage=3600', // 1 hour cache
-          'X-Robots-Tag': 'index, follow',
-          'X-SSR-Rendered': 'true',
-          'Vary': 'Accept-Encoding'
-        }
-      });
-
-      // Store in Cloudflare cache (1 hour TTL)
-      ctx.waitUntil(cache.put(cacheKey, response.clone()));
-
-      return response;
-    }
-    
-    // Fallback to normal React SPA
     return await ctx.next();
   } catch (err: any) {
     const id = crypto.randomUUID?.() || String(Date.now());
