@@ -69,7 +69,7 @@ async function generateBotHTML(domain: string, pathname: string): Promise<string
         const retryClients = await retryRes.json();
         if (retryClients?.[0]) {
           console.log('[BOT-SSR] Fallback matched base subdomain:', baseSub);
-          var client: any = retryClients[0];
+          client = retryClients[0];
           // proceed with client
         } else {
           return null;
