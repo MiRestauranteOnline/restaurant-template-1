@@ -47,9 +47,11 @@ async function fetchFastLoad(hostname: string) {
   const subdomain = labels.length >= 3 ? labels[0] : '';
   const candidates = [normalized, ...(subdomain ? [subdomain] : [])];
 
-  const tryFetch = async (key: string) => {
-    const fileUrl = `${SUPABASE_URL}/storage/v1/object/public/client-assets/fast-load/${key}.json`;
-    const res = await fetch(fileUrl, { cf: { cacheTtl: 300, cacheEverything: true } as any }).catch(() => null);
+  const tryFetch = async (key: string, bust = false) => {
+    const fileUrl = `${SUPABASE_URL}/storage/v1/object/public/client-assets/fast-load/${key}.json${bust ? `?ts=${Date.now()}` : ''}`;
+    const res = await fetch(fileUrl, {
+      headers: { 'Cache-Control': 'no-cache' }
+    }).catch(() => null);
     if (res && res.ok) {
       const json = await res.json();
       return { json, key } as const;
@@ -65,18 +67,17 @@ async function fetchFastLoad(hostname: string) {
 
   // If absent, generate it once via edge function, then retry with both keys
   const edgeFunctionUrl = `${SUPABASE_URL}/functions/v1/prebuild-client-data`;
-  const body = subdomain ? { subdomain, domain: normalized } : { domain: normalized };
+  const body = subdomain ? { subdomain } : { domain: normalized };
   await fetch(edgeFunctionUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(body)
   }).catch(() => null);
   
   for (const key of candidates) {
-    const hit = await tryFetch(key);
+    const hit = await tryFetch(key, true);
     if (hit) return { ...hit.json, __fast_key: key, __used_subdomain: subdomain || null };
   }
 
@@ -247,13 +248,16 @@ export async function onRequest(context: any) {
   // Ensure we have fast-load snapshot and return semantic HTML
   const fast = await fetchFastLoad(domain);
 
-  // Fallback minimal info if snapshot missing
-  const fallback = buildHTML(url.pathname, domain, fast || { restaurant_name: 'Mi Restaurante Online', domain });
-  return new Response(fallback, {
+  // Build HTML using fast data or fallback minimal info
+  const html = buildHTML(url.pathname, domain, fast || { restaurant_name: 'Mi Restaurante Online', domain });
+  return new Response(html, {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
-      'Cache-Control': 'public, max-age=900',
+      'Cache-Control': 'no-store',
       'X-Robots-Tag': 'index, follow',
+      ...(fast?.__fast_key ? { 'X-Fast-Key': String(fast.__fast_key) } : {}),
+      ...(fast?.__used_subdomain ? { 'X-Fast-Used-Subdomain': String(fast.__used_subdomain) } : {}),
+      'X-Bot-Mode': bot ? '1' : '0'
     },
   });
 }
