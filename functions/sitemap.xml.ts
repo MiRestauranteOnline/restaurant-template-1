@@ -34,8 +34,8 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     
     const client = clients[0];
     const clientId = client.id;
-    // Use client's custom domain if available, otherwise subdomain
-    const clientDomain = client.custom_domain || client.subdomain;
+    // Use client's custom domain if available, otherwise construct subdomain URL
+    const clientDomain = client.custom_domain || `${client.subdomain}.mirestaurante.online`;
     const baseUrl = `https://${clientDomain}`;
     
     // Fetch client's admin_content to check enabled sections
@@ -105,7 +105,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     
     // About page - always include
     xml += '  <url>\n';
-    xml += `    <loc>${baseUrl}/about</loc>\n`;
+    xml += `    <loc>${baseUrl}/nosotros</loc>\n`;
     xml += `    <lastmod>${today}</lastmod>\n`;
     xml += `    <changefreq>monthly</changefreq>\n`;
     xml += `    <priority>0.8</priority>\n`;
@@ -113,7 +113,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     
     // Contact page - always include
     xml += '  <url>\n';
-    xml += `    <loc>${baseUrl}/contact</loc>\n`;
+    xml += `    <loc>${baseUrl}/contacto</loc>\n`;
     xml += `    <lastmod>${today}</lastmod>\n`;
     xml += `    <changefreq>monthly</changefreq>\n`;
     xml += `    <priority>0.8</priority>\n`;
@@ -128,7 +128,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       : new Date();
     
     xml += '  <url>\n';
-    xml += `    <loc>${baseUrl}/reviews</loc>\n`;
+    xml += `    <loc>${baseUrl}/resenas</loc>\n`;
     xml += `    <lastmod>${reviewsLastMod.toISOString().split('T')[0]}</lastmod>\n`;
     xml += `    <changefreq>weekly</changefreq>\n`;
     xml += `    <priority>0.7</priority>\n`;
