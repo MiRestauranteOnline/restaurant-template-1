@@ -5,7 +5,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Bot user agents that need SSR
+// Common bot user agents
 const BOT_PATTERNS = [
   /googlebot/i,
   /bingbot/i,
@@ -42,281 +42,193 @@ const BOT_PATTERNS = [
 ];
 
 function isBot(userAgent: string): boolean {
-  return BOT_PATTERNS.some(pattern => pattern.test(userAgent));
+  return BOT_PATTERNS.some((pattern) => pattern.test(userAgent));
 }
 
-async function generateBotHTML(domain: string, pathname: string): Promise<string | null> {
-  try {
-    // Fetch fast-load data
-    const { data: fastLoadData } = await supabase.functions.invoke('prebuild-client-data', {
-      body: { domain }
-    });
+async function fetchFastLoad(domain: string) {
+  // Try reading prebuilt JSON from public storage
+  const fileUrl = `${SUPABASE_URL}/storage/v1/object/public/client-assets/fast-load/${domain}.json`;
+  const res = await fetch(fileUrl, { cf: { cacheTtl: 300, cacheEverything: true } as any }).catch(() => null);
+  if (res && res.ok) return await res.json();
 
-    if (!fastLoadData?.data) {
-      console.log('No fast-load data found for domain:', domain);
-      return null;
-    }
+  // If absent, generate it once via edge function, then retry
+  await supabase.functions.invoke('prebuild-client-data', { body: { subdomain: domain } }).catch(() => null);
+  const res2 = await fetch(fileUrl).catch(() => null);
+  if (res2 && res2.ok) return await res2.json();
+  return null;
+}
 
-    const {
-      client,
-      adminContent,
-      menuItems,
-      menuCategories,
-      clientSettings,
-      reviews,
-      faqs,
-      teamMembers,
-      pageMetadata
-    } = fastLoadData.data;
+function pageMetaFromFastLoad(pathname: string, fast: any) {
+  const baseTitle = fast?.restaurant_name || 'Mi Restaurante Online';
+  const canonical = `https://${fast?.domain || ''}${pathname}`;
 
-    // Get page-specific metadata
-    const currentPageMeta = pageMetadata?.find((meta: any) => {
-      const metaPath = meta.page_type === 'home' ? '/' : `/${meta.page_type}`;
-      return metaPath === pathname;
-    });
+  const pageMap: Record<string, { title?: string; desc?: string; image?: string }> = {
+    '/': {
+      title: fast?.homepage_hero_title || [fast?.homepage_hero_title_first_line, fast?.homepage_hero_title_second_line].filter(Boolean).join(' ') || baseTitle,
+      desc: fast?.homepage_hero_description || '' ,
+      image: fast?.homepage_hero_background_url,
+    },
+    '/menu': {
+      title: [fast?.menu_page_hero_title_first_line, fast?.menu_page_hero_title_second_line].filter(Boolean).join(' ') || `${baseTitle} · Menú`,
+      desc: fast?.menu_page_hero_description || '',
+      image: fast?.menu_page_hero_background_url,
+    },
+    '/carta': {
+      title: [fast?.menu_page_hero_title_first_line, fast?.menu_page_hero_title_second_line].filter(Boolean).join(' ') || `${baseTitle} · Carta`,
+      desc: fast?.menu_page_hero_description || '',
+      image: fast?.menu_page_hero_background_url,
+    },
+    '/about': {
+      title: [fast?.about_page_hero_title_first_line, fast?.about_page_hero_title_second_line].filter(Boolean).join(' ') || `${baseTitle} · Sobre nosotros`,
+      desc: fast?.about_page_hero_description || '',
+      image: fast?.about_page_hero_background_url,
+    },
+    '/nosotros': {
+      title: [fast?.about_page_hero_title_first_line, fast?.about_page_hero_title_second_line].filter(Boolean).join(' ') || `${baseTitle} · Nosotros`,
+      desc: fast?.about_page_hero_description || '',
+      image: fast?.about_page_hero_background_url,
+    },
+    '/contact': {
+      title: [fast?.contact_page_hero_title_first_line, fast?.contact_page_hero_title_second_line].filter(Boolean).join(' ') || `${baseTitle} · Contacto`,
+      desc: fast?.contact_page_hero_description || '',
+      image: fast?.contact_page_hero_background_url,
+    },
+    '/contacto': {
+      title: [fast?.contact_page_hero_title_first_line, fast?.contact_page_hero_title_second_line].filter(Boolean).join(' ') || `${baseTitle} · Contacto`,
+      desc: fast?.contact_page_hero_description || '',
+      image: fast?.contact_page_hero_background_url,
+    },
+  };
 
-    const pageTitle = currentPageMeta?.title || client?.restaurant_name || 'Restaurant';
-    const pageDescription = currentPageMeta?.description || client?.description || '';
+  const meta = pageMap[pathname] || pageMap['/'];
+  return { title: meta.title || baseTitle, desc: meta.desc || '', image: meta.image, canonical };
+}
 
-    // Generate rich HTML content
-    let contentHTML = '';
+function buildHTML(pathname: string, domain: string, fast: any) {
+  const { title, desc, image, canonical } = pageMetaFromFastLoad(pathname, { ...fast, domain });
+  const name = fast?.restaurant_name || 'Mi Restaurante Online';
 
-    // Homepage content
-    if (pathname === '/' || pathname === '') {
-      const heroTitle = adminContent?.hero_title || client?.restaurant_name || '';
-      const heroSubtitle = adminContent?.hero_subtitle || '';
-      const aboutTitle = adminContent?.about_title || 'About Us';
-      const aboutText = adminContent?.about_text || '';
+  // Build simple semantic content per page using fast-load fields
+  let bodyContent = '';
+  const heroImg = image ? `<img src="${image}" alt="${name} hero image" loading="lazy" />` : '';
 
-      contentHTML = `
-        <main>
-          <section>
-            <h1>${heroTitle}</h1>
-            ${heroSubtitle ? `<p>${heroSubtitle}</p>` : ''}
-          </section>
-          
-          ${aboutText ? `
-          <section>
-            <h2>${aboutTitle}</h2>
-            <p>${aboutText}</p>
-          </section>
-          ` : ''}
-          
-          ${menuItems?.length > 0 ? `
-          <section>
-            <h2>Our Menu</h2>
-            ${menuCategories?.map((cat: any) => {
-              const catItems = menuItems.filter((item: any) => item.category_id === cat.id);
-              return `
-                <div>
-                  <h3>${cat.name}</h3>
-                  ${catItems.map((item: any) => `
-                    <article>
-                      <h4>${item.name}</h4>
-                      ${item.description ? `<p>${item.description}</p>` : ''}
-                      ${item.price ? `<p>$${item.price}</p>` : ''}
-                      ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" />` : ''}
-                    </article>
-                  `).join('')}
-                </div>
-              `;
-            }).join('')}
-          </section>
-          ` : ''}
-          
-          ${reviews?.length > 0 ? `
-          <section>
-            <h2>Customer Reviews</h2>
-            ${reviews.slice(0, 3).map((review: any) => `
-              <article>
-                <p>"${review.review_text}"</p>
-                <p><strong>${review.customer_name}</strong> - ${review.rating} stars</p>
-              </article>
-            `).join('')}
-          </section>
-          ` : ''}
-        </main>
-      `;
-    }
+  if (pathname === '/' || pathname === '') {
+    bodyContent = `
+      <section>
+        <h1>${title}</h1>
+        ${desc ? `<p>${desc}</p>` : ''}
+        ${heroImg}
+      </section>
+      <section>
+        <h2>Explora nuestro menú</h2>
+        <p>Descubre platos destacados y sabores únicos en ${name}.</p>
+        <a href="/menu">Ver menú</a>
+      </section>
+    `;
+  } else if (pathname === '/menu' || pathname === '/carta') {
+    bodyContent = `
+      <section>
+        <h1>${title}</h1>
+        ${desc ? `<p>${desc}</p>` : ''}
+        ${heroImg}
+      </section>
+      <section>
+        <h2>Platos populares</h2>
+        <p>Sabores destacados seleccionados por nuestros clientes.</p>
+      </section>
+    `;
+  } else if (pathname === '/about' || pathname === '/nosotros') {
+    bodyContent = `
+      <section>
+        <h1>${title}</h1>
+        ${desc ? `<p>${desc}</p>` : ''}
+        ${heroImg}
+      </section>
+      <section>
+        <h2>Nuestra historia</h2>
+        <p>${name} combina ingredientes frescos con tradición culinaria local.</p>
+      </section>
+    `;
+  } else if (pathname === '/contact' || pathname === '/contacto') {
+    const phone = fast?.phone || '';
+    const whatsapp = fast?.whatsapp || '';
+    bodyContent = `
+      <section>
+        <h1>${title}</h1>
+        ${desc ? `<p>${desc}</p>` : ''}
+        ${heroImg}
+      </section>
+      <section>
+        <h2>Contáctanos</h2>
+        ${phone ? `<p>Teléfono: ${phone}</p>` : ''}
+        ${whatsapp ? `<p>WhatsApp: ${whatsapp}</p>` : ''}
+      </section>
+    `;
+  } else {
+    bodyContent = `
+      <section>
+        <h1>${title}</h1>
+        ${desc ? `<p>${desc}</p>` : ''}
+        ${heroImg}
+      </section>
+    `;
+  }
 
-    // Menu page
-    if (pathname === '/menu' || pathname === '/carta') {
-      contentHTML = `
-        <main>
-          <h1>Our Menu</h1>
-          ${menuCategories?.map((cat: any) => {
-            const catItems = menuItems.filter((item: any) => item.category_id === cat.id);
-            return `
-              <section>
-                <h2>${cat.name}</h2>
-                ${catItems.map((item: any) => `
-                  <article>
-                    <h3>${item.name}</h3>
-                    ${item.description ? `<p>${item.description}</p>` : ''}
-                    ${item.price ? `<p>Price: $${item.price}</p>` : ''}
-                    ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" />` : ''}
-                  </article>
-                `).join('')}
-              </section>
-            `;
-          }).join('')}
-        </main>
-      `;
-    }
-
-    // About page
-    if (pathname === '/about' || pathname === '/nosotros') {
-      const aboutTitle = adminContent?.about_title || 'About Us';
-      const aboutText = adminContent?.about_text || '';
-
-      contentHTML = `
-        <main>
-          <h1>${aboutTitle}</h1>
-          ${aboutText ? `<p>${aboutText}</p>` : ''}
-          
-          ${teamMembers?.length > 0 ? `
-          <section>
-            <h2>Our Team</h2>
-            ${teamMembers.map((member: any) => `
-              <article>
-                <h3>${member.name}</h3>
-                ${member.role ? `<p><strong>${member.role}</strong></p>` : ''}
-                ${member.bio ? `<p>${member.bio}</p>` : ''}
-                ${member.image_url ? `<img src="${member.image_url}" alt="${member.name}" />` : ''}
-              </article>
-            `).join('')}
-          </section>
-          ` : ''}
-        </main>
-      `;
-    }
-
-    // Contact page
-    if (pathname === '/contact' || pathname === '/contacto') {
-      contentHTML = `
-        <main>
-          <h1>Contact Us</h1>
-          ${client?.address ? `
-          <section>
-            <h2>Location</h2>
-            <p>${client.address}</p>
-          </section>
-          ` : ''}
-          
-          ${client?.phone ? `
-          <section>
-            <h2>Phone</h2>
-            <p>${client.phone}</p>
-          </section>
-          ` : ''}
-          
-          ${client?.email ? `
-          <section>
-            <h2>Email</h2>
-            <p>${client.email}</p>
-          </section>
-          ` : ''}
-        </main>
-      `;
-    }
-
-    // Reviews page
-    if (pathname === '/reviews' || pathname === '/resenas') {
-      contentHTML = `
-        <main>
-          <h1>Customer Reviews</h1>
-          ${reviews?.map((review: any) => `
-            <article>
-              <h2>${review.customer_name}</h2>
-              <p><strong>Rating:</strong> ${review.rating} / 5</p>
-              <p>"${review.review_text}"</p>
-              ${review.date ? `<p><small>${new Date(review.date).toLocaleDateString()}</small></p>` : ''}
-            </article>
-          `).join('')}
-        </main>
-      `;
-    }
-
-    // Build complete HTML
-    const html = `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${pageTitle}</title>
-  <meta name="description" content="${pageDescription}">
-  <meta property="og:title" content="${pageTitle}">
-  <meta property="og:description" content="${pageDescription}">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${pageTitle}">
-  <meta name="twitter:description" content="${pageDescription}">
-  ${clientSettings?.favicon_url ? `<link rel="icon" type="image/x-icon" href="${clientSettings.favicon_url}">` : ''}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>${title}</title>
+  <meta name="description" content="${desc}" />
+  <link rel="canonical" href="${canonical}" />
+  <meta property="og:title" content="${title}" />
+  <meta property="og:description" content="${desc}" />
+  <meta property="og:type" content="website" />
+  ${fast?.google_search_console_verification ? `<meta name="google-site-verification" content="${fast.google_search_console_verification}" />` : ''}
+  ${fast?.favicon_url ? `<link rel="icon" href="${fast.favicon_url}" />` : ''}
 </head>
 <body>
   <nav>
-    <a href="/">Home</a>
-    <a href="/menu">Menu</a>
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
-    ${reviews?.length > 0 ? '<a href="/reviews">Reviews</a>' : ''}
+    <a href="/">Inicio</a>
+    <a href="/menu">Menú</a>
+    <a href="/about">Nosotros</a>
+    <a href="/contact">Contacto</a>
   </nav>
-  
-  ${contentHTML}
-  
+  <main>
+    ${bodyContent}
+  </main>
   <footer>
-    <p>&copy; ${new Date().getFullYear()} ${client?.restaurant_name || 'Restaurant'}. All rights reserved.</p>
-    ${client?.address ? `<p>${client.address}</p>` : ''}
-    ${client?.phone ? `<p>Phone: ${client.phone}</p>` : ''}
+    <p>© ${new Date().getFullYear()} ${name}</p>
   </footer>
 </body>
 </html>`;
-
-    return html;
-  } catch (error) {
-    console.error('Error generating bot HTML:', error);
-    return null;
-  }
 }
 
 export async function onRequest(context: any) {
   const { request } = context;
   const url = new URL(request.url);
   const userAgent = request.headers.get('user-agent') || '';
-  
-  // Check if this is a bot or test request
-  const isTestBot = url.searchParams.has('__bot');
-  const isBotRequest = isBot(userAgent) || isTestBot;
 
-  // Extract domain
-  const hostname = url.hostname;
-  const domain = hostname.replace(/^www\./, '');
+  const isTest = url.searchParams.has('__bot');
+  const bot = isBot(userAgent) || isTest;
 
-  console.log('🤖 Bot detection:', {
-    hostname,
-    domain,
-    userAgent,
-    isBot: isBotRequest,
-    isTest: isTestBot,
-    pathname: url.pathname
-  });
+  const domain = url.hostname.replace(/^www\./, '');
 
-  // If bot, serve SSR HTML
-  if (isBotRequest) {
-    console.log('🤖 Serving SSR for bot');
-    const html = await generateBotHTML(domain, url.pathname);
-    
-    if (html) {
-      return new Response(html, {
-        headers: {
-          'Content-Type': 'text/html; charset=utf-8',
-          'Cache-Control': 'public, max-age=3600',
-          'X-Robots-Tag': 'index, follow',
-        },
-      });
-    }
+  if (!bot) {
+    return context.next();
   }
 
-  // For regular users, continue to app
-  return context.next();
+  // Ensure we have fast-load snapshot and return semantic HTML
+  const fast = await fetchFastLoad(domain);
+
+  // Fallback minimal info if snapshot missing
+  const fallback = buildHTML(url.pathname, domain, fast || { restaurant_name: 'Mi Restaurante Online', domain });
+  return new Response(fallback, {
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'public, max-age=900',
+      'X-Robots-Tag': 'index, follow',
+    },
+  });
 }
