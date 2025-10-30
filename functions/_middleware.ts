@@ -468,7 +468,7 @@ export const onRequest: PagesFunction = async (ctx) => {
     if (!domain) return await ctx.next();
 
     // Only SSR for bots/tooling and only on custom domains
-    const shouldSSR = !isStaging && isBot(userAgent);
+    const shouldSSR = false;
 
     if (shouldSSR) {
       const publicPages = ['/', '', '/menu', '/nosotros', '/about', '/contacto', '/contact', '/resenas', '/reviews'];
