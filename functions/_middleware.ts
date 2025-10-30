@@ -55,28 +55,7 @@ async function generateBotHTML(domain: string, pathname: string): Promise<string
   let client: any = baseClients?.[0];
   if (!client) {
     console.log('[BOT-SSR] Client not found for domain:', domain);
-    // Fallback: try base subdomain before hyphen (e.g., demo-2 -> demo)
-    if (domain.includes('-')) {
-      const baseSub = domain.split('-')[0];
-      const retryRes = await fetch(
-        `${SUPABASE_URL}/rest/v1/clients?select=*&subdomain=eq.${encodeURIComponent(baseSub)}&subscription_status=eq.active&limit=1`,
-        { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json' } }
-      );
-      if (retryRes.ok) {
-        const retryClients = await retryRes.json();
-        if (retryClients?.[0]) {
-          console.log('[BOT-SSR] Fallback matched base subdomain:', baseSub);
-          client = retryClients[0];
-          // proceed with client
-        } else {
-          return null;
-        }
-      } else {
-        return null;
-      }
-    } else {
-      return null;
-    }
+    return null;
   }
 
   // Fetch related data - batch in 2 groups to avoid connection limits
@@ -485,6 +464,7 @@ export const onRequest: PagesFunction = async (ctx) => {
             'Cache-Control': 'no-store, private',
             'X-Robots-Tag': 'index, follow',
             'X-SSR-Bot': 'true',
+            'X-SSR-Domain': domain,
             'Vary': 'User-Agent, Sec-Fetch-Dest'
           }
         });
