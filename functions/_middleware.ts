@@ -51,6 +51,28 @@ async function generateBotHTML(domain: string, pathname: string, host?: string):
         ? `https://${domain}.mirestaurante.online`
         : `https://${host || domain}`;
 
+      // Build rich content sections
+      const aboutHtml = fast.about_hero_title ? `
+        <section>
+          <h2>${fast.about_hero_title}</h2>
+          <p>${fast.about_hero_description || ''}</p>
+        </section>` : '';
+
+      const servicesHtml = fast.homepage_services_title ? `
+        <section>
+          <h2>${fast.homepage_services_title}</h2>
+          <p>${fast.homepage_services_description || ''}</p>
+        </section>` : '';
+
+      const contactHtml = `
+        <section>
+          <h2>Contacto</h2>
+          ${fast.address ? `<p><strong>Dirección:</strong> ${fast.address}</p>` : ''}
+          ${fast.phone ? `<p><strong>Teléfono:</strong> ${fast.phone}</p>` : ''}
+          ${fast.email ? `<p><strong>Email:</strong> ${fast.email}</p>` : ''}
+          ${fast.opening_hours_text ? `<p><strong>Horario:</strong> ${fast.opening_hours_text}</p>` : ''}
+        </section>`;
+
       const html = `
 <!DOCTYPE html>
 <html lang="es">
@@ -66,12 +88,29 @@ async function generateBotHTML(domain: string, pathname: string, host?: string):
   <meta property="og:type" content="website">
 </head>
 <body>
+  <header>
+    <h1>${restaurantName}</h1>
+    <nav>
+      <a href="${baseUrl}/">Inicio</a>
+      <a href="${baseUrl}/menu">Menú</a>
+      <a href="${baseUrl}/about">Nosotros</a>
+      <a href="${baseUrl}/contact">Contacto</a>
+    </nav>
+  </header>
   <main>
     <section>
-      <h1>${titleFirst} ${titleSecond}</h1>
+      <h2>${titleFirst} ${titleSecond}</h2>
       ${description ? `<p>${description}</p>` : ''}
     </section>
+    ${aboutHtml}
+    ${servicesHtml}
+    ${contactHtml}
   </main>
+  <footer>
+    <p>© ${new Date().getFullYear()} ${restaurantName}. Todos los derechos reservados.</p>
+    ${fast.address ? `<p>${fast.address}</p>` : ''}
+    ${fast.phone ? `<p>Tel: ${fast.phone}</p>` : ''}
+  </footer>
 </body>
 </html>`;
       return html.trim();
