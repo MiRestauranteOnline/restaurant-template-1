@@ -1,5 +1,3 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
-
 const SUPABASE_URL = 'https://ptzcetvcccnojdbzzlyt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emNldHZjY2Nub2pkYnp6bHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjExNzksImV4cCI6MjA3NDMzNzE3OX0.2HS2wP06xe8PryWW_VdzTu7TDYg303BjwmzyA_5Ang8';
 
@@ -35,26 +33,27 @@ function extractDomain(request: Request): string | null {
 
 // Generate SEO-optimized HTML for bots
 async function generateBotHTML(domain: string, pathname: string): Promise<string | null> {
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // Fetch client data by subdomain or custom_domain using REST API
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/clients?select=*,admin_content(*),client_settings(*),menu_items(*),menu_categories(*),reviews(*),faqs(*),team_members(*)&or=(subdomain.eq.${domain},custom_domain.eq.${domain})&subscription_status=eq.active&limit=1`,
+    {
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
   
-  // Fetch client data by subdomain or custom_domain
-  const { data: client, error } = await supabase
-    .from('clients')
-    .select(`
-      *,
-      admin_content (*),
-      client_settings (*),
-      menu_items (*),
-      menu_categories (*),
-      reviews (*),
-      faqs (*),
-      team_members (*)
-    `)
-    .or(`subdomain.eq.${domain},custom_domain.eq.${domain}`)
-    .eq('subscription_status', 'active')
-    .single();
+  if (!response.ok) {
+    console.log('[BOT-SSR] Failed to fetch client data:', domain);
+    return null;
+  }
   
-  if (error || !client) {
+  const clients = await response.json();
+  const client = clients[0];
+  
+  if (!client) {
     console.log('[BOT-SSR] Client not found:', domain);
     return null;
   }
