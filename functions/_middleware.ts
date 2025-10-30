@@ -36,7 +36,7 @@ async function generateBotHTML(domain: string, pathname: string): Promise<string
     : `subdomain=eq.${encodeURIComponent(domain)}`;
 
   const clientRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/clients?select=*&${filter}&subscription_status=eq.active&limit=1`,
+    `${SUPABASE_URL}/rest/v1/clients?select=*&${filter}&subscription_status=eq.active&is_deactivated=eq.false&limit=1`,
     {
       headers: {
         apikey: SUPABASE_ANON_KEY,
@@ -436,6 +436,7 @@ export const onRequest: PagesFunction = async (ctx) => {
     const host = ctx.request.headers.get('x-forwarded-host') || url.hostname;
     const userAgent = ctx.request.headers.get('user-agent') || '';
     const secFetchDest = ctx.request.headers.get('sec-fetch-dest');
+    const testSSR = url.searchParams.get('__bot') === '1' || ctx.request.headers.get('x-ssr-test') === '1';
 
     // Skip SSR on staging domains and for static assets
     const isStaging = host.endsWith('.pages.dev') || host.endsWith('.lovableproject.com');
@@ -447,8 +448,8 @@ export const onRequest: PagesFunction = async (ctx) => {
     if (!domain) return await ctx.next();
 
     // Only SSR for bots/tooling and only on custom domains
-    // SSR only for real bots (no browser fetch headers) on custom domains
-    const shouldSSR = !isStaging && isBot(userAgent) && !secFetchDest;
+    // SSR for bots or explicit test flag; humans get SPA
+    const shouldSSR = (!isStaging && isBot(userAgent)) || testSSR;
 
     if (shouldSSR) {
       const publicPages = ['/', '', '/menu', '/nosotros', '/about', '/contacto', '/contact', '/resenas', '/reviews'];
