@@ -34,6 +34,9 @@ export type Database = {
           about_team_section_title_first_line: string | null
           about_team_section_title_second_line: string | null
           about_us_label: string | null
+          ai_color_palette: string | null
+          ai_image_mood: string | null
+          ai_image_style: string | null
           carousel_display_order: number | null
           carousel_enabled: boolean | null
           client_id: string
@@ -51,6 +54,7 @@ export type Database = {
           content_briefing: string | null
           created_at: string
           culinary_masterpieces_label: string | null
+          detected_image_style: Json | null
           downloadable_menu_url: string | null
           footer_description: string | null
           footer_logo_url: string | null
@@ -99,6 +103,7 @@ export type Database = {
           homepage_services_section_title_second_line: string | null
           homepage_services_section_visible: boolean | null
           id: string
+          image_preference: string | null
           menu_page_hero_background_url: string | null
           menu_page_hero_description: string | null
           menu_page_hero_title: string | null
@@ -177,6 +182,9 @@ export type Database = {
           about_team_section_title_first_line?: string | null
           about_team_section_title_second_line?: string | null
           about_us_label?: string | null
+          ai_color_palette?: string | null
+          ai_image_mood?: string | null
+          ai_image_style?: string | null
           carousel_display_order?: number | null
           carousel_enabled?: boolean | null
           client_id: string
@@ -194,6 +202,7 @@ export type Database = {
           content_briefing?: string | null
           created_at?: string
           culinary_masterpieces_label?: string | null
+          detected_image_style?: Json | null
           downloadable_menu_url?: string | null
           footer_description?: string | null
           footer_logo_url?: string | null
@@ -242,6 +251,7 @@ export type Database = {
           homepage_services_section_title_second_line?: string | null
           homepage_services_section_visible?: boolean | null
           id?: string
+          image_preference?: string | null
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
           menu_page_hero_title?: string | null
@@ -320,6 +330,9 @@ export type Database = {
           about_team_section_title_first_line?: string | null
           about_team_section_title_second_line?: string | null
           about_us_label?: string | null
+          ai_color_palette?: string | null
+          ai_image_mood?: string | null
+          ai_image_style?: string | null
           carousel_display_order?: number | null
           carousel_enabled?: boolean | null
           client_id?: string
@@ -337,6 +350,7 @@ export type Database = {
           content_briefing?: string | null
           created_at?: string
           culinary_masterpieces_label?: string | null
+          detected_image_style?: Json | null
           downloadable_menu_url?: string | null
           footer_description?: string | null
           footer_logo_url?: string | null
@@ -385,6 +399,7 @@ export type Database = {
           homepage_services_section_title_second_line?: string | null
           homepage_services_section_visible?: boolean | null
           id?: string
+          image_preference?: string | null
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
           menu_page_hero_title?: string | null
@@ -934,11 +949,13 @@ export type Database = {
           brand_colors: Json | null
           cancellation_date: string | null
           cancellation_reason: string | null
+          cancelled_at: string | null
           cloudflare_zone_id: string | null
           coordinates: Json | null
           country_code: string | null
           created_at: string
           custom_domain: string | null
+          dashboard_is_deactivated: boolean
           delivery: Json | null
           dns_records_status: Json | null
           domain: string | null
@@ -969,10 +986,14 @@ export type Database = {
           phone_country_code: string | null
           plan_type: string | null
           razon_social: string | null
+          reengagement_sent_at: string | null
           referral_source: string | null
           reservations_email: string | null
           restaurant_name: string
+          review_request_sent_at: string | null
           ruc: string | null
+          signup_completed: boolean
+          site_live_at: string | null
           social_media_links: Json | null
           ssl_issued_date: string | null
           ssl_status: string | null
@@ -987,6 +1008,9 @@ export type Database = {
           theme: string | null
           timezone: string | null
           trial_end_date: string | null
+          turnstile_secret_key: string | null
+          turnstile_site_key: string | null
+          turnstile_widget_id: string | null
           updated_at: string
           use_coordinates: boolean | null
           vercel_dashboard_url: string | null
@@ -1000,11 +1024,13 @@ export type Database = {
           brand_colors?: Json | null
           cancellation_date?: string | null
           cancellation_reason?: string | null
+          cancelled_at?: string | null
           cloudflare_zone_id?: string | null
           coordinates?: Json | null
           country_code?: string | null
           created_at?: string
           custom_domain?: string | null
+          dashboard_is_deactivated?: boolean
           delivery?: Json | null
           dns_records_status?: Json | null
           domain?: string | null
@@ -1035,10 +1061,14 @@ export type Database = {
           phone_country_code?: string | null
           plan_type?: string | null
           razon_social?: string | null
+          reengagement_sent_at?: string | null
           referral_source?: string | null
           reservations_email?: string | null
           restaurant_name: string
+          review_request_sent_at?: string | null
           ruc?: string | null
+          signup_completed?: boolean
+          site_live_at?: string | null
           social_media_links?: Json | null
           ssl_issued_date?: string | null
           ssl_status?: string | null
@@ -1053,6 +1083,9 @@ export type Database = {
           theme?: string | null
           timezone?: string | null
           trial_end_date?: string | null
+          turnstile_secret_key?: string | null
+          turnstile_site_key?: string | null
+          turnstile_widget_id?: string | null
           updated_at?: string
           use_coordinates?: boolean | null
           vercel_dashboard_url?: string | null
@@ -1066,11 +1099,13 @@ export type Database = {
           brand_colors?: Json | null
           cancellation_date?: string | null
           cancellation_reason?: string | null
+          cancelled_at?: string | null
           cloudflare_zone_id?: string | null
           coordinates?: Json | null
           country_code?: string | null
           created_at?: string
           custom_domain?: string | null
+          dashboard_is_deactivated?: boolean
           delivery?: Json | null
           dns_records_status?: Json | null
           domain?: string | null
@@ -1101,10 +1136,14 @@ export type Database = {
           phone_country_code?: string | null
           plan_type?: string | null
           razon_social?: string | null
+          reengagement_sent_at?: string | null
           referral_source?: string | null
           reservations_email?: string | null
           restaurant_name?: string
+          review_request_sent_at?: string | null
           ruc?: string | null
+          signup_completed?: boolean
+          site_live_at?: string | null
           social_media_links?: Json | null
           ssl_issued_date?: string | null
           ssl_status?: string | null
@@ -1119,6 +1158,9 @@ export type Database = {
           theme?: string | null
           timezone?: string | null
           trial_end_date?: string | null
+          turnstile_secret_key?: string | null
+          turnstile_site_key?: string | null
+          turnstile_widget_id?: string | null
           updated_at?: string
           use_coordinates?: boolean | null
           vercel_dashboard_url?: string | null
@@ -1809,6 +1851,53 @@ export type Database = {
           },
         ]
       }
+      resend_email_logs: {
+        Row: {
+          client_id: string | null
+          created_at: string
+          email_type: string
+          error_message: string | null
+          id: string
+          recipient_email: string
+          recipient_type: string
+          resend_id: string | null
+          status: string
+          ticket_number: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          created_at?: string
+          email_type: string
+          error_message?: string | null
+          id?: string
+          recipient_email: string
+          recipient_type: string
+          resend_id?: string | null
+          status?: string
+          ticket_number?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          created_at?: string
+          email_type?: string
+          error_message?: string | null
+          id?: string
+          recipient_email?: string
+          recipient_type?: string
+          resend_id?: string | null
+          status?: string
+          ticket_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resend_email_logs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reservation_schedules: {
         Row: {
           capacity: number
@@ -1881,6 +1970,7 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone: string
+          decline_reason: string | null
           duration_minutes: number
           id: string
           internal_notes: string | null
@@ -1898,6 +1988,7 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone: string
+          decline_reason?: string | null
           duration_minutes?: number
           id?: string
           internal_notes?: string | null
@@ -1915,6 +2006,7 @@ export type Database = {
           customer_email?: string
           customer_name?: string
           customer_phone?: string
+          decline_reason?: string | null
           duration_minutes?: number
           id?: string
           internal_notes?: string | null
